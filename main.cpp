@@ -126,10 +126,16 @@ int main(int argc, const char * argv[]) {
 		eval(j,"startsWith('jack is at home', 'jack')");
 
 		eval(j,"`2` == `2`");
+		eval(j,"`2` = `2`");
+		eval(j,"`2` != `2`");
+		eval(j,"`2` <> `2`");
 		eval(j,"`2` + `2`");
+		eval(j,"`2` + `2.0`");
 		eval(j,"`2` - `2`");
+		eval(j,"`2` - `2.0`");
+		eval(j,"`2` * `2`");
 		eval(j,"`2` * `2.0`");
-		eval(j,"`2` * `2.0`");
+		eval(j,"`2` / `2`");
 		eval(j,"`2` / `2.0`");
 		eval(j,"'2' & '2'");
 

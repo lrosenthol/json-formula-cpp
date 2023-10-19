@@ -4713,6 +4713,15 @@ namespace jmespath {
                                 ++p_;
                                 ++column_;
                                 break;
+							// json-formula supports <> for not equal
+							case '>':
+								push_token(token(resources_.get_ne_operator()), ec);
+								push_token(token(current_node_arg), ec);
+								if (ec) {return jmespath_expression();}
+								state_stack_.pop_back();
+								++p_;
+								++column_;
+								break;
                             default:
                                 push_token(token(resources_.get_lt_operator()), ec);
                                 push_token(token(current_node_arg), ec);
@@ -4745,6 +4754,14 @@ namespace jmespath {
                     }
                     case path_state::cmp_eq:
                     {
+#if 1	// json-formula supports both `=` and `==`
+						push_token(token(resources_.get_eq_operator()), ec);
+						push_token(token(current_node_arg), ec);
+						if (ec) {return jmespath_expression();}
+						state_stack_.pop_back();
+						++p_;
+						++column_;
+#else
                         switch(*p_)
                         {
                             case '=':
@@ -4759,7 +4776,8 @@ namespace jmespath {
                                 ec = jmespath_errc::expected_comparator;
                                 return jmespath_expression();
                         }
-                        break;
+#endif
+						break;
                     }
                     case path_state::cmp_ne:
                     {
