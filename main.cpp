@@ -12,14 +12,84 @@
 #include "jsoncons/json_error.hpp"
 #include "jsoncons_ext/jmespath/jmespath.hpp"
 
+// our user testing framework
+#include "utest.h"
 
-static void eval(const jsoncons::json& j, const std::string& e)
+// use the standard user testing main
+UTEST_MAIN();
+
+static jsoncons::json eval(const jsoncons::json& j, const std::string& e)
+{
+	return jsoncons::jmespath::search(j,e);
+}
+
+static std::string evalToString(const jsoncons::json& j, const std::string& e)
+{
+	jsoncons::json r = jsoncons::jmespath::search(j,e);
+	return static_cast<std::string>(r.as<std::string_view>());
+}
+
+static void evalPrint(const jsoncons::json& j, const std::string& e)
 {
 	jsoncons::json r = jsoncons::jmespath::search(j,e);
 	std::cout << e << " = " << jsoncons::print(r) << "\n";
-
 }
 
+// tests!
+UTEST(json_formula, functions) {
+	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
+	
+	ASSERT_EQ(eval(j,"abs(toNumber(bar))").as<int32_t>(), 2);
+	ASSERT_EQ(eval(j,"abs(`-5`)").as<int32_t>(), 5);
+
+	ASSERT_TRUE(eval(j,"startsWith('jack is at home', 'jack')").as<bool>());
+}
+
+UTEST(json_formula, operators_equality) {
+	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
+	
+	EXPECT_TRUE(eval(j,"`2` == `2`").as<bool>());
+	EXPECT_TRUE(eval(j,"`2` = `2`").as<bool>());
+	EXPECT_FALSE(eval(j,"`2` != `2`").as<bool>());
+	EXPECT_FALSE(eval(j,"`2` <> `2`").as<bool>());
+
+	EXPECT_TRUE(eval(j,"`[1,2,3]` == `[1,2,3]`").as<bool>());
+	EXPECT_FALSE(eval(j,"`[1,2,3]` == `[1,2,3,4]`").as<bool>());
+	EXPECT_FALSE(eval(j,"`[1,2,3]` == `[4,5,6]`").as<bool>());
+	EXPECT_TRUE(eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7}`)").as<bool>());
+	EXPECT_TRUE(eval(j,R"(`{"a":5,"b":7}` == `{"b":7,"a":5}`)").as<bool>());
+	EXPECT_FALSE(eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7,"c":9}`)").as<bool>());
+}
+
+UTEST(json_formula, operators_math) {
+	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
+	
+	EXPECT_EQ(eval(j,"`2` + `2`").as<int32_t>(), 4);
+	EXPECT_EQ(eval(j,"`2` + `2.0`").as<double>(), 4.0);
+	EXPECT_EQ(eval(j,"`2` - `2`").as<int32_t>(), 0);
+	EXPECT_EQ(eval(j,"`2` - `2.0`").as<double>(), 0.0);
+	EXPECT_EQ(eval(j,"`2` * `2`").as<int32_t>(), 4);
+	EXPECT_EQ(eval(j,"`2` * `2.0`").as<double>(), 4.0);
+	EXPECT_EQ(eval(j,"`2` / `2`").as<int32_t>(), 1);
+	EXPECT_EQ(eval(j,"`2` / `2.0`").as<double>(), 1.0);
+}
+
+UTEST(json_formula, operators_concat_merge) {
+	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
+	
+	EXPECT_TRUE(eval(j,"'2' & '2'") == jsoncons::json("22"));
+
+	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ `[4,5,6]`") == jsoncons::json(jsoncons::json_array_arg, {1,2,3,4,5,6}));
+	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ `4`") == jsoncons::json(jsoncons::json_array_arg, {1,2,3,4}));
+	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ `5.0`") == jsoncons::json(jsoncons::json_array_arg, {1,2,3,5.0}));
+	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ 'foo'") == jsoncons::json(jsoncons::json_array_arg, {1,2,3,"foo"}));
+	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ `true`") == jsoncons::json(jsoncons::json_array_arg, {1,2,3,true}));
+	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ `null`") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
+	EXPECT_TRUE(eval(j,R"(`[1,2,3]` ~ `{"a":5,"b":7}`)") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
+}
+
+
+#if 0
 int main(int argc, const char * argv[]) {
 	std::cout << "Hello, json-formula!\n";
 	
@@ -116,48 +186,6 @@ int main(int argc, const char * argv[]) {
 		std::cout << "Error: " << e.what() << std::endl;
 	}
 	
-	// built-in functions
-	try {
-		jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
-		
-		eval(j,"abs(toNumber(bar))");
-		eval(j,"abs(`-5`)");
-
-		eval(j,"startsWith('jack is at home', 'jack')");
-
-		eval(j,"`2` == `2`");
-		eval(j,"`2` = `2`");
-		eval(j,"`2` != `2`");
-		eval(j,"`2` <> `2`");
-		eval(j,"`2` + `2`");
-		eval(j,"`2` + `2.0`");
-		eval(j,"`2` - `2`");
-		eval(j,"`2` - `2.0`");
-		eval(j,"`2` * `2`");
-		eval(j,"`2` * `2.0`");
-		eval(j,"`2` / `2`");
-		eval(j,"`2` / `2.0`");
-		eval(j,"'2' & '2'");
-
-		eval(j,"`[1,2,3]` == `[1,2,3]`");
-		eval(j,"`[1,2,3]` == `[1,2,3,4]`");
-		eval(j,"`[1,2,3]` == `[4,5,6]`");
-		eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7}`)");
-		eval(j,R"(`{"a":5,"b":7}` == `{"b":7,"a":5}`)");
-		eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7,"c":9}`)");
-
-		eval(j,"`[1,2,3]` ~ `[4,5,6]`");
-		eval(j,"`[1,2,3]` ~ `4`");
-		eval(j,"`[1,2,3]` ~ `5.0`");
-		eval(j,"`[1,2,3]` ~ 'foo'");
-		eval(j,"`[1,2,3]` ~ `true`");
-		eval(j,"`[1,2,3]` ~ `null`");
-		eval(j,R"(`[1,2,3]` ~ `{"a":5,"b":7}`)");
-	}
-	catch (const jsoncons::json_exception& e)
-	{
-		std::cout << "Error: " << e.what() << std::endl;
-	}
-
 	return 0;
 }
+#endif
