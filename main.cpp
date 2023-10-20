@@ -18,21 +18,19 @@
 // use the standard user testing main
 UTEST_MAIN();
 
-static jsoncons::json eval(const jsoncons::json& j, const std::string& e)
+static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
-	return jsoncons::jmespath::search(j,e);
+	jsoncons::json r = jsoncons::jmespath::search(j,e);
+	if ( print )
+		std::cout << e << " = " << jsoncons::print(r) << "\n";
+	
+	return r;
 }
 
 static std::string evalToString(const jsoncons::json& j, const std::string& e)
 {
 	jsoncons::json r = jsoncons::jmespath::search(j,e);
 	return static_cast<std::string>(r.as<std::string_view>());
-}
-
-static void evalPrint(const jsoncons::json& j, const std::string& e)
-{
-	jsoncons::json r = jsoncons::jmespath::search(j,e);
-	std::cout << e << " = " << jsoncons::print(r) << "\n";
 }
 
 // tests!
@@ -74,7 +72,21 @@ UTEST(json_formula, operators_math) {
 	EXPECT_EQ(eval(j,"`2` / `2.0`").as<double>(), 1.0);
 }
 
-UTEST(json_formula, operators_concat_merge) {
+UTEST(json_formula, operator_concat) {
+	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
+	
+	EXPECT_TRUE(eval(j,"'2' & '2'") == jsoncons::json("22"));
+	EXPECT_TRUE(eval(j,"'2' & `2`") == jsoncons::json("22"));
+	EXPECT_TRUE(eval(j,"'2' & `2.0`") == jsoncons::json("22.000000"));	// floating point sucks!
+	EXPECT_TRUE(eval(j,"'2' & `false`") == jsoncons::json("2false"));
+	EXPECT_TRUE(eval(j,"'2' & `[2]`") == jsoncons::json(jsoncons::json_array_arg, {"22"}));
+	EXPECT_TRUE(eval(j,R"('2' & `[2,"foo"]`)") == jsoncons::json(jsoncons::json_array_arg, {"22", "2foo"}));
+	EXPECT_TRUE(eval(j,R"(`[2,"bar",true]` & '2')") == jsoncons::json(jsoncons::json_array_arg, {"22", "bar2", "true2"}));
+	EXPECT_TRUE(eval(j,R"(`["foo", 22]` & `[44, true, "x"]`)") == jsoncons::json(jsoncons::json_array_arg, {"foo44", "22true", "x"}));
+	EXPECT_TRUE(eval(j,R"('2' & `{"a":2}`)") == jsoncons::json("2"));
+}
+
+UTEST(json_formula, operator_merge) {
 	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
 	
 	EXPECT_TRUE(eval(j,"'2' & '2'") == jsoncons::json("22"));

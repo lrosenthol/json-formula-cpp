@@ -2787,13 +2787,40 @@ namespace jmespath {
 
 			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
 			{
-				if ( lhs.type() == json_type::string_value && rhs.type() == json_type::string_value ){
-					auto l = lhs.template as<std::string>();
-					auto r = rhs.template as<std::string>();
-					return *resources.create_json(l + r);
+				// as per json-formula spec
+				//	Arrays shall be coerced to an array of strings.
+				if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
+					auto result = resources.create_json(json_array_arg);	// empty array
+					auto numEnts = std::max( lhs.size(), rhs.size() );
+					for (int64_t i=0; i<numEnts; i++) {
+						std::string lhsStr, rhsStr;
+						if ( i < lhs.size() ) lhsStr = to_string(lhs[i]);
+						if ( i < rhs.size() ) rhsStr = to_string(rhs[i]);
+						result->push_back( lhsStr + rhsStr);
+					}
+					return *result;
+				} else if ( lhs.type() == json_type::array_value ) {
+					std::string rhsStr{to_string(rhs)};
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : lhs.array_range()) {
+						result->push_back( to_string(v) + rhsStr );
+					}
+					return *result;
+				} else if ( rhs.type() == json_type::array_value ) {
+					std::string lhsStr{to_string(lhs)};
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : rhs.array_range()) {
+						result->push_back( lhsStr + to_string(v) );
+					}
+					return *result;
+				} else {
+					std::string lhsStr{to_string(lhs)}, rhsStr{to_string(rhs)};
+					
+					if ( !lhsStr.empty() || !rhsStr.empty() )
+						return *resources.create_json(lhsStr + rhsStr);
+					else
+						return resources.null_value();
 				}
-				
-				return resources.null_value();
 			}
 
 			std::string to_string(std::size_t indent = 0) const override
@@ -2806,6 +2833,39 @@ namespace jmespath {
 				s.append("concat_operator\n");
 				return s;
 			}
+
+			std::string to_string(reference& r) const
+			{
+				switch ( r.type() ) {
+					case json_type::array_value:
+						// should not get here for this scenario...
+						break;
+					case json_type::uint64_value:
+					case json_type::int64_value:
+						return std::to_string(r.template as<int64_t>());
+						break;
+					case json_type::double_value:
+						return std::to_string(r.template as<double>());
+						break;
+					case json_type::string_value:
+						return r.template as<std::string>();
+						break;
+					case json_type::bool_value:
+						return r.template as<bool>() ? "true" : "false";
+						break;
+					case json_type::null_value:
+					case json_type::object_value:		// technically an error, but we'll treat an NOP
+					case json_type::half_value:			// technically an error, but we'll treat an NOP
+					case json_type::byte_string_value:	// technically an error, but we'll treat an NOP
+						{
+							// do nothing!
+						}
+						break;
+				}
+				
+				return "";
+			}
+
 		};
 
 		class union_operator final : public binary_operator
