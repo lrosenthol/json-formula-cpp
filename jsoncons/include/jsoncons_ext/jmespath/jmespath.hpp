@@ -2852,7 +2852,9 @@ namespace jmespath {
 							}
 							break;
 						case json_type::null_value:
-						case json_type::object_value:	// technically an error, but we'll treat an NOP
+						case json_type::object_value:		// technically an error, but we'll treat an NOP
+						case json_type::half_value:			// technically an error, but we'll treat an NOP
+						case json_type::byte_string_value:	// technically an error, but we'll treat an NOP
 							{
 								// do nothing!
 							}
