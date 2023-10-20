@@ -43,7 +43,7 @@ namespace jmespath {
 		mult_op,
 		div_op,
 		concat_op,
-		merge_op
+		union_op
     };
 
     struct operator_table final
@@ -62,7 +62,7 @@ namespace jmespath {
 				case operator_kind::mult_op:
 				case operator_kind::div_op:
 				case operator_kind::concat_op:
-				case operator_kind::merge_op:
+				case operator_kind::union_op:
                     return 9;
                 case operator_kind::and_op:
                     return 8;
@@ -386,7 +386,8 @@ namespace jmespath {
 		minus_operator,
 		mult_operator,
 		div_operator,
-		concat_operator
+		concat_operator,
+		union_operator
     };
 
     // dynamic_resources
@@ -2807,6 +2808,76 @@ namespace jmespath {
 			}
 		};
 
+		class union_operator final : public binary_operator
+		{
+		public:
+			union_operator()
+				: binary_operator(operator_kind::union_op)
+			{
+			}
+
+			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
+			{
+				// lhs must be an array...
+				//	and then we determine what to do based on the type of rhs
+				if ( lhs.type() == json_type::array_value ) {
+					auto result = resources.create_json(lhs);	// copy it since we'll be modifying it
+					switch ( rhs.type() ) {
+						case json_type::array_value:
+							{
+								for (auto& v : rhs.array_range()) {
+									result->push_back(v);
+								}
+							}
+							break;
+						case json_type::uint64_value:
+						case json_type::int64_value:
+							{
+								result->push_back(*resources.create_json(rhs.template as<int64_t>()));
+							}
+							break;
+						case json_type::double_value:
+							{
+								result->push_back(*resources.create_json(rhs.template as<double>()));
+							}
+							break;
+						case json_type::string_value:
+							{
+								result->push_back(*resources.create_json(rhs.template as<std::string>()));
+							}
+							break;
+						case json_type::bool_value:
+							{
+								result->push_back(*resources.create_json(rhs.template as<bool>()));
+							}
+							break;
+						case json_type::null_value:
+						case json_type::object_value:		// technically an error, but we'll treat an NOP
+						case json_type::half_value:			// technically an error, but we'll treat an NOP
+						case json_type::byte_string_value:	// technically an error, but we'll treat an NOP
+							{
+								// do nothing!
+							}
+							break;
+					}
+					return *result;
+				}
+				
+				return resources.null_value();
+			}
+
+			std::string to_string(std::size_t indent = 0) const override
+			{
+				std::string s;
+				for (std::size_t i = 0; i <= indent; ++i)
+				{
+					s.push_back(' ');
+				}
+				s.append("union_operator\n");
+				return s;
+			}
+		};
+
         // basic_expression
         class basic_expression :  public expression_base
         {
@@ -3565,6 +3636,11 @@ namespace jmespath {
 				static const concat_operator concat_oper;
 				return &concat_oper;
 			}
+			const binary_operator* get_union_operator() const
+			{
+				static const union_operator union_oper;
+				return &union_oper;
+			}
 		};
 
         class jmespath_expression
@@ -3747,6 +3823,7 @@ namespace jmespath {
 							case '-':
 							case '*':
 							case '/':
+							case '~':
 								state_stack_.emplace_back(path_state::jf_expression);
 								break;
                             default:
@@ -4713,6 +4790,15 @@ namespace jmespath {
                                 ++p_;
                                 ++column_;
                                 break;
+							// json-formula supports <> for not equal
+							case '>':
+								push_token(token(resources_.get_ne_operator()), ec);
+								push_token(token(current_node_arg), ec);
+								if (ec) {return jmespath_expression();}
+								state_stack_.pop_back();
+								++p_;
+								++column_;
+								break;
                             default:
                                 push_token(token(resources_.get_lt_operator()), ec);
                                 push_token(token(current_node_arg), ec);
@@ -4745,6 +4831,14 @@ namespace jmespath {
                     }
                     case path_state::cmp_eq:
                     {
+#if 1	// json-formula supports both `=` and `==`
+						push_token(token(resources_.get_eq_operator()), ec);
+						push_token(token(current_node_arg), ec);
+						if (ec) {return jmespath_expression();}
+						state_stack_.pop_back();
+						++p_;
+						++column_;
+#else
                         switch(*p_)
                         {
                             case '=':
@@ -4759,7 +4853,8 @@ namespace jmespath {
                                 ec = jmespath_errc::expected_comparator;
                                 return jmespath_expression();
                         }
-                        break;
+#endif
+						break;
                     }
                     case path_state::cmp_ne:
                     {
@@ -4810,6 +4905,12 @@ namespace jmespath {
 								state_stack_.back() = path_state::lhs_expression;
 								state_stack_.emplace_back(path_state::div_operator);
 								break;
+							case '~':
+								++p_;
+								++column_;
+								state_stack_.back() = path_state::lhs_expression;
+								state_stack_.emplace_back(path_state::union_operator);
+								break;
 							default:
 								if (state_stack_.size() > 1)
 								{
@@ -4859,6 +4960,14 @@ namespace jmespath {
 					case path_state::concat_operator:
 					{
 						push_token(token(resources_.get_concat_operator()), ec);
+						push_token(token(current_node_arg), ec);
+						if (ec) {return jmespath_expression();}
+						state_stack_.pop_back();
+						break;
+					}
+					case path_state::union_operator:
+					{
+						push_token(token(resources_.get_union_operator()), ec);
 						push_token(token(current_node_arg), ec);
 						if (ec) {return jmespath_expression();}
 						state_stack_.pop_back();

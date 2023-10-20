@@ -16,7 +16,7 @@
 static void eval(const jsoncons::json& j, const std::string& e)
 {
 	jsoncons::json r = jsoncons::jmespath::search(j,e);
-	std::cout << e << " = " << jsoncons::pretty_print(r) << "\n";
+	std::cout << e << " = " << jsoncons::print(r) << "\n";
 
 }
 
@@ -126,14 +126,33 @@ int main(int argc, const char * argv[]) {
 		eval(j,"startsWith('jack is at home', 'jack')");
 
 		eval(j,"`2` == `2`");
+		eval(j,"`2` = `2`");
+		eval(j,"`2` != `2`");
+		eval(j,"`2` <> `2`");
 		eval(j,"`2` + `2`");
+		eval(j,"`2` + `2.0`");
 		eval(j,"`2` - `2`");
+		eval(j,"`2` - `2.0`");
+		eval(j,"`2` * `2`");
 		eval(j,"`2` * `2.0`");
-		eval(j,"`2` * `2.0`");
+		eval(j,"`2` / `2`");
 		eval(j,"`2` / `2.0`");
 		eval(j,"'2' & '2'");
 
-//		eval(j,"`[1,2,3]` ~ `[4,5,6]`");
+		eval(j,"`[1,2,3]` == `[1,2,3]`");
+		eval(j,"`[1,2,3]` == `[1,2,3,4]`");
+		eval(j,"`[1,2,3]` == `[4,5,6]`");
+		eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7}`)");
+		eval(j,R"(`{"a":5,"b":7}` == `{"b":7,"a":5}`)");
+		eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7,"c":9}`)");
+
+		eval(j,"`[1,2,3]` ~ `[4,5,6]`");
+		eval(j,"`[1,2,3]` ~ `4`");
+		eval(j,"`[1,2,3]` ~ `5.0`");
+		eval(j,"`[1,2,3]` ~ 'foo'");
+		eval(j,"`[1,2,3]` ~ `true`");
+		eval(j,"`[1,2,3]` ~ `null`");
+		eval(j,R"(`[1,2,3]` ~ `{"a":5,"b":7}`)");
 	}
 	catch (const jsoncons::json_exception& e)
 	{
