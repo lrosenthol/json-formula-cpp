@@ -27,11 +27,11 @@ static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool p
 	return r;
 }
 
-static std::string evalToString(const jsoncons::json& j, const std::string& e)
-{
-	jsoncons::json r = jsoncons::jmespath::search(j,e);
-	return static_cast<std::string>(r.as<std::string_view>());
-}
+//static std::string evalToString(const jsoncons::json& j, const std::string& e)
+//{
+//	jsoncons::json r = jsoncons::jmespath::search(j,e);
+//	return static_cast<std::string>(r.as<std::string_view>());
+//}
 
 // tests!
 UTEST(json_formula, functions) {
@@ -57,6 +57,27 @@ UTEST(json_formula, operators_equality) {
 	EXPECT_TRUE(eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7}`)").as<bool>());
 	EXPECT_TRUE(eval(j,R"(`{"a":5,"b":7}` == `{"b":7,"a":5}`)").as<bool>());
 	EXPECT_FALSE(eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7,"c":9}`)").as<bool>());
+}
+
+UTEST(json_formula, operators_comparisons) {
+	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
+
+	EXPECT_TRUE(eval(j,R"('2' < '6')").as<bool>());
+	EXPECT_TRUE(eval(j,R"('2' <= '6')").as<bool>());
+	EXPECT_FALSE(eval(j,R"('2' > '6')").as<bool>());
+	EXPECT_FALSE(eval(j,R"('2' >= '6')").as<bool>());
+
+	EXPECT_TRUE(eval(j,R"(`2` < '6')").as<bool>());
+	EXPECT_TRUE(eval(j,R"('2' < `6`)").as<bool>());
+
+	EXPECT_TRUE(eval(j,R"(`2` <= '6')").as<bool>());
+	EXPECT_TRUE(eval(j,R"('2' <= `6`)").as<bool>());
+
+	EXPECT_FALSE(eval(j,R"(`2` > '6')").as<bool>());
+	EXPECT_FALSE(eval(j,R"('2' > `6`)").as<bool>());
+
+	EXPECT_FALSE(eval(j,R"(`2` >= '6')").as<bool>());
+	EXPECT_FALSE(eval(j,R"('2' >= `6`)").as<bool>());
 }
 
 UTEST(json_formula, operators_math) {
@@ -130,7 +151,6 @@ UTEST(json_formula, operator_merge) {
 	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ `null`") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
 	EXPECT_TRUE(eval(j,R"(`[1,2,3]` ~ `{"a":5,"b":7}`)") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
 }
-
 
 #if 0
 int main(int argc, const char * argv[]) {

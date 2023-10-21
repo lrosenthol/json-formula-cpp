@@ -2522,11 +2522,17 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override 
             {
-                if (!(lhs.is_number() && rhs.is_number()))
-                {
+				if ( lhs.is_number() && rhs.is_number() ) {
+					return lhs < rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_string() ) {
+					return lhs < rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_number() && rhs.is_string() ) {
+					return lhs < std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_number() ) {
+					return lhs < std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
+				} else {
                     return resources.null_value();
                 }
-                return lhs < rhs ? resources.true_value() : resources.false_value();
             }
 
             std::string to_string(std::size_t indent = 0) const override
@@ -2551,11 +2557,17 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override 
             {
-                if (!(lhs.is_number() && rhs.is_number()))
-                {
-                    return resources.null_value();
-                }
-                return lhs <= rhs ? resources.true_value() : resources.false_value();
+				if ( lhs.is_number() && rhs.is_number() ) {
+					return lhs <= rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_string() ) {
+					return lhs <= rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_number() && rhs.is_string() ) {
+					return lhs <= std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_number() ) {
+					return lhs <= std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
+				} else {
+					return resources.null_value();
+				}
             }
 
             std::string to_string(std::size_t indent = 0) const override
@@ -2580,11 +2592,17 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
             {
-                if (!(lhs.is_number() && rhs.is_number()))
-                {
-                    return resources.null_value();
-                }
-                return lhs > rhs ? resources.true_value() : resources.false_value();
+				if ( lhs.is_number() && rhs.is_number() ) {
+					return lhs > rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_string() ) {
+					return lhs > rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_number() && rhs.is_string() ) {
+					return lhs > std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_number() ) {
+					return lhs > std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
+				} else {
+					return resources.null_value();
+				}
             }
 
             std::string to_string(std::size_t indent = 0) const override
@@ -2609,11 +2627,17 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
             {
-                if (!(lhs.is_number() && rhs.is_number()))
-                {
-                    return resources.null_value();
-                }
-                return lhs >= rhs ? resources.true_value() : resources.false_value();
+				if ( lhs.is_number() && rhs.is_number() ) {
+					return lhs >= rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_string() ) {
+					return lhs >= rhs ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_number() && rhs.is_string() ) {
+					return lhs >= std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
+				} else if ( lhs.is_string() && rhs.is_number() ) {
+					return lhs >= std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
+				} else {
+					return resources.null_value();
+				}
             }
 
             std::string to_string(std::size_t indent = 0) const override
