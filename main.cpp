@@ -34,15 +34,6 @@ static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool p
 //}
 
 // tests!
-UTEST(json_formula, functions) {
-	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
-	
-	ASSERT_EQ(eval(j,"abs(toNumber(bar))").as<int32_t>(), 2);
-	ASSERT_EQ(eval(j,"abs(`-5`)").as<int32_t>(), 5);
-
-	ASSERT_TRUE(eval(j,"startsWith('jack is at home', 'jack')").as<bool>());
-}
-
 UTEST(json_formula, operators_equality) {
 	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
 
@@ -151,6 +142,110 @@ UTEST(json_formula, operator_merge) {
 	EXPECT_TRUE(eval(j,"`[1,2,3]` ~ `null`") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
 	EXPECT_TRUE(eval(j,R"(`[1,2,3]` ~ `{"a":5,"b":7}`)") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
 }
+
+UTEST(json_formula, jmespath_functions) {
+	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
+	
+	EXPECT_EQ(eval(j,"abs(toNumber(bar))").as<int32_t>(), 2);
+	EXPECT_EQ(eval(j,"abs(`-5`)").as<int32_t>(), 5);
+	
+	EXPECT_EQ(eval(j,"avg(`[10, 15, 20]`)").as<int32_t>(), 15);
+	
+	EXPECT_TRUE(eval(j,"contains('foobar', 'foo')").as<bool>());
+	EXPECT_FALSE(eval(j,"contains('foobar', 'not')").as<bool>());
+	EXPECT_TRUE(eval(j,"contains('foobar', 'bar')").as<bool>());
+	EXPECT_FALSE(eval(j,"contains('foobar', `123`)").as<bool>());
+	EXPECT_TRUE(eval(j,R"(contains(`["a", "b"]`, 'a'))").as<bool>());
+	EXPECT_FALSE(eval(j,R"(contains(`["a", "b"]`, 'c'))").as<bool>());
+	EXPECT_FALSE(eval(j,R"(contains(`["foo", "bar"]`, 'b'))").as<bool>());
+	
+	EXPECT_EQ(eval(j,"ceil(`1.001`)").as<int32_t>(), 2);
+	EXPECT_EQ(eval(j,"ceil(`1.9`)").as<int32_t>(), 2);
+	EXPECT_EQ(eval(j,"ceil(`1`)").as<int32_t>(), 1);
+	
+	EXPECT_TRUE(eval(j,"endsWith('foobarbaz', 'baz')").as<bool>());
+	EXPECT_TRUE(eval(j,"endsWith('foobarbaz', 'z')").as<bool>());
+	EXPECT_FALSE(eval(j,"endsWith('foobarbaz', 'foo')").as<bool>());
+	
+	EXPECT_EQ(eval(j,"floor(`1.001`)").as<int32_t>(), 1);
+	EXPECT_EQ(eval(j,"floor(`1.9`)").as<int32_t>(), 1);
+	EXPECT_EQ(eval(j,"floor(`1`)").as<int32_t>(), 1);
+	
+	EXPECT_TRUE(eval(j,R"(join(', ', `["a", "b"]`))") == jsoncons::json("a, b"));
+	EXPECT_TRUE(eval(j,R"(join('', `["a", "b"]`))") == jsoncons::json("ab"));
+	
+	// Note that because JSON hashes are inheritently unordered,
+	// the keys associated with the provided object obj are inheritently unordered.
+	// Implementations are not required to return keys in any specific order.
+	EXPECT_TRUE(eval(j,R"(keys(`{"foo": "baz", "bar": "bam"}`))") == jsoncons::json(jsoncons::json_array_arg, {"bar", "foo"}));
+	EXPECT_TRUE(eval(j,R"(keys(`{}`))") == jsoncons::json(jsoncons::json_array_arg, {}));
+	
+	EXPECT_EQ(eval(j,"length('abc')").as<int32_t>(), 3);
+	EXPECT_EQ(eval(j,R"(length(`"current"`))").as<int32_t>(), 7);
+	EXPECT_EQ(eval(j,R"(length(`["a","b","c"]`))").as<int32_t>(), 3);
+	EXPECT_EQ(eval(j,R"(length(`[]`))").as<int32_t>(), 0);
+	EXPECT_EQ(eval(j,R"(length(`{}`))").as<int32_t>(), 0);
+	EXPECT_EQ(eval(j,R"(length(`{"foo": "bar", "baz": "bam"}`))").as<int32_t>(), 2);
+	
+	EXPECT_TRUE(eval(j,R"(map(&foo, `[{"foo": "a"}, {"foo": "b"}, {}, [], {"foo": "f"}]`))") == jsoncons::json(jsoncons::json_array_arg, {"a", "b", nullptr, nullptr, "f"}));
+	//	EXPECT_TRUE(eval(j,R"(map(&[], `[[1,2],3,[4],[5,6,7],[8,9]]`))", true) == jsoncons::json(jsoncons::json_array_arg, {1,2,3,4,5,6,7,8,9}));
+	
+	EXPECT_TRUE(eval(j,R"(max(`[5, 10, 15]`))") == jsoncons::json(15));
+	EXPECT_TRUE(eval(j,R"(max(`["a", "b"]`))") == jsoncons::json("b"));
+	
+	EXPECT_TRUE(eval(j,R"(merge(`{"a": "b"}`, `{"c": "d"}`))") == jsoncons::json({{"a",jsoncons::json("b")},{"c",jsoncons::json("d")}}));
+	EXPECT_TRUE(eval(j,R"(merge(`{"a": "b"}`, `{"a": "override"}`))") == jsoncons::json(jsoncons::json_object_arg, {{"a",jsoncons::json("override")}}));
+	EXPECT_TRUE(eval(j,R"(merge(`{"a": "x", "b": "y"}`, `{"b": "override", "c": "z"}`))") == jsoncons::json({{"a",jsoncons::json("x")},{"b",jsoncons::json("override")},{"c",jsoncons::json("z")}}));
+	
+	EXPECT_TRUE(eval(j,R"(min(`[5, 10, 15]`))") == jsoncons::json(5));
+	EXPECT_TRUE(eval(j,R"(min(`["a", "b"]`))") == jsoncons::json("a"));
+	
+	EXPECT_TRUE(eval(j,R"(reverse(`[0, 1, 2, 3, 4]`))") == jsoncons::json(jsoncons::json_array_arg, {4,3,2,1,0}));
+	EXPECT_TRUE(eval(j,R"(reverse(`["a", "b", "c", 1, 2, 3]`))") == jsoncons::json(jsoncons::json_array_arg, {3,2,1,"c","b","a"}));
+	EXPECT_TRUE(eval(j,R"(reverse('abcd'))") == jsoncons::json("dcba"));
+	
+	EXPECT_TRUE(eval(j,R"(sort(`["b","c","a"]`))") == jsoncons::json(jsoncons::json_array_arg, {"a","b","c"}));
+	EXPECT_TRUE(eval(j,R"(sort(`[10, 5, 15, 1]`))") == jsoncons::json(jsoncons::json_array_arg, {1,5,10,15}));
+	//	EXPECT_TRUE(eval(j,R"(sort(`[1,"c","a"]`))") == jsoncons::json(jsoncons::json_array_arg, {1,"c","a"}));
+	//	EXPECT_TRUE(eval(j,R"(sort(`{"a": 1, "b": 2}`))") == jsoncons::json(nullptr));
+	
+	EXPECT_TRUE(eval(j,"startsWith('jack is at home', 'jack')").as<bool>());
+	EXPECT_FALSE(eval(j,"startsWith('foobarbaz', 'baz')").as<bool>());
+	EXPECT_TRUE(eval(j,"startsWith('foobarbaz', 'f')").as<bool>());
+	EXPECT_TRUE(eval(j,"startsWith('foobarbaz', 'foo')").as<bool>());
+	
+	EXPECT_TRUE(eval(j,R"(sum(`[5, 10, 15]`))") == jsoncons::json(30));
+	EXPECT_TRUE(eval(j,R"(sum(`[]`))") == jsoncons::json(0));
+	
+	EXPECT_TRUE(eval(j,R"(to_array(`["b","c","a"]`))") == jsoncons::json(jsoncons::json_array_arg, {"b","c","a"}));
+	EXPECT_TRUE(eval(j,R"(to_array('b'))") == jsoncons::json(jsoncons::json_array_arg, {"b"}));
+	EXPECT_TRUE(eval(j,R"(to_array(`0`))") == jsoncons::json(jsoncons::json_array_arg, {0}));
+	EXPECT_TRUE(eval(j,R"(to_array(`false`))") == jsoncons::json(jsoncons::json_array_arg, {false}));
+	
+	EXPECT_TRUE(eval(j,R"(to_string(`["b","c","a"]`))") == jsoncons::json("[\"b\",\"c\",\"a\"]"));
+	EXPECT_TRUE(eval(j,R"(to_string('b'))") == jsoncons::json("b"));
+	EXPECT_TRUE(eval(j,R"(to_string(`0`))") == jsoncons::json("0"));
+	EXPECT_TRUE(eval(j,R"(to_string(`false`))") == jsoncons::json("false"));
+	
+	EXPECT_TRUE(eval(j,R"(to_number('100'))") == jsoncons::json(100));
+	EXPECT_EQ(eval(j,"to_number('211')").as<int32_t>(), 211);
+	EXPECT_EQ(eval(j,"to_number('123.456')").as<double>(), 123.456);
+	
+	EXPECT_TRUE(eval(j,R"(type(`100`))") == jsoncons::json("number"));
+	EXPECT_TRUE(eval(j,R"(type(`123.456`))") == jsoncons::json("number"));
+	EXPECT_TRUE(eval(j,R"(type(`"abcd"`))") == jsoncons::json("string"));
+	EXPECT_TRUE(eval(j,R"(type('efgh'))") == jsoncons::json("string"));
+	EXPECT_TRUE(eval(j,R"(type(`false`))") == jsoncons::json("boolean"));
+	EXPECT_TRUE(eval(j,R"(type(`null`))") == jsoncons::json("null"));
+	EXPECT_TRUE(eval(j,R"(type(`[8,9,10]`))") == jsoncons::json("array"));
+	EXPECT_TRUE(eval(j,R"(type(`{"a":"b", "foo":78}`))") == jsoncons::json("object"));
+	
+	// Note that because JSON hashes are inheritently unordered,
+	// the values associated with the provided object obj are inheritently unordered.
+	// Implementations are not required to return values in any specific order. For example, given the input:
+	EXPECT_TRUE(eval(j,R"(values(`{"foo": "baz", "bar": "bam"}`))") == jsoncons::json(jsoncons::json_array_arg, {"bam", "baz"}));
+}
+
 
 #if 0
 int main(int argc, const char * argv[]) {

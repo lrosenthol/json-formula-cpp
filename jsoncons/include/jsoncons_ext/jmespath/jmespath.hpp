@@ -887,14 +887,18 @@ namespace jmespath {
                         return resources.false_value();
                     case json_type::string_value:
                     {
-                        if (!arg1.is_string())
-                        {
+						if (arg1.is_number()) {
+							auto sv0 = arg0.template as<string_view_type>();
+							auto sv1 = std::to_string(arg1.template as<double>());
+							return sv0.find(sv1) != string_view_type::npos ? resources.true_value() : resources.false_value();
+						} else if (!arg1.is_string())  {
                             ec = jmespath_errc::invalid_type;
                             return resources.null_value();
-                        }
-                        auto sv0 = arg0.template as<string_view_type>();
-                        auto sv1 = arg1.template as<string_view_type>();
-                        return sv0.find(sv1) != string_view_type::npos ? resources.true_value() : resources.false_value();
+						} else {
+							auto sv0 = arg0.template as<string_view_type>();
+							auto sv1 = arg1.template as<string_view_type>();
+							return sv0.find(sv1) != string_view_type::npos ? resources.true_value() : resources.false_value();
+						}
                     }
                     default:
                     {
