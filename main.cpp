@@ -246,104 +246,83 @@ UTEST(json_formula, jmespath_functions) {
 	EXPECT_TRUE(eval(j,R"(values(`{"foo": "baz", "bar": "bam"}`))") == jsoncons::json(jsoncons::json_array_arg, {"bam", "baz"}));
 }
 
-
-#if 0
-int main(int argc, const char * argv[]) {
-	std::cout << "Hello, json-formula!\n";
+UTEST(json_formula, expressions_people) {
+	std::string persons = R"(
+	   {
+		 "people": [
+		{
+		  "age": 20,
+		  "other": "foo",
+		  "tags": ["a", "b", "c"],
+		  "name": "Bob"
+		},
+		{
+		  "age": 25,
+		  "other": "bar",
+		  "tags": ["d", "e", "f"],
+		  "name": "Fred"
+		},
+		{
+		  "age": 30,
+		  "other": "baz",
+		  "tags": ["g", "h", "i"],
+		  "name": "George"
+		}
+		 ]
+	   }
+	  )";
+	jsoncons::json j = jsoncons::json::parse(persons);
 	
-	try {
-		std::string persons = R"(
-		   {
-			 "people": [
-			{
-			  "age": 20,
-			  "other": "foo",
-			  "tags": ["a", "b", "c"],
-			  "name": "Bob"
-			},
-			{
-			  "age": 25,
-			  "other": "bar",
-			  "tags": ["d", "e", "f"],
-			  "name": "Fred"
-			},
-			{
-			  "age": 30,
-			  "other": "baz",
-			  "tags": ["g", "h", "i"],
-			  "name": "George"
-			}
-			 ]
-		   }
-		  )";
-		// turn the text into a jsoncons::json structure
-		jsoncons::json j = jsoncons::json::parse(persons);
-		
-		// examples from https://jmespath.org/examples.html
-		jsoncons::json p1 = jsoncons::jmespath::search(j,"people[0].age");
-		std::cout << "p1 = " << jsoncons::pretty_print(p1) << "\n";
-		
-		jsoncons::json p2 = jsoncons::jmespath::search(j,"people[?age > `20`].[name, age]");
-		std::cout << "p2 = " << jsoncons::pretty_print(p2) << "\n";
-		
-		jsoncons::json p3 = jsoncons::jmespath::search(j,"people[*].{name: name, tags: tags[0]}");
-		std::cout << "p3 = " << jsoncons::pretty_print(p3) << "\n";
-	}
-	catch (const jsoncons::json_exception& e)
-	{
-		std::cout << "Error:" << e.what() << std::endl;
-	}
-
-	try {
-		std::string contents = R"(
-		   {
-			 "Contents": [
-			{
-			  "Date": "2014-12-21T05:18:08.000Z",
-			  "Key": "logs/bb",
-			  "Size": 303
-			},
-			{
-			  "Date": "2014-12-20T05:19:10.000Z",
-			  "Key": "logs/aa",
-			  "Size": 308
-			},
-			{
-			  "Date": "2014-12-20T05:19:12.000Z",
-			  "Key": "logs/qux",
-			  "Size": 297
-			},
-			{
-			  "Date": "2014-11-20T05:22:23.000Z",
-			  "Key": "logs/baz",
-			  "Size": 329
-			},
-			{
-			  "Date": "2014-12-20T05:25:24.000Z",
-			  "Key": "logs/bar",
-			  "Size": 604
-			},
-			{
-			  "Date": "2014-12-20T05:27:12.000Z",
-			  "Key": "logs/foo",
-			  "Size": 647
-			}
-			 ]
-		   }
-		)";
-		jsoncons::json j2 = jsoncons::json::parse(contents);
-		
-		jsoncons::json p4 = jsoncons::jmespath::search(j2,"sortBy(Contents, &Date)[*].{Key: Key, Size: Size}");
-		std::cout << "p4 = " << jsoncons::pretty_print(p4) << "\n";
-
-		jsoncons::json p5 = jsoncons::jmespath::search(j2,"Contents[*].Size | sum(@)");
-		std::cout << "p5 = " << jsoncons::pretty_print(p5) << "\n";
-	}
-	catch (const jsoncons::json_exception& e)
-	{
-		std::cout << "Error: " << e.what() << std::endl;
-	}
+	EXPECT_TRUE(eval(j,"people[0].age") == jsoncons::json(20));
+	EXPECT_TRUE(eval(j,"people[?age > `20`].[name, age]") == jsoncons::json::parse(R"([["Fred",25],["George",30]])"));
+	EXPECT_TRUE(eval(j,"people[*].{name: name, tags: tags[0]}") == jsoncons::json::parse(R"([{"name":"Bob","tags":"a"},{"name":"Fred","tags":"d"},{"name":"George","tags":"g"}])"));
 	
-	return 0;
+	EXPECT_TRUE(eval(j,"max_by(people, &age)") == jsoncons::json::parse(R"({"age":30,"name":"George","other":"baz","tags":["g","h","i"]})"));
+	EXPECT_TRUE(eval(j,"max_by(people, &age).age") == jsoncons::json(30));
+	EXPECT_TRUE(eval(j,"min_by(people, &age).age") == jsoncons::json(20));
+	EXPECT_TRUE(eval(j,"sort_by(people, &age)[].age") == jsoncons::json({20, 25, 30}));
 }
-#endif
+
+UTEST(json_formula, expressions_contents) {
+	std::string contents = R"(
+	   {
+		 "Contents": [
+		{
+		  "Date": "2014-12-21T05:18:08.000Z",
+		  "Key": "logs/bb",
+		  "Size": 303
+		},
+		{
+		  "Date": "2014-12-20T05:19:10.000Z",
+		  "Key": "logs/aa",
+		  "Size": 308
+		},
+		{
+		  "Date": "2014-12-20T05:19:12.000Z",
+		  "Key": "logs/qux",
+		  "Size": 297
+		},
+		{
+		  "Date": "2014-11-20T05:22:23.000Z",
+		  "Key": "logs/baz",
+		  "Size": 329
+		},
+		{
+		  "Date": "2014-12-20T05:25:24.000Z",
+		  "Key": "logs/bar",
+		  "Size": 604
+		},
+		{
+		  "Date": "2014-12-20T05:27:12.000Z",
+		  "Key": "logs/foo",
+		  "Size": 647
+		}
+		 ]
+	   }
+	)";
+	jsoncons::json j = jsoncons::json::parse(contents);
+
+	EXPECT_TRUE(eval(j,"Contents[*].Size | sum(@)") == jsoncons::json(2488));
+	EXPECT_TRUE(eval(j,"sortBy(Contents, &Date)[*].{Key: Key, Size: Size}") == jsoncons::json::parse(R"([{"Key":"logs/baz","Size":329},{"Key":"logs/aa","Size":308},{"Key":"logs/qux","Size":297},{"Key":"logs/bar","Size":604},{"Key":"logs/foo","Size":647},{"Key":"logs/bb","Size":303}])"));
+
+}
