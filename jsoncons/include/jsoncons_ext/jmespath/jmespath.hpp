@@ -2649,6 +2649,44 @@ namespace jmespath {
 						auto r = rhs.template as<int64_t>();
 						return *resources.create_json(l + r);
 					}
+				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+					double l = 0, r = 0;
+					
+					if ( lhs.type() == json_type::string_value )
+						l = std::stod(lhs.template as<std::string>());
+					else if ( lhs.type() != json_type::null_value )
+						l = lhs.template as<double>();
+
+					if ( rhs.type() == json_type::string_value )
+						r = std::stod(rhs.template as<std::string>());
+					else if ( rhs.type() != json_type::null_value )
+						r = rhs.template as<double>();
+
+					return *resources.create_json(l + r);
+				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
+					auto result = resources.create_json(json_array_arg);	// empty array
+					auto numEnts = std::max( lhs.size(), rhs.size() );
+					for (int64_t i=0; i<numEnts; i++) {
+						double l=0, r=0;
+						if ( i < lhs.size() ) l = lhs[i].template as<double>();
+						if ( i < rhs.size() ) r = rhs[i].template as<double>();
+						result->push_back( l + r);
+					}
+					return *result;
+				} else if ( lhs.type() == json_type::array_value ) {
+					double d = rhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : lhs.array_range()) {
+						result->push_back( v.template as<double>() + d );
+					}
+					return *result;
+				} else if ( rhs.type() == json_type::array_value ) {
+					double d = lhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : rhs.array_range()) {
+						result->push_back( v.template as<double>() + d );
+					}
+					return *result;
 				}
 				
 				return resources.null_value();
@@ -2686,6 +2724,44 @@ namespace jmespath {
 						auto r = rhs.template as<int64_t>();
 						return *resources.create_json(l - r);
 					}
+				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+					double l = 0, r = 0;
+					
+					if ( lhs.type() == json_type::string_value )
+						l = std::stod(lhs.template as<std::string>());
+					else if ( lhs.type() != json_type::null_value )
+						l = lhs.template as<double>();
+
+					if ( rhs.type() == json_type::string_value )
+						r = std::stod(rhs.template as<std::string>());
+					else if ( rhs.type() != json_type::null_value )
+						r = rhs.template as<double>();
+
+					return *resources.create_json(l - r);
+				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
+					auto result = resources.create_json(json_array_arg);	// empty array
+					auto numEnts = std::max( lhs.size(), rhs.size() );
+					for (int64_t i=0; i<numEnts; i++) {
+						double l=0, r=0;
+						if ( i < lhs.size() ) l = lhs[i].template as<double>();
+						if ( i < rhs.size() ) r = rhs[i].template as<double>();
+						result->push_back( l - r);
+					}
+					return *result;
+				} else if ( lhs.type() == json_type::array_value ) {
+					double d = rhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : lhs.array_range()) {
+						result->push_back( v.template as<double>() - d );
+					}
+					return *result;
+				} else if ( rhs.type() == json_type::array_value ) {
+					double d = lhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : rhs.array_range()) {
+						result->push_back( d - v.template as<double>() );
+					}
+					return *result;
 				}
 				
 				return resources.null_value();
@@ -2723,6 +2799,44 @@ namespace jmespath {
 						auto r = rhs.template as<int64_t>();
 						return *resources.create_json(l * r);
 					}
+				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+					double l = 0, r = 0;
+					
+					if ( lhs.type() == json_type::string_value )
+						l = std::stod(lhs.template as<std::string>());
+					else if ( lhs.type() != json_type::null_value )
+						l = lhs.template as<double>();
+
+					if ( rhs.type() == json_type::string_value )
+						r = std::stod(rhs.template as<std::string>());
+					else if ( rhs.type() != json_type::null_value )
+						r = rhs.template as<double>();
+
+					return *resources.create_json(l * r);
+				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
+					auto result = resources.create_json(json_array_arg);	// empty array
+					auto numEnts = std::max( lhs.size(), rhs.size() );
+					for (int64_t i=0; i<numEnts; i++) {
+						double l=0, r=0;
+						if ( i < lhs.size() ) l = lhs[i].template as<double>();
+						if ( i < rhs.size() ) r = rhs[i].template as<double>();
+						result->push_back( l * r);
+					}
+					return *result;
+				} else if ( lhs.type() == json_type::array_value ) {
+					double d = rhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : lhs.array_range()) {
+						result->push_back( v.template as<double>() * d );
+					}
+					return *result;
+				} else if ( rhs.type() == json_type::array_value ) {
+					double d = lhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : rhs.array_range()) {
+						result->push_back( v.template as<double>() * d );
+					}
+					return *result;
 				}
 				
 				return resources.null_value();
@@ -2760,6 +2874,44 @@ namespace jmespath {
 						auto r = rhs.template as<int64_t>();
 						return *resources.create_json(l / r);
 					}
+				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+					double l = 0, r = 0;
+					
+					if ( lhs.type() == json_type::string_value )
+						l = std::stod(lhs.template as<std::string>());
+					else if ( lhs.type() != json_type::null_value )
+						l = lhs.template as<double>();
+
+					if ( rhs.type() == json_type::string_value )
+						r = std::stod(rhs.template as<std::string>());
+					else if ( rhs.type() != json_type::null_value )
+						r = rhs.template as<double>();
+
+					return *resources.create_json(l / r);
+				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
+					auto result = resources.create_json(json_array_arg);	// empty array
+					auto numEnts = std::max( lhs.size(), rhs.size() );
+					for (int64_t i=0; i<numEnts; i++) {
+						double l=0, r=0;
+						if ( i < lhs.size() ) l = lhs[i].template as<double>();
+						if ( i < rhs.size() ) r = rhs[i].template as<double>();
+						result->push_back( l / r);
+					}
+					return *result;
+				} else if ( lhs.type() == json_type::array_value ) {
+					double d = rhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : lhs.array_range()) {
+						result->push_back( v.template as<double>() / d );
+					}
+					return *result;
+				} else if ( rhs.type() == json_type::array_value ) {
+					double d = lhs.template as<double>();
+					auto result = resources.create_json(json_array_arg);	// empty array
+					for (auto& v : rhs.array_range()) {
+						result->push_back( d / v.template as<double>() );
+					}
+					return *result;
 				}
 				
 				return resources.null_value();

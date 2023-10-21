@@ -44,8 +44,8 @@ UTEST(json_formula, functions) {
 }
 
 UTEST(json_formula, operators_equality) {
-	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
-	
+	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
+
 	EXPECT_TRUE(eval(j,"`2` == `2`").as<bool>());
 	EXPECT_TRUE(eval(j,"`2` = `2`").as<bool>());
 	EXPECT_FALSE(eval(j,"`2` != `2`").as<bool>());
@@ -60,8 +60,9 @@ UTEST(json_formula, operators_equality) {
 }
 
 UTEST(json_formula, operators_math) {
-	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
-	
+	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
+
+	// test integers & doubles
 	EXPECT_EQ(eval(j,"`2` + `2`").as<int32_t>(), 4);
 	EXPECT_EQ(eval(j,"`2` + `2.0`").as<double>(), 4.0);
 	EXPECT_EQ(eval(j,"`2` - `2`").as<int32_t>(), 0);
@@ -70,11 +71,41 @@ UTEST(json_formula, operators_math) {
 	EXPECT_EQ(eval(j,"`2` * `2.0`").as<double>(), 4.0);
 	EXPECT_EQ(eval(j,"`2` / `2`").as<int32_t>(), 1);
 	EXPECT_EQ(eval(j,"`2` / `2.0`").as<double>(), 1.0);
+	
+	// test string & null coercions
+	EXPECT_EQ(eval(j,"`100` + '3'").as<int32_t>(), 103);
+	EXPECT_EQ(eval(j,"`100.56` + '3'").as<double>(), 103.56);
+	EXPECT_EQ(eval(j,"`100` + '3' + `null`").as<int32_t>(), 103);
+	EXPECT_EQ(eval(j,"`100` - '3'").as<int32_t>(), 97);
+	EXPECT_EQ(eval(j,"`100.56` - '3'").as<double>(), 97.56);
+	EXPECT_EQ(eval(j,"`100` - '3' - `null`").as<int32_t>(), 97);
+	EXPECT_EQ(eval(j,"`100` * '3'").as<int32_t>(), 300);
+	EXPECT_EQ(eval(j,"`100.56` * '3'").as<double>(), 301.68);
+	EXPECT_EQ(eval(j,"`100` * '3' * `null`").as<int32_t>(), 0);
+	EXPECT_EQ(eval(j,"`100` / '4'").as<int32_t>(), 25);
+	EXPECT_EQ(eval(j,"`100.80` / '4'").as<double>(), 25.20);
+	EXPECT_EQ(eval(j,"`100` / '3' / `null`").as<int32_t>(), 0);
+
+	// test the array special cases
+	// Arrays shall be coerced to an array of numbers.
+	EXPECT_TRUE(eval(j,R"(`[1,2,3]` + `4`)") == jsoncons::json(jsoncons::json_array_arg, {5,6,7}));
+	EXPECT_TRUE(eval(j,R"(`1` + `[4,5,6,7]`)") == jsoncons::json(jsoncons::json_array_arg, {5,6,7,8}));
+	EXPECT_TRUE(eval(j,R"(`[1,2,3]` + `[4,5,6,7]`)") == jsoncons::json(jsoncons::json_array_arg, {5,7,9,7}));
+	EXPECT_TRUE(eval(j,R"(`[1,2,3]` - `4`)") == jsoncons::json(jsoncons::json_array_arg, {-3, -2, -1}));
+	EXPECT_TRUE(eval(j,R"(`1` - `[4,5,6,7]`)") == jsoncons::json(jsoncons::json_array_arg, {-3,-4,-5,-6}));
+	EXPECT_TRUE(eval(j,R"(`[1,2,3]` - `[4,5,6,7]`)") == jsoncons::json(jsoncons::json_array_arg, {-3,-3,-3,-7}));
+	EXPECT_TRUE(eval(j,R"(`[1,2,3]` * `4`)") == jsoncons::json(jsoncons::json_array_arg, {4,8,12}));
+	EXPECT_TRUE(eval(j,R"(`2` * `[4,5,6,7]`)") == jsoncons::json(jsoncons::json_array_arg, {8,10,12,14}));
+	EXPECT_TRUE(eval(j,R"(`[1,2,3]` * `[4,5,6,7]`)") == jsoncons::json(jsoncons::json_array_arg, {4,10,18,0}));
+	EXPECT_TRUE(eval(j,R"(`[1.1,2.1,3.1]` * `[4,5,6,7]`)") == jsoncons::json(jsoncons::json_array_arg, {4.4,10.5,18.6,0}));
+	EXPECT_TRUE(eval(j,R"(`[10,12,14]` / `2`)") == jsoncons::json(jsoncons::json_array_arg, {5,6,7}));
+	EXPECT_TRUE(eval(j,R"(`2` / `[2,4,8]`)") == jsoncons::json(jsoncons::json_array_arg, {1,0.5,0.25}));
+	EXPECT_TRUE(eval(j,R"(`[10,12,14]` / `[5,6,7,8]`)") == jsoncons::json(jsoncons::json_array_arg, {2,2,2,0}));
 }
 
 UTEST(json_formula, operator_concat) {
-	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
-	
+	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
+
 	EXPECT_TRUE(eval(j,"'2' & '2'") == jsoncons::json("22"));
 	EXPECT_TRUE(eval(j,"'2' & `2`") == jsoncons::json("22"));
 	EXPECT_TRUE(eval(j,"'2' & `2.0`") == jsoncons::json("22.000000"));	// floating point sucks!
@@ -87,7 +118,7 @@ UTEST(json_formula, operator_concat) {
 }
 
 UTEST(json_formula, operator_merge) {
-	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
+	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
 	
 	EXPECT_TRUE(eval(j,"'2' & '2'") == jsoncons::json("22"));
 
