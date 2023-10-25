@@ -91,18 +91,22 @@ UTEST(json_formula, operators_math) {
 	EXPECT_EQ(eval(j,"`100` + '3'").as<int32_t>(), 103);
 	EXPECT_EQ(eval(j,"`100.56` + '3'").as<double>(), 103.56);
 	EXPECT_EQ(eval(j,"`100` + `null`").as<int32_t>(), 100);
+	EXPECT_EQ(eval(j,"`100` + !`null`").as<int32_t>(), 101);
 	EXPECT_EQ(eval(j,"`100` + '3' + `null`").as<int32_t>(), 103);
 	EXPECT_EQ(eval(j,"`100` - '3'").as<int32_t>(), 97);
 	EXPECT_EQ(eval(j,"`100.56` - '3'").as<double>(), 97.56);
 	EXPECT_EQ(eval(j,"`100` - `null`").as<int32_t>(), 100);
+	EXPECT_EQ(eval(j,"`100` - !`null`").as<int32_t>(), 99);
 	EXPECT_EQ(eval(j,"`100` - '3' - `null`").as<int32_t>(), 97);
 	EXPECT_EQ(eval(j,"`100` * '3'").as<int32_t>(), 300);
 	EXPECT_EQ(eval(j,"`100.56` * '3'").as<double>(), 301.68);
 	EXPECT_EQ(eval(j,"`100` * `null`").as<int32_t>(), 0);
+	EXPECT_EQ(eval(j,"`100` * !`null`").as<int32_t>(), 100);
 	EXPECT_EQ(eval(j,"`100` * '3' * `null`").as<int32_t>(), 0);
 	EXPECT_EQ(eval(j,"`100` / '4'").as<int32_t>(), 25);
 	EXPECT_EQ(eval(j,"`100.80` / '4'").as<double>(), 25.20);
 	EXPECT_TRUE(eval(j,"`100` / `null`") == jsoncons::json(nullptr));
+	EXPECT_EQ(eval(j,"`100` / !`null`").as<int32_t>(), 100);
 	EXPECT_TRUE(eval(j,"`100` / '3' / `null`") == jsoncons::json(nullptr));
 
 	// test the array special cases
@@ -343,5 +347,5 @@ UTEST(json_formula, expressions_contents) {
 UTEST(json_formula, hacking) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 	
-	EXPECT_TRUE(eval(j,"c + 100", true) == jsoncons::json(200));
+	EXPECT_TRUE(eval(j,"10 + 1", true) == jsoncons::json(200));
 }

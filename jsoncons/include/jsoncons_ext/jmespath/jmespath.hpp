@@ -2667,13 +2667,17 @@ namespace jmespath {
 
 			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
 			{
-				if ( (lhs.is_number() && rhs.is_number()) || lhs.is_null() || rhs.is_null() ) {
+				if ( (lhs.is_number() && rhs.is_number()) ||
+					 (lhs.is_null() || rhs.is_null()) ||
+					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
 					if ( lhs.type() == json_type::double_value ) {
 						l = lhs.template as<double>();
 					} else if ( lhs.type() == json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
+					} else if ( lhs.type() == json_type::bool_value ) {
+						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
 					} else {
@@ -2685,6 +2689,8 @@ namespace jmespath {
 						r = rhs.template as<double>();
 					} else if ( rhs.type() == json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
+					} else if ( rhs.type() == json_type::bool_value ) {
+						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
 					} else {
@@ -2759,13 +2765,17 @@ namespace jmespath {
 
 			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
 			{
-				if ( (lhs.is_number() && rhs.is_number()) || lhs.is_null() || rhs.is_null() ) {
+				if ( (lhs.is_number() && rhs.is_number()) ||
+					 (lhs.is_null() || rhs.is_null()) ||
+					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
 					if ( lhs.type() == json_type::double_value ) {
 						l = lhs.template as<double>();
 					} else if ( lhs.type() == json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
+					} else if ( lhs.type() == json_type::bool_value ) {
+						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
 					} else {
@@ -2777,6 +2787,8 @@ namespace jmespath {
 						r = rhs.template as<double>();
 					} else if ( rhs.type() == json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
+					} else if ( rhs.type() == json_type::bool_value ) {
+						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
 					} else {
@@ -2849,13 +2861,17 @@ namespace jmespath {
 
 			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
 			{
-				if ( (lhs.is_number() && rhs.is_number()) || lhs.is_null() || rhs.is_null() ) {
+				if ( (lhs.is_number() && rhs.is_number()) ||
+					 (lhs.is_null() || rhs.is_null()) ||
+					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
 					if ( lhs.type() == json_type::double_value ) {
 						l = lhs.template as<double>();
 					} else if ( lhs.type() == json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
+					} else if ( lhs.type() == json_type::bool_value ) {
+						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
 					} else {
@@ -2867,6 +2883,8 @@ namespace jmespath {
 						r = rhs.template as<double>();
 					} else if ( rhs.type() == json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
+					} else if ( rhs.type() == json_type::bool_value ) {
+						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
 					} else {
@@ -2939,13 +2957,17 @@ namespace jmespath {
 
 			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
 			{
-				if ( (lhs.is_number() && rhs.is_number()) || lhs.is_null() || rhs.is_null() ) {
+				if ( (lhs.is_number() && rhs.is_number()) ||
+					 (lhs.is_null() || rhs.is_null()) ||
+					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
 					if ( lhs.type() == json_type::double_value ) {
 						l = lhs.template as<double>();
 					} else if ( lhs.type() == json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
+					} else if ( lhs.type() == json_type::bool_value ) {
+						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
 					} else {
@@ -2957,6 +2979,8 @@ namespace jmespath {
 						r = rhs.template as<double>();
 					} else if ( rhs.type() == json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
+					} else if ( rhs.type() == json_type::bool_value ) {
+						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
 					} else {
@@ -4263,6 +4287,7 @@ namespace jmespath {
                                 }
 								else if ((*p_ >= '0' && *p_ <= '9') || (*p_ == '-')) //json-formula supports #'s
 								{
+									buffer.push_back(*p_);
 									state_stack_.back() = path_state::digit;
 									++p_;
 									++column_;
@@ -4769,6 +4794,9 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
+//								push_token(token(literal_arg, Json(buffer)), ec);
+//								if (ec) {return jmespath_expression();}
+//								buffer.clear();
                                 state_stack_.pop_back(); // digit
                                 break;
                         }
@@ -5488,7 +5516,6 @@ namespace jmespath {
                 switch (state_stack_.back())
                 {
                     case path_state::rhs_expression:
-					case path_state::digit:	// in json-formula, we could end with a digit
                         if (state_stack_.size() > 1)
                         {
                             state_stack_.pop_back();
@@ -5499,6 +5526,12 @@ namespace jmespath {
                             return jmespath_expression();
                         }
                         break;
+//					case path_state::digit:	// in json-formula, we could end with a digit
+//						push_token(token(literal_arg, Json(buffer)), ec);
+//						if (ec) {return jmespath_expression();}
+//						buffer.clear();
+//						state_stack_.pop_back();
+//						break;
                     case path_state::val_expr:
                         push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
                         if (ec) {return jmespath_expression();}
