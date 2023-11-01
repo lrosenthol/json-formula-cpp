@@ -244,7 +244,10 @@ UTEST(json_formula, jmespath_functions) {
 	EXPECT_TRUE(eval(j,R"(to_number('100'))") == jsoncons::json(100));
 	EXPECT_EQ(eval(j,"to_number('211')").as<int32_t>(), 211);
 	EXPECT_EQ(eval(j,"to_number('123.456')").as<double>(), 123.456);
-	
+	EXPECT_TRUE(eval(j,R"(to_number('foo'))") == jsoncons::json(nullptr));
+	EXPECT_TRUE(eval(j,R"(to_number(null))") == jsoncons::json(0));
+	EXPECT_TRUE(eval(j,R"(to_number(`null`))") == jsoncons::json(0));
+
 	EXPECT_TRUE(eval(j,R"(type(`100`))") == jsoncons::json("number"));
 	EXPECT_TRUE(eval(j,R"(type(`123.456`))") == jsoncons::json("number"));
 	EXPECT_TRUE(eval(j,R"(type(`"abcd"`))") == jsoncons::json("string"));
@@ -342,6 +345,21 @@ UTEST(json_formula, expressions_contents) {
 	EXPECT_TRUE(eval(j,"sortBy(Contents, &Date)[*].{Key: Key, Size: Size}") == jsoncons::json::parse(R"([{"Key":"logs/baz","Size":329},{"Key":"logs/aa","Size":308},{"Key":"logs/qux","Size":297},{"Key":"logs/bar","Size":604},{"Key":"logs/foo","Size":647},{"Key":"logs/bb","Size":303}])"));
 
 }
+
+// MARK: misc
+UTEST(json_formula, misc) {
+	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+	
+	EXPECT_TRUE(eval(j,"[`3`]") == jsoncons::json(jsoncons::json_array_arg, {3}));
+	EXPECT_TRUE(eval(j,"`[3]`") == jsoncons::json(jsoncons::json_array_arg, {3}));
+	EXPECT_TRUE(eval(j,"[3]") == jsoncons::json(nullptr));
+//	EXPECT_TRUE(eval(j,"[`2+3`]", true) == jsoncons::json(jsoncons::json_array_arg, {5}));
+	EXPECT_TRUE(eval(j,"[length('123')]") == jsoncons::json(jsoncons::json_array_arg, {3}));
+	EXPECT_TRUE(eval(j,"[]") == jsoncons::json(nullptr));
+	EXPECT_TRUE(eval(j,"[[]]") == jsoncons::json(jsoncons::json_array_arg, {nullptr}));
+//	EXPECT_TRUE(eval(j,"{}", true) == jsoncons::json(nullptr));
+}
+
 
 // MARK: Hacking
 UTEST(json_formula, hacking) {

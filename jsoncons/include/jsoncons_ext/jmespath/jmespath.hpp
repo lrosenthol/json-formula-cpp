@@ -1866,6 +1866,9 @@ namespace jmespath {
                             return resources.null_value();
                         }
                     }
+					case json_type::null_value:	// json-formula addition
+						return *resources.create_json(0);
+
                     default:
                         return resources.null_value();
                 }
