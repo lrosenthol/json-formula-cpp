@@ -10,7 +10,8 @@
 // jsoncons
 #include "jsoncons/json.hpp"
 #include "jsoncons/json_error.hpp"
-#include "jsoncons_ext/jmespath/jmespath.hpp"
+
+#include "json-formula/json-formula.hpp"
 
 // our user testing framework
 #include "utest.h"
@@ -20,7 +21,7 @@ UTEST_MAIN();
 
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
-	jsoncons::json r = jsoncons::jmespath::search(j,e);
+	jsoncons::json r = jsoncons::jsonformula::search(j,e);
 	if ( print )
 		std::cout << e << " = " << jsoncons::print(r) << "\n";
 	
