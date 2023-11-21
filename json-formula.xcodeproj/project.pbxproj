@@ -24,11 +24,11 @@
 
 /* Begin PBXFileReference section */
 		BE2D2C512AE17A9900D04840 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		BE2D2C532AE17ABC00D04840 /* jmespath.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = jmespath.hpp; path = jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp; sourceTree = "<group>"; };
-		BE2D2C542AE17ABC00D04840 /* jmespath_error.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = jmespath_error.hpp; path = jsoncons/include/jsoncons_ext/jmespath/jmespath_error.hpp; sourceTree = "<group>"; };
 		BE2D2C552AE17AC700D04840 /* json.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = json.hpp; path = jsoncons/include/jsoncons/json.hpp; sourceTree = "<group>"; };
 		BE2D2C6F2AE2FB3300D04840 /* utest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utest.h; path = utest.h/utest.h; sourceTree = "<group>"; };
 		BE653A1C2AE16D9C00EDDA36 /* json-formula */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "json-formula"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE9C1D632B0C3A0A00B6AD6A /* json-formula.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "json-formula.hpp"; path = "json-formula/json-formula.hpp"; sourceTree = "<group>"; };
+		BE9C1D642B0C3A0A00B6AD6A /* json-formula_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "json-formula_error.hpp"; path = "json-formula/json-formula_error.hpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,8 +46,8 @@
 			isa = PBXGroup;
 			children = (
 				BE2D2C512AE17A9900D04840 /* main.cpp */,
-				BE2D2C542AE17ABC00D04840 /* jmespath_error.hpp */,
-				BE2D2C532AE17ABC00D04840 /* jmespath.hpp */,
+				BE9C1D642B0C3A0A00B6AD6A /* json-formula_error.hpp */,
+				BE9C1D632B0C3A0A00B6AD6A /* json-formula.hpp */,
 				BE2D2C552AE17AC700D04840 /* json.hpp */,
 				BE2D2C6F2AE2FB3300D04840 /* utest.h */,
 				BE653A1D2AE16D9C00EDDA36 /* Products */,

@@ -18,10 +18,10 @@
 #include <algorithm> // std::stable_sort, std::reverse
 #include <cmath> // std::abs
 #include <jsoncons/json.hpp>
-#include <jsoncons_ext/jmespath/jmespath_error.hpp>
+#include "json-formula_error.hpp"
 
 namespace jsoncons { 
-namespace jmespath {
+namespace jsonformula {
 
     enum class operator_kind
     {
@@ -481,7 +481,7 @@ namespace jmespath {
     };
 
     template<class Json, class JsonReference>
-    class jmespath_evaluator 
+    class jsonformula_evaluator
     {
     public:
         typedef typename Json::char_type char_type;
@@ -745,7 +745,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -764,7 +764,7 @@ namespace jmespath {
                     }
                     default:
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                 }
@@ -785,14 +785,14 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (arg0.empty())
@@ -805,7 +805,7 @@ namespace jmespath {
                 {
                     if (!j.is_number())
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     sum += j.template as<double>();
@@ -829,7 +829,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -846,7 +846,7 @@ namespace jmespath {
                         return *resources.create_json(std::ceil(arg0.template as<double>()));
                     }
                     default:
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                 }
             }
@@ -866,7 +866,7 @@ namespace jmespath {
 
                 if (!(args[0].is_value() && args[1].is_value()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -892,7 +892,7 @@ namespace jmespath {
 							auto sv1 = std::to_string(arg1.template as<double>());
 							return sv0.find(sv1) != string_view_type::npos ? resources.true_value() : resources.false_value();
 						} else if (!arg1.is_string())  {
-                            ec = jmespath_errc::invalid_type;
+                            ec = jsonformula_errc::invalid_type;
                             return resources.null_value();
 						} else {
 							auto sv0 = arg0.template as<string_view_type>();
@@ -902,7 +902,7 @@ namespace jmespath {
                     }
                     default:
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                 }
@@ -923,21 +923,21 @@ namespace jmespath {
 
                 if (!(args[0].is_value() && args[1].is_value()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_string())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg1 = args[1].value();
                 if (!arg1.is_string())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -969,7 +969,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -986,7 +986,7 @@ namespace jmespath {
                         return *resources.create_json(std::floor(arg0.template as<double>()));
                     }
                     default:
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                 }
             }
@@ -1009,18 +1009,18 @@ namespace jmespath {
 
                 if (!(args[0].is_value() && args[1].is_value()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 if (!arg0.is_string())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (!arg1.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1030,7 +1030,7 @@ namespace jmespath {
                 {
                     if (!j.is_string())
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     if (!buf.empty())
@@ -1058,7 +1058,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1077,7 +1077,7 @@ namespace jmespath {
                     }
                     default:
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                 }
@@ -1098,14 +1098,14 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (arg0.empty())
@@ -1117,7 +1117,7 @@ namespace jmespath {
                 bool is_string = arg0.at(0).is_string();
                 if (!is_number && !is_string)
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1126,7 +1126,7 @@ namespace jmespath {
                 {
                     if (!(arg0.at(i).is_number() == is_number && arg0.at(i).is_string() == is_string))
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     if (arg0.at(i) > arg0.at(index))
@@ -1153,14 +1153,14 @@ namespace jmespath {
 
                 if (!(args[0].is_value() && args[1].is_expression()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (arg0.empty())
@@ -1177,7 +1177,7 @@ namespace jmespath {
                 bool is_string = key1.is_string();
                 if (!(is_number || is_string))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1187,7 +1187,7 @@ namespace jmespath {
                     reference key2 = expr.evaluate(arg0.at(i), resources, ec2); 
                     if (!(key2.is_number() == is_number && key2.is_string() == is_string))
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     if (key2 > key1)
@@ -1215,7 +1215,7 @@ namespace jmespath {
 
                 if (!(args[0].is_expression() && args[1].is_value()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 const auto& expr = args[0].expression();
@@ -1223,7 +1223,7 @@ namespace jmespath {
                 reference arg0 = args[1].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1234,7 +1234,7 @@ namespace jmespath {
                     auto& j = expr.evaluate(item, resources, ec);
                     if (ec)
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     result->emplace_back(json_const_pointer_arg, std::addressof(j));
@@ -1263,14 +1263,14 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (arg0.empty())
@@ -1282,7 +1282,7 @@ namespace jmespath {
                 bool is_string = arg0.at(0).is_string();
                 if (!is_number && !is_string)
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1291,7 +1291,7 @@ namespace jmespath {
                 {
                     if (!(arg0.at(i).is_number() == is_number && arg0.at(i).is_string() == is_string))
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     if (arg0.at(i) < arg0.at(index))
@@ -1318,14 +1318,14 @@ namespace jmespath {
 
                 if (!(args[0].is_value() && args[1].is_expression()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (arg0.empty())
@@ -1342,7 +1342,7 @@ namespace jmespath {
                 bool is_string = key1.is_string();
                 if (!(is_number || is_string))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1352,7 +1352,7 @@ namespace jmespath {
                     reference key2 = expr.evaluate(arg0.at(i), resources, ec2); 
                     if (!(key2.is_number() == is_number && key2.is_string() == is_string))
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     if (key2 < key1)
@@ -1378,7 +1378,7 @@ namespace jmespath {
             {
                 if (args.empty())
                 {
-                    ec = jmespath_errc::invalid_arity;
+                    ec = jsonformula_errc::invalid_arity;
                     return resources.null_value();
                 }
 
@@ -1386,7 +1386,7 @@ namespace jmespath {
                 {
                     if (!param.is_value())
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                 }
@@ -1394,7 +1394,7 @@ namespace jmespath {
                 reference arg0 = args[0].value();
                 if (!arg0.is_object())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (args.size() == 1)
@@ -1408,7 +1408,7 @@ namespace jmespath {
                     reference argi = args[i].value();
                     if (!argi.is_object())
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     for (auto& item : argi.object_range())
@@ -1435,7 +1435,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1477,14 +1477,14 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (arg0.size() <= 1)
@@ -1496,7 +1496,7 @@ namespace jmespath {
                 bool is_string = arg0.at(0).is_string();
                 if (!is_number && !is_string)
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1504,7 +1504,7 @@ namespace jmespath {
                 {
                     if (arg0.at(i).is_number() != is_number || arg0.at(i).is_string() != is_string)
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                 }
@@ -1529,14 +1529,14 @@ namespace jmespath {
 
                 if (!(args[0].is_value() && args[1].is_expression()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 if (arg0.size() <= 1)
@@ -1556,13 +1556,13 @@ namespace jmespath {
                     bool is_string = key1.is_string();
                     if (!(is_number || is_string))
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                     }
 
                     reference key2 = expr.evaluate(rhs, resources, ec2);
                     if (!(key2.is_number() == is_number && key2.is_string() == is_string))
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                     }
                     
                     return key1 < key2;
@@ -1590,14 +1590,14 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_object())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1626,14 +1626,14 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_object())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1662,7 +1662,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1686,7 +1686,7 @@ namespace jmespath {
                         return *result;
                     }
                     default:
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                 }
             }
@@ -1706,21 +1706,21 @@ namespace jmespath {
 
                 if (!(args[0].is_value() && args[1].is_value()))
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_string())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg1 = args[1].value();
                 if (!arg1.is_string())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1752,14 +1752,14 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
                 reference arg0 = args[0].value();
                 if (!arg0.is_array())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
                 double sum = 0;
@@ -1767,7 +1767,7 @@ namespace jmespath {
                 {
                     if (!j.is_number())
                     {
-                        ec = jmespath_errc::invalid_type;
+                        ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
                     sum += j.template as<double>();
@@ -1791,7 +1791,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1828,7 +1828,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -1894,7 +1894,7 @@ namespace jmespath {
 
                 if (!args[0].is_value())
                 {
-                    ec = jmespath_errc::invalid_type;
+                    ec = jsonformula_errc::invalid_type;
                     return resources.null_value();
                 }
 
@@ -2378,7 +2378,7 @@ namespace jmespath {
                     {
                         if (t.function_->arity() && *(t.function_->arity()) != arg_stack.size())
                         {
-                            ec = jmespath_errc::invalid_arity;
+                            ec = jsonformula_errc::invalid_arity;
                             return std::addressof(resources.null_value());
                         }
 
@@ -3484,7 +3484,7 @@ namespace jmespath {
 
                 if (step == 0)
                 {
-                    ec = jmespath_errc::step_cannot_be_zero;
+                    ec = jsonformula_errc::step_cannot_be_zero;
                     return resources.null_value();
                 }
 
@@ -3881,7 +3881,7 @@ namespace jmespath {
                 auto it = functions_.find(name);
                 if (it == functions_.end())
                 {
-                    ec = jmespath_errc::unknown_function;
+                    ec = jsonformula_errc::unknown_function;
                     return nullptr;
                 }
                 return it->second;
@@ -3976,25 +3976,25 @@ namespace jmespath {
 			}
 		};
 
-        class jmespath_expression
+        class jsonformula_expression
         {
             static_resources resources_;
             std::vector<token> output_stack_;
         public:
-            jmespath_expression()
+            jsonformula_expression()
             {
             }
 
-            jmespath_expression(const jmespath_expression& expr) = delete;
-            jmespath_expression& operator=(const jmespath_expression& expr) = delete;
+            jsonformula_expression(const jsonformula_expression& expr) = delete;
+            jsonformula_expression& operator=(const jsonformula_expression& expr) = delete;
 
-            jmespath_expression(jmespath_expression&& expr)
+            jsonformula_expression(jsonformula_expression&& expr)
                 : resources_(std::move(expr.resources_)),
                   output_stack_(std::move(expr.output_stack_))
             {
             }
 
-            jmespath_expression(static_resources&& resources,
+            jsonformula_expression(static_resources&& resources,
                                 std::vector<token>&& output_stack)
                 : resources_(std::move(resources)), output_stack_(std::move(output_stack))
             {
@@ -4010,7 +4010,7 @@ namespace jmespath {
                 Json result = evaluate(doc, ec);
                 if (ec)
                 {
-                    JSONCONS_THROW(jmespath_error(ec));
+                    JSONCONS_THROW(jsonformula_error(ec));
                 }
                 return result;
             }
@@ -4025,22 +4025,22 @@ namespace jmespath {
                 return deep_copy(*evaluate_tokens(doc, output_stack_, dynamic_storage, ec));
             }
 
-            static jmespath_expression compile(const string_view_type& expr)
+            static jsonformula_expression compile(const string_view_type& expr)
             {
-                jsoncons::jmespath::detail::jmespath_evaluator<Json,const Json&> evaluator;
+                jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
                 std::error_code ec;
-                jmespath_expression result = evaluator.compile(expr.data(), expr.size(), ec);
+                jsonformula_expression result = evaluator.compile(expr.data(), expr.size(), ec);
                 if (ec)
                 {
-                    JSONCONS_THROW(jmespath_error(ec, evaluator.line(), evaluator.column()));
+                    JSONCONS_THROW(jsonformula_error(ec, evaluator.line(), evaluator.column()));
                 }
                 return result;
             }
 
-            static jmespath_expression compile(const string_view_type& expr,
+            static jsonformula_expression compile(const string_view_type& expr,
                                                std::error_code& ec)
             {
-                jsoncons::jmespath::detail::jmespath_evaluator<Json,const Json&> evaluator;
+                jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
                 return evaluator.compile(expr.data(), expr.size(), ec);
             }
         };
@@ -4058,7 +4058,7 @@ namespace jmespath {
         std::vector<token> operator_stack_;
 
     public:
-        jmespath_evaluator()
+        jsonformula_evaluator()
             : line_(1), column_(1),
               begin_input_(nullptr), end_input_(nullptr),
               p_(nullptr)
@@ -4075,12 +4075,12 @@ namespace jmespath {
             return column_;
         }
 
-        jmespath_expression compile(const char_type* path, 
+        jsonformula_expression compile(const char_type* path,
                                     std::size_t length,
                                     std::error_code& ec)
         {
             push_token(current_node_arg, ec);
-            if (ec) {return jmespath_expression();}
+            if (ec) {return jsonformula_expression();}
             state_stack_.emplace_back(path_state::start);
 
             string_type buffer;
@@ -4166,8 +4166,8 @@ namespace jmespath {
                                 }
                                 else
                                 {
-                                    ec = jmespath_errc::syntax_error;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::syntax_error;
+                                    return jsonformula_expression();
                                 }
                                 break;
                         }
@@ -4205,8 +4205,8 @@ namespace jmespath {
                                 }
                                 else
                                 {
-                                    ec = jmespath_errc::syntax_error;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::syntax_error;
+                                    return jsonformula_expression();
                                 }
                                 break;
                         }
@@ -4236,14 +4236,14 @@ namespace jmespath {
                                 break;
                             case '{':
                                 push_token(begin_multi_select_hash_arg, ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::multi_select_hash;
                                 ++p_;
                                 ++column_;
                                 break;
                             case '*': // wildcard
                                 push_token(token(jsoncons::make_unique<object_projection>()), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();
                                 ++p_;
                                 ++column_;
@@ -4253,7 +4253,7 @@ namespace jmespath {
                                 ++p_;
                                 ++column_;
                                 push_token(lparen_arg, ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::expect_rparen;
                                 state_stack_.emplace_back(path_state::rhs_expression);
                                 state_stack_.emplace_back(path_state::lhs_expression);
@@ -4264,14 +4264,14 @@ namespace jmespath {
                                 ++p_;
                                 ++column_;
                                 push_token(token(resources_.get_not_operator()), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 break;
                             }
                             case '@':
                                 ++p_;
                                 ++column_;
                                 push_token(token(jsoncons::make_unique<current_node>()), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();
                                 break;
                             case '[': 
@@ -4297,8 +4297,8 @@ namespace jmespath {
 								}
 								else
                                 {
-                                    ec = jmespath_errc::expected_identifier;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::expected_identifier;
+                                    return jsonformula_expression();
                                 }
                                 break;
                         };
@@ -4319,14 +4319,14 @@ namespace jmespath {
                                 break;
                             case '{':
                                 push_token(begin_multi_select_hash_arg, ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::multi_select_hash;
                                 ++p_;
                                 ++column_;
                                 break;
                             case '*':
                                 push_token(token(jsoncons::make_unique<object_projection>()), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();
                                 ++p_;
                                 ++column_;
@@ -4347,8 +4347,8 @@ namespace jmespath {
                                 }
                                 else
                                 {
-                                    ec = jmespath_errc::expected_identifier;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::expected_identifier;
+                                    return jsonformula_expression();
                                 }
                                 break;
                         };
@@ -4356,13 +4356,13 @@ namespace jmespath {
                     }
                     case path_state::key_expr:
                         push_token(token(key_arg, buffer), ec);
-                        if (ec) {return jmespath_expression();}
+                        if (ec) {return jsonformula_expression();}
                         buffer.clear(); 
                         state_stack_.pop_back(); 
                         break;
                     case path_state::val_expr:
                         push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
-                        if (ec) {return jmespath_expression();}
+                        if (ec) {return jsonformula_expression();}
                         buffer.clear();
                         state_stack_.pop_back(); 
                         break;
@@ -4374,7 +4374,7 @@ namespace jmespath {
                                 break;
                             case '&':
                                 push_token(token(begin_expression_type_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::expression_type;
                                 state_stack_.emplace_back(path_state::rhs_expression);
                                 state_stack_.emplace_back(path_state::lhs_expression);
@@ -4396,11 +4396,11 @@ namespace jmespath {
                                 auto f = resources_.get_function(buffer, ec);
                                 if (ec)
                                 {
-                                    return jmespath_expression();
+                                    return jsonformula_expression();
                                 }
                                 buffer.clear();
                                 push_token(token(f), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::function_expression;
                                 state_stack_.emplace_back(path_state::expression_or_expression_type);
                                 ++p_;
@@ -4410,7 +4410,7 @@ namespace jmespath {
                             default:
                             {
                                 push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 buffer.clear();
                                 state_stack_.pop_back(); 
                                 break;
@@ -4426,7 +4426,7 @@ namespace jmespath {
                                 break;
                             case ',':
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.emplace_back(path_state::expression_or_expression_type);
                                 ++p_;
                                 ++column_;
@@ -4434,7 +4434,7 @@ namespace jmespath {
                             case ')':
                             {
                                 push_token(token(end_function_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); 
                                 ++p_;
                                 ++column_;
@@ -4447,14 +4447,14 @@ namespace jmespath {
 
                     case path_state::argument:
                         push_token(argument_arg, ec);
-                        if (ec) {return jmespath_expression();}
+                        if (ec) {return jsonformula_expression();}
                         state_stack_.pop_back();
                         break;
 
                     case path_state::expression_type:
                         push_token(end_expression_type_arg, ec);
                         push_token(argument_arg, ec);
-                        if (ec) {return jmespath_expression();}
+                        if (ec) {return jsonformula_expression();}
                         state_stack_.pop_back();
                         break;
 
@@ -4575,15 +4575,15 @@ namespace jmespath {
                                 state_stack_.back() = path_state::escape_u1;
                                 break;
                             default:
-                                ec = jmespath_errc::illegal_escaped_character;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::illegal_escaped_character;
+                                return jsonformula_expression();
                         }
                         break;
                     case path_state::escape_u1:
                         cp = append_to_codepoint(0, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         ++p_;
                         ++column_;
@@ -4593,7 +4593,7 @@ namespace jmespath {
                         cp = append_to_codepoint(cp, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         ++p_;
                         ++column_;
@@ -4603,7 +4603,7 @@ namespace jmespath {
                         cp = append_to_codepoint(cp, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         ++p_;
                         ++column_;
@@ -4613,7 +4613,7 @@ namespace jmespath {
                         cp = append_to_codepoint(cp, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         if (unicode_traits::is_high_surrogate(cp))
                         {
@@ -4638,8 +4638,8 @@ namespace jmespath {
                                 state_stack_.back() = path_state::escape_expect_surrogate_pair2;
                                 break;
                             default:
-                                ec = jmespath_errc::invalid_codepoint;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::invalid_codepoint;
+                                return jsonformula_expression();
                         }
                         break;
                     case path_state::escape_expect_surrogate_pair2:
@@ -4651,15 +4651,15 @@ namespace jmespath {
                                 state_stack_.back() = path_state::escape_u5;
                                 break;
                             default:
-                                ec = jmespath_errc::invalid_codepoint;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::invalid_codepoint;
+                                return jsonformula_expression();
                         }
                         break;
                     case path_state::escape_u5:
                         cp2 = append_to_codepoint(0, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         ++p_;
                         ++column_;
@@ -4669,7 +4669,7 @@ namespace jmespath {
                         cp2 = append_to_codepoint(cp2, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         ++p_;
                         ++column_;
@@ -4679,7 +4679,7 @@ namespace jmespath {
                         cp2 = append_to_codepoint(cp2, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         ++p_;
                         ++column_;
@@ -4690,7 +4690,7 @@ namespace jmespath {
                         cp2 = append_to_codepoint(cp2, *p_, ec);
                         if (ec)
                         {
-                            return jmespath_expression();
+                            return jsonformula_expression();
                         }
                         uint32_t codepoint = 0x10000 + ((cp & 0x3FF) << 10) + (cp2 & 0x3FF);
                         unicode_traits::convert(&codepoint, 1, buffer);
@@ -4705,7 +4705,7 @@ namespace jmespath {
                             case '\'':
                             {
                                 push_token(token(literal_arg, Json(buffer)), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 buffer.clear();
                                 state_stack_.pop_back(); // raw_string
                                 ++p_;
@@ -4735,13 +4735,13 @@ namespace jmespath {
                                 reader.read(parse_ec);
                                 if (parse_ec)
                                 {
-                                    ec = jmespath_errc::invalid_literal;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::invalid_literal;
+                                    return jsonformula_expression();
                                 }
                                 auto j = decoder.get_result();
 
                                 push_token(token(literal_arg, std::move(j)), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 buffer.clear();
                                 state_stack_.pop_back(); // json_value
                                 ++p_;
@@ -4761,8 +4761,8 @@ namespace jmespath {
                                 }
                                 else
                                 {
-                                    ec = jmespath_errc::unexpected_end_of_input;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::unexpected_end_of_input;
+                                    return jsonformula_expression();
                                 }
                                 ++p_;
                                 ++column_;
@@ -4798,7 +4798,7 @@ namespace jmespath {
                                 break;
                             default:
 //								push_token(token(literal_arg, Json(buffer)), ec);
-//								if (ec) {return jmespath_expression();}
+//								if (ec) {return jsonformula_expression();}
 //								buffer.clear();
                                 state_stack_.pop_back(); // digit
                                 break;
@@ -4810,21 +4810,21 @@ namespace jmespath {
                         {
                             case '*':
                                 push_token(token(jsoncons::make_unique<list_projection>()), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::expect_rbracket;
                                 ++p_;
                                 ++column_;
                                 break;
                             case ']': // []
                                 push_token(token(jsoncons::make_unique<flatten_projection>()), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); // bracket_specifier
                                 ++p_;
                                 ++column_;
                                 break;
                             case '?':
                                 push_token(token(begin_filter_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::filter;
                                 state_stack_.emplace_back(path_state::rhs_expression);
                                 state_stack_.emplace_back(path_state::lhs_expression);
@@ -4843,8 +4843,8 @@ namespace jmespath {
                                 state_stack_.emplace_back(path_state::number);
                                 break;
                             default:
-                                ec = jmespath_errc::expected_index_expression;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_index_expression;
+                                return jsonformula_expression();
                         }
                         break;
                     case path_state::bracket_specifier_or_multi_select_list:
@@ -4853,8 +4853,8 @@ namespace jmespath {
                             case '*':
                                 if (p_+1 >= end_input_)
                                 {
-                                    ec = jmespath_errc::unexpected_end_of_input;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::unexpected_end_of_input;
+                                    return jsonformula_expression();
                                 }
                                 if (*(p_+1) == ']')
                                 {
@@ -4863,7 +4863,7 @@ namespace jmespath {
                                 else
                                 {
                                     push_token(token(begin_multi_select_list_arg), ec);
-                                    if (ec) {return jmespath_expression();}
+                                    if (ec) {return jsonformula_expression();}
                                     state_stack_.back() = path_state::multi_select_list;
                                     state_stack_.emplace_back(path_state::lhs_expression);                                
                                 }
@@ -4876,7 +4876,7 @@ namespace jmespath {
                                 break;
                             default:
                                 push_token(token(begin_multi_select_list_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::multi_select_list;
                                 state_stack_.emplace_back(path_state::lhs_expression);
                                 break;
@@ -4890,18 +4890,18 @@ namespace jmespath {
                             case '?':
                             case ':':
                             case '-':case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':
-                                ec = jmespath_errc::expected_multi_select_list;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_multi_select_list;
+                                return jsonformula_expression();
                             case '*':
                                 push_token(token(jsoncons::make_unique<list_projection>()), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::expect_rbracket;
                                 ++p_;
                                 ++column_;
                                 break;
                             default:
                                 push_token(token(begin_multi_select_list_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::multi_select_list;
                                 state_stack_.emplace_back(path_state::lhs_expression);
                                 break;
@@ -4931,7 +4931,7 @@ namespace jmespath {
                                 if (buffer.empty())
                                 {
                                     push_token(token(jsoncons::make_unique<flatten_projection>()), ec);
-                                    if (ec) {return jmespath_expression();}
+                                    if (ec) {return jsonformula_expression();}
                                 }
                                 else
                                 {
@@ -4939,11 +4939,11 @@ namespace jmespath {
                                     auto r = jsoncons::detail::to_integer(buffer.data(), buffer.size(), val);
                                     if (!r)
                                     {
-                                        ec = jmespath_errc::invalid_number;
-                                        return jmespath_expression();
+                                        ec = jsonformula_errc::invalid_number;
+                                        return jsonformula_expression();
                                     }
                                     push_token(token(jsoncons::make_unique<index_selector>(val)), ec);
-                                    if (ec) {return jmespath_expression();}
+                                    if (ec) {return jsonformula_expression();}
 
                                     buffer.clear();
                                 }
@@ -4960,8 +4960,8 @@ namespace jmespath {
                                     auto r = jsoncons::detail::to_integer(buffer.data(), buffer.size(), val);
                                     if (!r)
                                     {
-                                        ec = jmespath_errc::invalid_number;
-                                        return jmespath_expression();
+                                        ec = jsonformula_errc::invalid_number;
+                                        return jsonformula_expression();
                                     }
                                     slic.start_ = val;
                                     buffer.clear();
@@ -4973,8 +4973,8 @@ namespace jmespath {
                                 break;
                             }
                             default:
-                                ec = jmespath_errc::expected_rbracket;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rbracket;
+                                return jsonformula_expression();
                         }
                         break;
                     case path_state::rhs_slice_expression_stop :
@@ -4985,8 +4985,8 @@ namespace jmespath {
                             auto r = jsoncons::detail::to_integer(buffer.data(), buffer.size(), val);
                             if (!r)
                             {
-                                ec = jmespath_errc::invalid_number;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::invalid_number;
+                                return jsonformula_expression();
                             }
                             slic.stop_ = jsoncons::optional<int64_t>(val);
                             buffer.clear();
@@ -4995,7 +4995,7 @@ namespace jmespath {
                         {
                             case ']':
                                 push_token(token(jsoncons::make_unique<slice_projection>(slic)), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 slic = slice{};
                                 state_stack_.pop_back(); // bracket_specifier2
                                 ++p_;
@@ -5008,8 +5008,8 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_rbracket;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rbracket;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5021,13 +5021,13 @@ namespace jmespath {
                             auto r = jsoncons::detail::to_integer(buffer.data(), buffer.size(), val);
                             if (!r)
                             {
-                                ec = jmespath_errc::invalid_number;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::invalid_number;
+                                return jsonformula_expression();
                             }
                             if (val == 0)
                             {
-                                ec = jmespath_errc::step_cannot_be_zero;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::step_cannot_be_zero;
+                                return jsonformula_expression();
                             }
                             slic.step_ = val;
                             buffer.clear();
@@ -5036,7 +5036,7 @@ namespace jmespath {
                         {
                             case ']':
                                 push_token(token(jsoncons::make_unique<slice_projection>(slic)), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 buffer.clear();
                                 slic = slice{};
                                 state_stack_.pop_back(); // rhs_slice_expression_step
@@ -5044,8 +5044,8 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_rbracket;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rbracket;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5059,8 +5059,8 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_rbracket;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rbracket;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5074,12 +5074,12 @@ namespace jmespath {
                                 ++p_;
                                 ++column_;
                                 push_token(rparen_arg, ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::rhs_expression;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_rparen;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rparen;
+                                return jsonformula_expression();
                         }
                         break;
                     case path_state::key_val_expr: 
@@ -5114,8 +5114,8 @@ namespace jmespath {
                                 }
                                 else
                                 {
-                                    ec = jmespath_errc::expected_key;
-                                    return jmespath_expression();
+                                    ec = jsonformula_errc::expected_key;
+                                    return jsonformula_expression();
                                 }
                                 break;
                         };
@@ -5128,7 +5128,7 @@ namespace jmespath {
                             case '=':
                                 push_token(token(resources_.get_lte_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();
                                 ++p_;
                                 ++column_;
@@ -5137,7 +5137,7 @@ namespace jmespath {
 							case '>':
 								push_token(token(resources_.get_ne_operator()), ec);
 								push_token(token(current_node_arg), ec);
-								if (ec) {return jmespath_expression();}
+								if (ec) {return jsonformula_expression();}
 								state_stack_.pop_back();
 								++p_;
 								++column_;
@@ -5145,7 +5145,7 @@ namespace jmespath {
                             default:
                                 push_token(token(resources_.get_lt_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();
                                 break;
                         }
@@ -5158,7 +5158,7 @@ namespace jmespath {
                             case '=':
                                 push_token(token(resources_.get_gte_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); 
                                 ++p_;
                                 ++column_;
@@ -5166,7 +5166,7 @@ namespace jmespath {
                             default:
                                 push_token(token(resources_.get_gt_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); 
                                 break;
                         }
@@ -5177,7 +5177,7 @@ namespace jmespath {
 #if 1	// json-formula supports both `=` and `==`
 						push_token(token(resources_.get_eq_operator()), ec);
 						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
+						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
 						++p_;
 						++column_;
@@ -5187,14 +5187,14 @@ namespace jmespath {
                             case '=':
                                 push_token(token(resources_.get_eq_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); 
                                 ++p_;
                                 ++column_;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_comparator;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_comparator;
+                                return jsonformula_expression();
                         }
 #endif
 						break;
@@ -5206,14 +5206,14 @@ namespace jmespath {
                             case '=':
                                 push_token(token(resources_.get_ne_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); 
                                 ++p_;
                                 ++column_;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_comparator;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_comparator;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5261,8 +5261,8 @@ namespace jmespath {
 								}
 								else
 								{
-									ec = jmespath_errc::syntax_error;
-									return jmespath_expression();
+									ec = jsonformula_errc::syntax_error;
+									return jsonformula_expression();
 								}
 								break;
 						}
@@ -5272,7 +5272,7 @@ namespace jmespath {
 					{
 						push_token(token(resources_.get_plus_operator()), ec);
 						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
+						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
 						break;
 					}
@@ -5280,7 +5280,7 @@ namespace jmespath {
 					{
 						push_token(token(resources_.get_minus_operator()), ec);
 						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
+						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
 						break;
 					}
@@ -5288,7 +5288,7 @@ namespace jmespath {
 					{
 						push_token(token(resources_.get_mult_operator()), ec);
 						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
+						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
 						break;
 					}
@@ -5296,7 +5296,7 @@ namespace jmespath {
 					{
 						push_token(token(resources_.get_div_operator()), ec);
 						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
+						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
 						break;
 					}
@@ -5304,7 +5304,7 @@ namespace jmespath {
 					{
 						push_token(token(resources_.get_concat_operator()), ec);
 						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
+						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
 						break;
 					}
@@ -5312,7 +5312,7 @@ namespace jmespath {
 					{
 						push_token(token(resources_.get_union_operator()), ec);
 						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
+						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
 						break;
 					}
@@ -5329,8 +5329,8 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_dot;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_dot;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5341,14 +5341,14 @@ namespace jmespath {
                             case '|':
                                 push_token(token(resources_.get_or_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); 
                                 ++p_;
                                 ++column_;
                                 break;
                             default:
                                 push_token(token(pipe_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); 
                                 break;
                         }
@@ -5361,18 +5361,18 @@ namespace jmespath {
                             case '&':
                                 push_token(token(resources_.get_and_operator()), ec);
                                 push_token(token(current_node_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back(); // expect_and
                                 ++p_;
                                 ++column_;
                                 break;
                             default:
 								// for json-formula, this is the concat operator
-//                                ec = jmespath_errc::expected_and;
-//                                return jmespath_expression();
+//                                ec = jsonformula_errc::expected_and;
+//                                return jsonformula_expression();
 								push_token(token(resources_.get_concat_operator()), ec);
 								push_token(token(current_node_arg), ec);
-								if (ec) {return jmespath_expression();}
+								if (ec) {return jsonformula_expression();}
 								state_stack_.pop_back(); // expect_and
 								++p_;
 								++column_;
@@ -5389,7 +5389,7 @@ namespace jmespath {
                                 break;
                             case ',':
                                 push_token(token(separator_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.emplace_back(path_state::lhs_expression);
                                 ++p_;
                                 ++column_;
@@ -5413,7 +5413,7 @@ namespace jmespath {
                             case ']':
                             {
                                 push_token(token(end_multi_select_list_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();
 
                                 ++p_;
@@ -5421,8 +5421,8 @@ namespace jmespath {
                                 break;
                             }
                             default:
-                                ec = jmespath_errc::expected_rbracket;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rbracket;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5436,15 +5436,15 @@ namespace jmespath {
                             case ']':
                             {
                                 push_token(token(end_filter_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();
                                 ++p_;
                                 ++column_;
                                 break;
                             }
                             default:
-                                ec = jmespath_errc::expected_rbracket;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rbracket;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5457,7 +5457,7 @@ namespace jmespath {
                                 break;
                             case ',':
                                 push_token(token(separator_arg), ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 state_stack_.back() = path_state::key_val_expr; 
                                 ++p_;
                                 ++column_;
@@ -5475,14 +5475,14 @@ namespace jmespath {
                             {
                                 state_stack_.pop_back();
                                 push_token(end_multi_select_hash_arg, ec);
-                                if (ec) {return jmespath_expression();}
+                                if (ec) {return jsonformula_expression();}
                                 ++p_;
                                 ++column_;
                                 break;
                             }
                             default:
-                                ec = jmespath_errc::expected_rbrace;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_rbrace;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5500,8 +5500,8 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
-                                ec = jmespath_errc::expected_colon;
-                                return jmespath_expression();
+                                ec = jsonformula_errc::expected_colon;
+                                return jsonformula_expression();
                         }
                         break;
                     }
@@ -5511,8 +5511,8 @@ namespace jmespath {
 
             if (state_stack_.empty())
             {
-                ec = jmespath_errc::syntax_error;
-                return jmespath_expression();
+                ec = jsonformula_errc::syntax_error;
+                return jsonformula_expression();
             }
             while (state_stack_.size() > 1)
             {
@@ -5525,53 +5525,53 @@ namespace jmespath {
                         }
                         else
                         {
-                            ec = jmespath_errc::syntax_error;
-                            return jmespath_expression();
+                            ec = jsonformula_errc::syntax_error;
+                            return jsonformula_expression();
                         }
                         break;
 //					case path_state::digit:	// in json-formula, we could end with a digit
 //						push_token(token(literal_arg, Json(buffer)), ec);
-//						if (ec) {return jmespath_expression();}
+//						if (ec) {return jsonformula_expression();}
 //						buffer.clear();
 //						state_stack_.pop_back();
 //						break;
                     case path_state::val_expr:
                         push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
-                        if (ec) {return jmespath_expression();}
+                        if (ec) {return jsonformula_expression();}
                         state_stack_.pop_back(); 
                         break;
                     case path_state::identifier_or_function_expr:
                         push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
-                        if (ec) {return jmespath_expression();}
+                        if (ec) {return jsonformula_expression();}
                         state_stack_.pop_back(); 
                         break;
                     case path_state::unquoted_string: 
                         state_stack_.pop_back(); 
                         break;
                     default:
-                        ec = jmespath_errc::syntax_error;
-                        return jmespath_expression();
+                        ec = jsonformula_errc::syntax_error;
+                        return jsonformula_expression();
                         break;
                 }
             }
 
             if (!(state_stack_.size() == 1 && state_stack_.back() == path_state::rhs_expression))
             {
-                ec = jmespath_errc::unexpected_end_of_input;
-                return jmespath_expression();
+                ec = jsonformula_errc::unexpected_end_of_input;
+                return jsonformula_expression();
             }
 
             state_stack_.pop_back();
 
             push_token(end_of_expression_arg, ec);
-            if (ec) {return jmespath_expression();}
+            if (ec) {return jsonformula_expression();}
 
             //for (auto& t : output_stack_)
             //{
             //    std::cout << t.to_string() << std::endl;
             //}
 
-            return jmespath_expression(std::move(resources_), std::move(output_stack_));
+            return jsonformula_expression(std::move(resources_), std::move(output_stack_));
         }
 
         void advance_past_space_character(std::error_code& ec)
@@ -5585,7 +5585,7 @@ namespace jmespath {
                 case '\r':
                     if (p_+1 >= end_input_)
                     {
-                        ec = jmespath_errc::unexpected_end_of_input;
+                        ec = jsonformula_errc::unexpected_end_of_input;
                         return;
                     }
                     if (*(p_+1) == '\n')
@@ -5614,7 +5614,7 @@ namespace jmespath {
             }
             if (it == operator_stack_.rend())
             {
-                ec = jmespath_errc::unbalanced_parentheses;
+                ec = jsonformula_errc::unbalanced_parentheses;
                 return;
             }
             ++it;
@@ -5637,7 +5637,7 @@ namespace jmespath {
                     }
                     if (it == output_stack_.rend())
                     {
-                        ec = jmespath_errc::unbalanced_braces;
+                        ec = jsonformula_errc::unbalanced_braces;
                         return;
                     }
                     if (toks.back().type() != token_kind::literal)
@@ -5686,7 +5686,7 @@ namespace jmespath {
                     }
                     if (it == output_stack_.rend())
                     {
-                        ec = jmespath_errc::unbalanced_braces;
+                        ec = jsonformula_errc::unbalanced_braces;
                         return;
                     }
                     ++it;
@@ -5733,7 +5733,7 @@ namespace jmespath {
                     }
                     if (it == output_stack_.rend())
                     {
-                        ec = jmespath_errc::unbalanced_braces;
+                        ec = jsonformula_errc::unbalanced_braces;
                         return;
                     }
                     std::reverse(key_toks.begin(), key_toks.end());
@@ -5818,12 +5818,12 @@ namespace jmespath {
                         }
                         if (it == output_stack_.rend())
                         {
-                            ec = jmespath_errc::unbalanced_parentheses;
+                            ec = jsonformula_errc::unbalanced_parentheses;
                             return;
                         }
                         if (it->arity() && arg_count != *(it->arity()))
                         {
-                            ec = jmespath_errc::invalid_arity;
+                            ec = jsonformula_errc::invalid_arity;
                             return;
                         }
                         if (toks.back().type() != token_kind::literal)
@@ -5943,7 +5943,7 @@ namespace jmespath {
             }
             else
             {
-                ec = jmespath_errc::invalid_codepoint;
+                ec = jsonformula_errc::invalid_codepoint;
             }
             return cp;
         }
@@ -5952,22 +5952,22 @@ namespace jmespath {
     } // detail
 
     template <class Json>
-    using jmespath_expression = typename jsoncons::jmespath::detail::jmespath_evaluator<Json,const Json&>::jmespath_expression;
+    using jsonformula_expression = typename jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&>::jsonformula_expression;
 
     template<class Json>
     Json search(const Json& doc, const typename Json::string_view_type& path)
     {
-        jsoncons::jmespath::detail::jmespath_evaluator<Json,const Json&> evaluator;
+        jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
         std::error_code ec;
         auto expr = evaluator.compile(path.data(), path.size(), ec);
         if (ec)
         {
-            JSONCONS_THROW(jmespath_error(ec, evaluator.line(), evaluator.column()));
+            JSONCONS_THROW(jsonformula_error(ec, evaluator.line(), evaluator.column()));
         }
         auto result = expr.evaluate(doc, ec);
         if (ec)
         {
-            JSONCONS_THROW(jmespath_error(ec));
+            JSONCONS_THROW(jsonformula_error(ec));
         }
         return result;
     }
@@ -5975,7 +5975,7 @@ namespace jmespath {
     template<class Json>
     Json search(const Json& doc, const typename Json::string_view_type& path, std::error_code& ec)
     {
-        jsoncons::jmespath::detail::jmespath_evaluator<Json,const Json&> evaluator;
+        jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
         auto expr = evaluator.compile(path.data(), path.size(), ec);
         if (ec)
         {
@@ -5990,20 +5990,20 @@ namespace jmespath {
     }
 
     template <class Json>
-    jmespath_expression<Json> make_expression(const typename json::string_view_type& expr)
+    jsonformula_expression<Json> make_expression(const typename json::string_view_type& expr)
     {
-        return jmespath_expression<Json>::compile(expr);
+        return jsonformula_expression<Json>::compile(expr);
     }
 
     template <class Json>
-    jmespath_expression<Json> make_expression(const typename json::string_view_type& expr,
+    jsonformula_expression<Json> make_expression(const typename json::string_view_type& expr,
                                               std::error_code& ec)
     {
-        return jmespath_expression<Json>::compile(expr, ec);
+        return jsonformula_expression<Json>::compile(expr, ec);
     }
 
 
-} // namespace jmespath
+} // namespace jsonformula
 } // namespace jsoncons
 
 #endif

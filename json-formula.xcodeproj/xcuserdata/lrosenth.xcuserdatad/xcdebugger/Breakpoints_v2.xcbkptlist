@@ -14,175 +14,55 @@
             filePath = "jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3933"
-            endingLineNumber = "3933"
+            startingLineNumber = "4350"
+            endingLineNumber = "4350"
             landmarkName = "compile(path, length, ec)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78c351b"
+                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 15c6eb3e483b89f6"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3693"
-                  endingLineNumber = "3693"
-                  offsetFromSymbolStart = "4910">
+                  startingLineNumber = "4347"
+                  endingLineNumber = "4347"
+                  offsetFromSymbolStart = "5679">
                </Location>
                <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78c3632"
+                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 15c6eb3e483b89f6"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3700"
-                  endingLineNumber = "3700"
-                  offsetFromSymbolStart = "4910">
+                  startingLineNumber = "4347"
+                  endingLineNumber = "4347"
+                  offsetFromSymbolStart = "5110">
                </Location>
                <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78c3c2d"
+                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 15c6eb3e483b8a15"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3747"
-                  endingLineNumber = "3747"
-                  offsetFromSymbolStart = "4953">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78c3c63"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3749"
-                  endingLineNumber = "3749"
-                  offsetFromSymbolStart = "4984">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78c3c02"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3748"
-                  endingLineNumber = "3748"
-                  offsetFromSymbolStart = "4944">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78c3cc4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3754"
-                  endingLineNumber = "3754"
-                  offsetFromSymbolStart = "4944">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78c227d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3795"
-                  endingLineNumber = "3795"
-                  offsetFromSymbolStart = "4944">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78cd3b7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3929"
-                  endingLineNumber = "3929"
-                  offsetFromSymbolStart = "4944">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78cd3f5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3931"
-                  endingLineNumber = "3931"
-                  offsetFromSymbolStart = "4944">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78cd3ca"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3932"
-                  endingLineNumber = "3932"
-                  offsetFromSymbolStart = "4944">
-               </Location>
-               <Location
-                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 46c4f78ba78cd42b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3933"
-                  endingLineNumber = "3933"
-                  offsetFromSymbolStart = "4944">
+                  startingLineNumber = "4350"
+                  endingLineNumber = "4350"
+                  offsetFromSymbolStart = "5110">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -190,230 +70,77 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C"
+            uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA"
             shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3883"
-            endingLineNumber = "3883"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c0e95"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3643"
-                  endingLineNumber = "3643"
-                  offsetFromSymbolStart = "3715">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c0fac"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3650"
-                  endingLineNumber = "3650"
-                  offsetFromSymbolStart = "3715">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c359f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3697"
-                  endingLineNumber = "3697"
-                  offsetFromSymbolStart = "3758">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c35dd"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3699"
-                  endingLineNumber = "3699"
-                  offsetFromSymbolStart = "3789">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c35fc"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3698"
-                  endingLineNumber = "3698"
-                  offsetFromSymbolStart = "3749">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c36b6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3704"
-                  endingLineNumber = "3704"
-                  offsetFromSymbolStart = "3749">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c3bef"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3745"
-                  endingLineNumber = "3745"
-                  offsetFromSymbolStart = "3749">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c2d21"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3879"
-                  endingLineNumber = "3879"
-                  offsetFromSymbolStart = "3749">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c2d67"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3881"
-                  endingLineNumber = "3881"
-                  offsetFromSymbolStart = "3749">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c2d44"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3882"
-                  endingLineNumber = "3882"
-                  offsetFromSymbolStart = "3749">
-               </Location>
-               <Location
-                  uuid = "5D05A4FB-3E70-4F90-A9BB-045B036AD73C - 46c4f78ba78c2da5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "3883"
-                  endingLineNumber = "3883"
-                  offsetFromSymbolStart = "3749">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "95E8F264-8016-464D-9A0B-77C19D74F982"
-            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "main.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
-            landmarkName = "main(argc, argv)"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
+            landmarkName = "UTEST()"
             landmarkType = "9">
             <Locations>
                <Location
-                  uuid = "95E8F264-8016-464D-9A0B-77C19D74F982 - c399f15f5d67181e"
+                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5bb9"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "main"
+                  symbolName = "utest_run_json_formula_hacking(int*)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/main.cpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "124"
-                  endingLineNumber = "124"
-                  offsetFromSymbolStart = "3333">
+                  startingLineNumber = "367"
+                  endingLineNumber = "367"
+                  offsetFromSymbolStart = "377">
                </Location>
                <Location
-                  uuid = "95E8F264-8016-464D-9A0B-77C19D74F982 - c399f15f5d6719e1"
+                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5bb9"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "main"
+                  symbolName = "utest_run_json_formula_hacking(int*)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/main.cpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "127"
-                  endingLineNumber = "127"
-                  offsetFromSymbolStart = "3592">
+                  startingLineNumber = "367"
+                  endingLineNumber = "367"
+                  offsetFromSymbolStart = "421">
+               </Location>
+               <Location
+                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5bb9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "utest_run_json_formula_hacking(int*)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "367"
+                  endingLineNumber = "367"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5b9a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "utest_run_json_formula_hacking(int*)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "368"
+                  endingLineNumber = "368"
+                  offsetFromSymbolStart = "108">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -421,77 +148,62 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6C3964DC-497E-44EE-9E3C-55EA066A9ACC"
+            uuid = "C46561C9-62C5-4B92-AE1C-841FCA120519"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2789"
-            endingLineNumber = "2789"
-            landmarkName = "evaluate(lhs, rhs, resources, error_code)"
+            startingLineNumber = "4293"
+            endingLineNumber = "4293"
+            landmarkName = "compile(path, length, ec)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "6C3964DC-497E-44EE-9E3C-55EA066A9ACC - d4ade5fc8e33286f"
+                  uuid = "C46561C9-62C5-4B92-AE1C-841FCA120519 - 15c6eb3e483b82ae"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::concat_operator::evaluate(jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::jmespath::detail::dynamic_resources&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;&amp;, std::__1::error_code&amp;) const"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2669"
-                  endingLineNumber = "2669"
-                  offsetFromSymbolStart = "28">
+                  startingLineNumber = "4291"
+                  endingLineNumber = "4291"
+                  offsetFromSymbolStart = "4138">
                </Location>
                <Location
-                  uuid = "6C3964DC-497E-44EE-9E3C-55EA066A9ACC - d4ade5fc8e33286f"
+                  uuid = "C46561C9-62C5-4B92-AE1C-841FCA120519 - 15c6eb3e483b8249"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::concat_operator::evaluate(jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::jmespath::detail::dynamic_resources&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;&amp;, std::__1::error_code&amp;) const"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2669"
-                  endingLineNumber = "2669"
-                  offsetFromSymbolStart = "31">
+                  startingLineNumber = "4290"
+                  endingLineNumber = "4290"
+                  offsetFromSymbolStart = "3825">
                </Location>
                <Location
-                  uuid = "6C3964DC-497E-44EE-9E3C-55EA066A9ACC - d4ade5fc8e333936"
+                  uuid = "C46561C9-62C5-4B92-AE1C-841FCA120519 - 15c6eb3e483b82ec"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::concat_operator::evaluate(jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::jmespath::detail::dynamic_resources&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;&amp;, std::__1::error_code&amp;) const"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2788"
-                  endingLineNumber = "2788"
-                  offsetFromSymbolStart = "31">
-               </Location>
-               <Location
-                  uuid = "6C3964DC-497E-44EE-9E3C-55EA066A9ACC - d4ade5fc8e3339d7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::concat_operator::evaluate(jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;, jsoncons::jmespath::detail::dynamic_resources&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;&amp;, std::__1::error_code&amp;) const"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2789"
-                  endingLineNumber = "2789"
-                  offsetFromSymbolStart = "31">
+                  startingLineNumber = "4293"
+                  endingLineNumber = "4293"
+                  offsetFromSymbolStart = "3825">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -499,15 +211,31 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0338BFDC-A268-410A-9806-DF1F390252D6"
-            shouldBeEnabled = "Yes"
+            uuid = "2228D1C5-D4B1-4C00-BD57-B704540772DD"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4837"
-            endingLineNumber = "4837"
+            startingLineNumber = "2743"
+            endingLineNumber = "2743"
+            landmarkName = "evaluate(lhs, rhs, resources, error_code)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2F42DF4B-3ACE-4CBE-855E-9768D87B34D0"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "4300"
+            endingLineNumber = "4300"
             landmarkName = "compile(path, length, ec)"
             landmarkType = "7">
          </BreakpointContent>
@@ -515,16 +243,79 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "46B50BF9-A3BD-4CE7-897E-5235C19DBBCD"
+            uuid = "722558BE-B62B-4189-A669-A9AD2EDE10CD"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2678"
-            endingLineNumber = "2678"
-            landmarkName = "evaluate(lhs, rhs, resources, error_code)"
+            startingLineNumber = "5533"
+            endingLineNumber = "5533"
+            landmarkName = "compile(path, length, ec)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "722558BE-B62B-4189-A669-A9AD2EDE10CD - 15c6eb3e483a2256"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "5531"
+                  endingLineNumber = "5531"
+                  offsetFromSymbolStart = "30111">
+               </Location>
+               <Location
+                  uuid = "722558BE-B62B-4189-A669-A9AD2EDE10CD - 15c6eb3e483a232b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "5536"
+                  endingLineNumber = "5536"
+                  offsetFromSymbolStart = "29487">
+               </Location>
+               <Location
+                  uuid = "722558BE-B62B-4189-A669-A9AD2EDE10CD - 15c6eb3e483a234e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "5539"
+                  endingLineNumber = "5539"
+                  offsetFromSymbolStart = "29487">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A2E0A2F2-AFBF-46DB-8381-582746524E7F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "4800"
+            endingLineNumber = "4800"
+            landmarkName = "compile(path, length, ec)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

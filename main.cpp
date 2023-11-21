@@ -10,7 +10,8 @@
 // jsoncons
 #include "jsoncons/json.hpp"
 #include "jsoncons/json_error.hpp"
-#include "jsoncons_ext/jmespath/jmespath.hpp"
+
+#include "json-formula/json-formula.hpp"
 
 // our user testing framework
 #include "utest.h"
@@ -20,7 +21,7 @@ UTEST_MAIN();
 
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
-	jsoncons::json r = jsoncons::jmespath::search(j,e);
+	jsoncons::json r = jsoncons::jsonformula::search(j,e);
 	if ( print )
 		std::cout << e << " = " << jsoncons::print(r) << "\n";
 	
@@ -34,6 +35,7 @@ static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool p
 //}
 
 // tests!
+// MARK: Equality
 UTEST(json_formula, operators_equality) {
 	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
 
@@ -50,6 +52,7 @@ UTEST(json_formula, operators_equality) {
 	EXPECT_FALSE(eval(j,R"(`{"a":5,"b":7}` == `{"a":5,"b":7,"c":9}`)").as<bool>());
 }
 
+// MARK: Comparisons
 UTEST(json_formula, operators_comparisons) {
 	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
 
@@ -71,6 +74,7 @@ UTEST(json_formula, operators_comparisons) {
 	EXPECT_FALSE(eval(j,R"('2' >= `6`)").as<bool>());
 }
 
+// MARK: Math
 UTEST(json_formula, operators_math) {
 	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
 
@@ -87,16 +91,24 @@ UTEST(json_formula, operators_math) {
 	// test string & null coercions
 	EXPECT_EQ(eval(j,"`100` + '3'").as<int32_t>(), 103);
 	EXPECT_EQ(eval(j,"`100.56` + '3'").as<double>(), 103.56);
+	EXPECT_EQ(eval(j,"`100` + `null`").as<int32_t>(), 100);
+	EXPECT_EQ(eval(j,"`100` + !`null`").as<int32_t>(), 101);
 	EXPECT_EQ(eval(j,"`100` + '3' + `null`").as<int32_t>(), 103);
 	EXPECT_EQ(eval(j,"`100` - '3'").as<int32_t>(), 97);
 	EXPECT_EQ(eval(j,"`100.56` - '3'").as<double>(), 97.56);
+	EXPECT_EQ(eval(j,"`100` - `null`").as<int32_t>(), 100);
+	EXPECT_EQ(eval(j,"`100` - !`null`").as<int32_t>(), 99);
 	EXPECT_EQ(eval(j,"`100` - '3' - `null`").as<int32_t>(), 97);
 	EXPECT_EQ(eval(j,"`100` * '3'").as<int32_t>(), 300);
 	EXPECT_EQ(eval(j,"`100.56` * '3'").as<double>(), 301.68);
+	EXPECT_EQ(eval(j,"`100` * `null`").as<int32_t>(), 0);
+	EXPECT_EQ(eval(j,"`100` * !`null`").as<int32_t>(), 100);
 	EXPECT_EQ(eval(j,"`100` * '3' * `null`").as<int32_t>(), 0);
 	EXPECT_EQ(eval(j,"`100` / '4'").as<int32_t>(), 25);
 	EXPECT_EQ(eval(j,"`100.80` / '4'").as<double>(), 25.20);
-	EXPECT_EQ(eval(j,"`100` / '3' / `null`").as<int32_t>(), 0);
+	EXPECT_TRUE(eval(j,"`100` / `null`") == jsoncons::json(nullptr));
+	EXPECT_EQ(eval(j,"`100` / !`null`").as<int32_t>(), 100);
+	EXPECT_TRUE(eval(j,"`100` / '3' / `null`") == jsoncons::json(nullptr));
 
 	// test the array special cases
 	// Arrays shall be coerced to an array of numbers.
@@ -115,6 +127,7 @@ UTEST(json_formula, operators_math) {
 	EXPECT_TRUE(eval(j,R"(`[10,12,14]` / `[5,6,7,8]`)") == jsoncons::json(jsoncons::json_array_arg, {2,2,2,0}));
 }
 
+// MARK: Concat
 UTEST(json_formula, operator_concat) {
 	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
 
@@ -129,6 +142,7 @@ UTEST(json_formula, operator_concat) {
 	EXPECT_TRUE(eval(j,R"('2' & `{"a":2}`)") == jsoncons::json("2"));
 }
 
+// MARK: Merge
 UTEST(json_formula, operator_merge) {
 	jsoncons::json j;	// we don't need any actual JSON to evaluate these tests
 	
@@ -143,6 +157,7 @@ UTEST(json_formula, operator_merge) {
 	EXPECT_TRUE(eval(j,R"(`[1,2,3]` ~ `{"a":5,"b":7}`)") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
 }
 
+// MARK: JMESPath Functions
 UTEST(json_formula, jmespath_functions) {
 	jsoncons::json j = jsoncons::json::parse(R"({"foo": -1, "bar": "-2"})");
 	
@@ -230,7 +245,10 @@ UTEST(json_formula, jmespath_functions) {
 	EXPECT_TRUE(eval(j,R"(to_number('100'))") == jsoncons::json(100));
 	EXPECT_EQ(eval(j,"to_number('211')").as<int32_t>(), 211);
 	EXPECT_EQ(eval(j,"to_number('123.456')").as<double>(), 123.456);
-	
+	EXPECT_TRUE(eval(j,R"(to_number('foo'))") == jsoncons::json(nullptr));
+	EXPECT_TRUE(eval(j,R"(to_number(null))") == jsoncons::json(0));
+	EXPECT_TRUE(eval(j,R"(to_number(`null`))") == jsoncons::json(0));
+
 	EXPECT_TRUE(eval(j,R"(type(`100`))") == jsoncons::json("number"));
 	EXPECT_TRUE(eval(j,R"(type(`123.456`))") == jsoncons::json("number"));
 	EXPECT_TRUE(eval(j,R"(type(`"abcd"`))") == jsoncons::json("string"));
@@ -246,6 +264,7 @@ UTEST(json_formula, jmespath_functions) {
 	EXPECT_TRUE(eval(j,R"(values(`{"foo": "baz", "bar": "bam"}`))") == jsoncons::json(jsoncons::json_array_arg, {"bam", "baz"}));
 }
 
+// MARK: People test
 UTEST(json_formula, expressions_people) {
 	std::string persons = R"(
 	   {
@@ -283,6 +302,7 @@ UTEST(json_formula, expressions_people) {
 	EXPECT_TRUE(eval(j,"sort_by(people, &age)[].age") == jsoncons::json({20, 25, 30}));
 }
 
+// MARK: Contents Test
 UTEST(json_formula, expressions_contents) {
 	std::string contents = R"(
 	   {
@@ -325,4 +345,26 @@ UTEST(json_formula, expressions_contents) {
 	EXPECT_TRUE(eval(j,"Contents[*].Size | sum(@)") == jsoncons::json(2488));
 	EXPECT_TRUE(eval(j,"sortBy(Contents, &Date)[*].{Key: Key, Size: Size}") == jsoncons::json::parse(R"([{"Key":"logs/baz","Size":329},{"Key":"logs/aa","Size":308},{"Key":"logs/qux","Size":297},{"Key":"logs/bar","Size":604},{"Key":"logs/foo","Size":647},{"Key":"logs/bb","Size":303}])"));
 
+}
+
+// MARK: misc
+UTEST(json_formula, misc) {
+	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+	
+	EXPECT_TRUE(eval(j,"[`3`]") == jsoncons::json(jsoncons::json_array_arg, {3}));
+	EXPECT_TRUE(eval(j,"`[3]`") == jsoncons::json(jsoncons::json_array_arg, {3}));
+	EXPECT_TRUE(eval(j,"[3]") == jsoncons::json(nullptr));
+//	EXPECT_TRUE(eval(j,"[`2+3`]", true) == jsoncons::json(jsoncons::json_array_arg, {5}));
+	EXPECT_TRUE(eval(j,"[length('123')]") == jsoncons::json(jsoncons::json_array_arg, {3}));
+	EXPECT_TRUE(eval(j,"[]") == jsoncons::json(nullptr));
+	EXPECT_TRUE(eval(j,"[[]]") == jsoncons::json(jsoncons::json_array_arg, {nullptr}));
+//	EXPECT_TRUE(eval(j,"{}", true) == jsoncons::json(nullptr));
+}
+
+
+// MARK: Hacking
+UTEST(json_formula, hacking) {
+	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+	
+	EXPECT_TRUE(eval(j,"10 + 1", true) == jsoncons::json(200));
 }
