@@ -13,6 +13,8 @@
 
 #include "json-formula/json-formula.hpp"
 
+#include "json-formula.h"
+
 // our user testing framework
 #include "utest.h"
 
@@ -22,6 +24,15 @@ UTEST_MAIN();
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
 	jsoncons::json r = jsoncons::jsonformula::search(j,e);
+	if ( print )
+		std::cout << e << " = " << jsoncons::print(r) << "\n";
+	
+	return r;
+}
+
+static jsoncons::json evalNew(const jsoncons::json& j, const std::string& e, bool print=false)
+{
+	jsoncons::json r = jsonformula::parser::eval(j,e);
 	if ( print )
 		std::cout << e << " = " << jsoncons::print(r) << "\n";
 	
@@ -299,7 +310,7 @@ UTEST(json_formula, expressions_people) {
 	EXPECT_TRUE(eval(j,"max_by(people, &age)") == jsoncons::json::parse(R"({"age":30,"name":"George","other":"baz","tags":["g","h","i"]})"));
 	EXPECT_TRUE(eval(j,"max_by(people, &age).age") == jsoncons::json(30));
 	EXPECT_TRUE(eval(j,"min_by(people, &age).age") == jsoncons::json(20));
-	EXPECT_TRUE(eval(j,"sort_by(people, &age)[].age") == jsoncons::json({20, 25, 30}));
+	EXPECT_TRUE(eval(j,"sort_by(people, &age)[].age") == jsoncons::json(jsoncons::json_array_arg,{20, 25, 30}));
 }
 
 // MARK: Contents Test
@@ -368,3 +379,11 @@ UTEST(json_formula, hacking) {
 	
 	EXPECT_TRUE(eval(j,"10 + 1", true) == jsoncons::json(200));
 }
+
+//// MARK: New parser
+//UTEST(json_formula, newParser) {
+//	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+//	
+//	EXPECT_TRUE(evalNew(j,R"(2 + 2 * `'foo'` - `[100,200,300]`)", true) == jsoncons::json(4));
+//}
+//

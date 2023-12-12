@@ -4,9 +4,9 @@ jsoncons is a C++, header-only library for constructing [JSON](http://www.json.o
 data formats such as [CBOR](http://cbor.io/). For each supported data format, it enables you
 to work with the data in a number of ways:
 
-- As a variant-like data structure, [basic_json](doc/ref/basic_json.md) 
+- As a variant-like data structure, [basic_json](doc/ref/corelib/basic_json.md) 
 
-- As a strongly typed C++ data structure that implements [json_type_traits](doc/ref/json_type_traits.md)
+- As a strongly typed C++ data structure that implements [json_type_traits](doc/ref/corelib/json_type_traits.md)
 
 - With cursor-level access to a stream of parse events, somewhat analogous to StAX pull parsing and push serializing
   in the XML world.
@@ -15,9 +15,9 @@ Compared to other JSON libraries, jsoncons has been designed to handle very larg
 SAX-style parsers and serializers. It supports reading an entire JSON text in memory in a variant-like structure.
 But it also supports efficient access to the underlying data using StAX-style pull parsing and push serializing.
 And it supports incremental parsing into a user's preferred form, using
-information about user types provided by specializations of [json_type_traits](doc/ref/json_type_traits.md).
+information about user types provided by specializations of [json_type_traits](doc/ref/corelib/json_type_traits.md).
 
-The [jsoncons data model](doc/ref/data-model.md) supports the familiar JSON types - nulls,
+The [jsoncons data model](doc/ref/corelib/data-model.md) supports the familiar JSON types - nulls,
 booleans, numbers, strings, arrays, objects - plus byte strings. In addition, jsoncons 
 supports semantic tagging of datetimes, epoch times, big integers, 
 big decimals, big floats and binary encodings. This allows it to preserve these type semantics when parsing 
@@ -28,6 +28,10 @@ jsoncons is distributed under the [Boost Software License](http://www.boost.org/
 jsoncons is free but welcomes support to sustain its development. If you find this library helpful, please consider making a [one time donation](https://paypal.me/jsoncons?locale.x=en_US)
 or becoming a [:heart: sponsor](https://github.com/sponsors/danielaparker). 
 
+As the `jsoncons` library has evolved, names have sometimes changed. To ease transition, jsoncons deprecates the 
+old names but continues to support many of them. The deprecated names can be suppressed by defining the macro 
+`JSONCONS_NO_DEPRECATED`, and doing so is recommended for new code.
+
 ## Extensions
 
 - [bson](doc/ref/bson/bson.md) implements decode from and encode to the [Binary JSON](http://bsonspec.org/) data format.
@@ -36,7 +40,7 @@ or becoming a [:heart: sponsor](https://github.com/sponsors/danielaparker).
 - [csv](doc/ref/csv/csv.md) implements decode from and encode to CSV files.
 - [jmespath](doc/ref/jmespath/jmespath.md) implements [JMESPath](https://jmespath.org/), a query language for transforming JSON documents into other JSON documents.  
 - [jsonpatch](doc/ref/jsonpatch/jsonpatch.md) implements the IETF standard [JavaScript Object Notation (JSON) Patch](https://tools.ietf.org/html/rfc6902)
-- [json_merge_patch](doc/ref/json_merge_patch/json_merge_patch.md) implements the IETF standard [JSON Merge Patch](https://datatracker.ietf.org/doc/html/rfc7386)
+- [mergepatch](doc/ref/mergepatch/mergepatch.md) implements the IETF standard [JSON Merge Patch](https://datatracker.ietf.org/doc/html/rfc7386)
 - [jsonpath](doc/ref/jsonpath/jsonpath.md) implements [Stefan Goessner's JSONPath](http://goessner.net/articles/JsonPath/).  It also supports search and replace using JSONPath expressions.
 - [jsonpointer](doc/ref/jsonpointer/jsonpointer.md) implements the IETF standard [JavaScript Object Notation (JSON) Pointer](https://tools.ietf.org/html/rfc6901)
 - [jsonschema](doc/ref/jsonschema/jsonschema.md) implements the JSON Schema [Draft 7](https://json-schema.org/specification-links.html#draft-7) specification for validating input JSON. (since 0.160.0)
@@ -49,13 +53,15 @@ _"I am so happy I have come across your json c++ library!"_
 
 _"I finally decided on jsoncons after evaluating quite a few json libraries out there."_
 
-_"I’m using your library for an external interface to pass data, as well as using the conversions from csv to json, which are really helpful for converting data for use in javacode"_
+_"I’m using your library for an external interface to pass data, as well as using the conversions from csv to json, which are really helpful for converting data for use in javascript"_
 
 _"Verified that, for my needs in JSON and CBOR, it is working perfectly"_
 
 _"the JSONPath feature of this library, it's great"_
 
 _"We use JMESPath implementation quite extensively"_ 
+
+_"We love your JSON Schema validator. We are using it in our data modelling tool to parse JSON Schema files"_
 
 _"the serialization lib of choice with its beautiful mappings and ease of use"_
 
@@ -81,7 +87,7 @@ The library requires a C++ Compiler with C++11 support. In addition the library 
 their standard library equivalents if detected. Otherwise they will be typedefed to internal, C++11 compatible, implementations.
 
 The library uses exceptions and in some cases [std::error_code](https://en.cppreference.com/w/cpp/error/error_code)'s to report errors. Apart from `jsoncons::assertion_error`,
-all jsoncons exception classes implement the [jsoncons::json_error](doc/ref/json_error.md) interface.
+all jsoncons exception classes implement the [jsoncons::json_error](doc/ref/corelib/json_error.md) interface.
 If exceptions are disabled or if the compile time macro `JSONCONS_NO_EXCEPTIONS` is defined, throws become calls to `std::terminate`.
 
 ## Benchmarks
@@ -108,7 +114,7 @@ If exceptions are disabled or if the compile time macro `JSONCONS_NO_EXCEPTIONS`
 
 For the examples below you need to include some header files and initialize a string of JSON data:
 
-```c++
+```cpp
 #include <jsoncons/json.hpp>
 #include <jsoncons_ext/jsonpath/jsonpath.hpp>
 #include <iostream>
@@ -133,15 +139,15 @@ std::string data = R"(
 
 jsoncons allows you to work with the data in a number of ways:
 
-- As a variant-like data structure, [basic_json](doc/ref/basic_json.md) 
+- As a variant-like data structure, [basic_json](doc/ref/corelib/basic_json.md) 
 
-- As a strongly typed C++ data structure that implements [json_type_traits](doc/ref/json_type_traits.md)
+- As a strongly typed C++ data structure that implements [json_type_traits](doc/ref/corelib/json_type_traits.md)
 
-- With [cursor-level access](doc/ref/basic_json_cursor.md) to a stream of parse events
+- With [cursor-level access](doc/ref/corelib/basic_json_cursor.md) to a stream of parse events
 
 #### As a variant-like data structure
 
-```c++
+```cpp
 int main()
 {
     // Parse the string of data into a json value
@@ -201,15 +207,15 @@ Marilyn C, 0.9
 #### As a strongly typed C++ data structure
 
 jsoncons supports transforming JSON texts into C++ data structures. 
-The functions [decode_json](doc/ref/decode_json.md) and [encode_json](doc/ref/encode_json.md) 
+The functions [decode_json](doc/ref/corelib/decode_json.md) and [encode_json](doc/ref/corelib/encode_json.md) 
 convert strings or streams of JSON data to C++ data structures and back. 
 Decode and encode work for all C++ classes that have 
-[json_type_traits](doc/ref/json_type_traits.md) 
+[json_type_traits](doc/ref/corelib/json_type_traits.md) 
 defined. jsoncons already supports many types in the standard library, 
 and your own types will be supported too if you specialize `json_type_traits`
 in the `jsoncons` namespace. 
 
-```c++
+```cpp
 namespace ns {
     enum class hiking_experience {beginner,intermediate,advanced};
 
@@ -301,7 +307,7 @@ int main()
 
     // Encode the c++ structure into a string
     std::string s;
-    encode_json_pretty(v, s);
+    encode_json(v, s, indenting::indent);
     std::cout << "(2)\n";
     std::cout << s << "\n";
 }
@@ -326,7 +332,7 @@ Marilyn C, 0.9, 1514862245
 ```
 This example makes use of the convenience macros `JSONCONS_ENUM_TRAITS`,
 `JSONCONS_N_CTOR_GETTER_TRAITS`, and `JSONCONS_ALL_CTOR_GETTER_TRAITS` to specialize the 
-[json_type_traits](doc/ref/json_type_traits.md) for the enum type
+[json_type_traits](doc/ref/corelib/json_type_traits.md) for the enum type
 `ns::hiking_experience`, the class `ns::hiking_reputon` (with some non-mandatory members), and the class
 `ns::hiking_reputation` (with all mandatory members.)
 The macro `JSONCONS_ENUM_TRAITS` generates the code from
@@ -343,7 +349,7 @@ A typical pull parsing application will repeatedly process the `current()`
 event and call `next()` to advance to the next event, until `done()` 
 returns `true`.
 
-```c++
+```cpp
 int main()
 {
     json_string_cursor cursor(data);
@@ -419,7 +425,7 @@ end_object
 
 You can apply a filter to a cursor using the pipe syntax (e.g., `cursor | filter1 | filter2 | ...`)
 
-```c++
+```cpp
 int main()
 {
     std::string name;
@@ -468,7 +474,7 @@ Marilyn C
 
 For the examples below you need to include some header files and initialize a buffer of CBOR data:
 
-```c++
+```cpp
 #include <iomanip>
 #include <iostream>
 #include <jsoncons/json.hpp>
@@ -507,15 +513,15 @@ const std::vector<uint8_t> data = {
 
 jsoncons allows you to work with the CBOR data similarly to JSON data:
 
-- As a variant-like data structure, [basic_json](doc/ref/basic_json.md) 
+- As a variant-like data structure, [basic_json](doc/ref/corelib/basic_json.md) 
 
-- As a strongly typed C++ data structure that implements [json_type_traits](doc/ref/json_type_traits.md)
+- As a strongly typed C++ data structure that implements [json_type_traits](doc/ref/corelib/json_type_traits.md)
 
 - With [cursor-level access](doc/ref/cbor/basic_cbor_cursor.md) to a stream of parse events
 
 #### As a variant-like data structure
 
-```c++
+```cpp
 int main()
 {
     // Parse the CBOR data into a json value
@@ -567,7 +573,7 @@ Output:
 
 #### As a strongly typed C++ data structure
 
-```c++
+```cpp
 int main()
 {
     // Parse the string of data into a std::vector<std::tuple<std::string,jsoncons::byte_string,std::string>> value
@@ -605,7 +611,7 @@ A typical pull parsing application will repeatedly process the `current()`
 event and call `next()` to advance to the next event, until `done()` 
 returns `true`.
 
-```c++
+```cpp
 int main()
 {
     cbor::cbor_bytes_cursor cursor(data);
@@ -678,7 +684,7 @@ end_array (n/a)
 
 You can apply a filter to a cursor using the pipe syntax, 
 
-```c++
+```cpp
 int main()
 {
     auto filter = [&](const staj_event& ev, const ser_context&) -> bool

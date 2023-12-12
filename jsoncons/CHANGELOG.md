@@ -1,3 +1,231 @@
+0.171.1
+-------
+
+Defect fixes:
+
+- Fixed issue #441 concerning misaligned allocation for string data. 
+
+- Fixed issue #436 concerning overflow warning. 
+
+- Changed internal variable names to avoid shadow warnings
+
+- Fixed signature of `dump_pretty` #438
+
+- Fixed `basic_json_decode_options` constructor #437
+
+Enhancements:
+
+- Improved error messages (with field names) for invalid type mappings when using the
+`json_type_traits` convenience macros.
+
+- Support char8_t and u8string for C++ 20
+
+- Added compare for bigint/bigdec/bigfloat as double or exact text match. This makes 
+JSON Query work if you use `options.lossless_number(true)` for parsing JSON.
+
+0.171.0
+-------
+
+Enhancements:
+
+- `basic_json` supports allocators that automatically propagate,  
+
+    - `std::pmr::polymorphic_allocator`
+
+    - `std::scoped_allocator_adaptor`
+
+- Defines aliases and alias templates for `basic_json` using polymorphic allocators
+in the `jsoncons::pmr` namespace.
+
+```
+namespace jsoncons { namespace pmr {
+    template<class CharT, class Policy>
+    using basic_json = jsoncons::basic_json<CharT, Policy, std::pmr::polymorphic_allocator<char>>;
+
+    using json = basic_json<char,sorted_policy>;
+    using wjson = basic_json<wchar_t,sorted_policy>;
+    using ojson = basic_json<char, order_preserving_policy>;
+    using wojson = basic_json<wchar_t, order_preserving_policy>;
+}}
+
+```
+
+- Added a class `allocator_set` for holding an allocator for persistent data and an
+allocator for temporary allocations.
+
+- Added the ability to pass an `allocator_set` object to functions `basic_json::parse`, 
+`decode_json`, `decode_csv`, `decode_bson`, `decode_cbor`, `decode_msgpack`, `decode_ubjson`, 
+`encode_json`, `encode_csv`, `encode_bson`, `encode_cbor`, `encode_msgpack`, `encode_ubjson`.
+
+- Added the ability to set a JSON parse error handler through options (rather than
+as a separate parameter.)
+
+- Added an error handler `allow_trailing_commas`
+
+Changes:
+
+- For users creating a custom `basic_json` with a user provided `Policy`, the name
+`string` in `Policy` must be changed to `member_key`.
+
+- Non-propagating stateful allocators are no longer supported.
+Attempting to use a regular stateful allocator will produce a compile error.
+Regular stateful allocators must be wrapped with [std::scoped_allocator_adaptor](https://en.cppreference.com/w/cpp/memory/scoped_allocator_adaptor)
+
+- Until 0.171.0, the `basic_json` functions `try_emplace`, `emplace`, and `emplace_back` allowed an allocator argument,
+and one was required when using stateful allocators. Since 0.171.0, `try_emplace`, `emplace`, and `emplace_back`
+must not be passed an allocator argument, because both `std::pmr::polymorphic_allocator` and `std::scoped_allocator_adaptor`
+use uses-allocator construction.   
+
+Note: Non-stateful custom allocators are supported as before.
+
+- The tag type `result_allocator_arg_t` and constant `result_allocator_arg` have been deprecated.
+
+- The `jsonpath::json_replace` function no longer supports an optional `result_options` parameter.
+
+- The order preserving versions of `basic_json`, `ojson` and `wojson`, no longer use indexes to
+support search, but rely on sequential search instead. The feedback from users was that the additional 
+allocations and overhead wasn't worth any gains, particularly as the number of members in JSON 
+objects is typically not large.
+
+Defect fixes
+
+- Fixed issue danielaparker/jsoncons/#430 with `jsonpath::json_replace` 
+
+0.170.2
+-------
+
+Defect fixes
+
+- Fixed issue with jsonschema default values (introduced in 0.170.0)
+
+0.170.1
+-------
+
+Defect fixes:
+
+- Fixed issue danielaparker/jsoncons/#418 where use of `std::aligned_storage` 
+produced a diagnostic that it is deprecated in C++2023.
+
+- Fixed issue danielaparker/jsoncons/#420 where `to_integer_base16` produced
+warnings when passed a wide character string.
+
+- Fixed issue danielaparker/jsoncons/#391 where parsing JSON resulted
+in temporary allocations from `std::stable_sort`
+
+- Fixed issue danielaparker/jsoncons/#421 where PVS-Studio found vulnerabilities in code.
+
+- Fixed issue danielaparker/jsoncons/#425 where `basic_byte_string::assign` and `basic_byte_string::append` failed to compile
+
+- Fixed issue danielaparker/jsoncons/#426 where enum keyed maps didn't serialize correctly.
+
+0.170.0 
+-------
+
+Changed:
+
+- Removed static functions `jsonpath_expression::compile`. These have long been
+superceded with function `make_expression`.
+
+Defect fixes:
+
+- Fixed issue danielaparker/jsoncons/#416 where `length` operator failed
+for array of length zero.
+ 
+- Fixed issue danielaparker/jsoncons/#411 where an overeager g++ 12.2.0 compiler reported a
+spurious `stringop-overflow` warning.
+
+- Fixed issue danielaparker/jsoncons/#410 where `jsoncons::jsonpath::json_location::to_string`
+escaped only single quotes.
+
+- Merged PR danielaparker/jsoncons/#406 that fixed multiple float parsing and boolean pretty print 
+issues with wjson. This included reverting a change to use `std::from_chars`
+in 0.169.0.
+
+Enhancements:
+
+- The jsonpath library now works with stateful allocators. In particular, the `make_expression`,
+`json_query` and `json_replace` functions now accept an allocator argument for use in allocating  
+memory during expression compilation and evaluation.
+
+- Merged PR danielaparker/jsoncons/#395 that added a `ser_context::end_position()` function.
+
+0.169.0
+-------
+
+Defect fixes:
+
+- Fixed issue with boost_interprocess examples not working with gcc,
+contributed by [raplonu](https://github.com/raplonu)
+
+- Fixed and enhance basic_json_diagnostics_visitor,
+contributed by [ecorm](https://github.com/ecorm)
+
+- Fixed [Visual Studio 2022 Preview 17.4.0 compilation errors](https://github.com/danielaparker/jsoncons/issues/387)
+
+Performance Enhancement:
+
+- Use `std::from_chars` for chars to double conversion when 
+supported in GCC and VC.
+
+Enhancements:
+
+- Added a `size()` accessor function to `basic_staj_event`.
+If the event type is a `key` or a `string_value` or a `byte_string_value`, 
+returns the size of the key or string or byte string value.
+If the event type is a `begin_object` or a `begin_array`, returns the size of the object
+or array if known, otherwise 0.
+For all other event types, returns 0.
+
+- Extended the parsers/cursors/encoder for JSON, CBOR, Msgpack,
+BSON, CSV, UBJSON so that they are resettable to new sources/sinks,
+contributed by [ecorm](https://github.com/ecorm)
+
+Changes:
+
+- For consistency with library naming conventions, the directory 
+`include/jsoncons/json_merge_patch` has been renamed to
+`include/jsoncons/mergepatch`, the namespace `json_merge_patch`
+to `mergepatch`, and the include file `json_merge_patch.hpp` to 
+`mergepatch.hpp`.
+
+0.168.7
+-------
+
+Defect fixes:
+
+- In release 0.167.0, the `csv_options::mapping()` accessor
+was renamed to `csv_options::mapping_kind()`, and the old name was
+deprecated but still useable. That release neglected to 
+similarily rename the corresponding mutator, which is now
+addressed. 
+
+- Fixed csv parsing issue [Exponential formatted numbers with leading zeros in exponent](https://github.com/danielaparker/jsoncons/issues/365)
+
+- Fixed [Issue with assignment of an object_iterator to const_object_iterator using empty object](https://github.com/danielaparker/jsoncons/issues/372). This issue affects some xcode osx users.
+
+0.168.6
+-------
+
+Bug Fix:
+
+- Fixed an issue with the order preserving `ojson` erase function 
+that takes two iterator arguments.
+
+Enhancement:
+
+- The `basic_json::erase` function return value, previously void, is now
+an iterator following the last removed element,
+
+```
+array_iterator erase(const_array_iterator pos);
+object_iterator erase(const_object_iterator pos);
+
+array_iterator erase(const_array_iterator first, const_array_iterator last);
+object_iterator erase(const_object_iterator first, const_object_iterator last);
+```
+
+See [Issue \#363](https://github.com/danielaparker/jsoncons/issues/363)
+
 0.168.5
 -------
 

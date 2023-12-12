@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BE2D2C522AE17A9900D04840 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE2D2C512AE17A9900D04840 /* main.cpp */; };
+		BE9C1D672B0C3BD800B6AD6A /* json-formula.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE9C1D652B0C3BD800B6AD6A /* json-formula.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +30,8 @@
 		BE653A1C2AE16D9C00EDDA36 /* json-formula */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "json-formula"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE9C1D632B0C3A0A00B6AD6A /* json-formula.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "json-formula.hpp"; path = "json-formula/json-formula.hpp"; sourceTree = "<group>"; };
 		BE9C1D642B0C3A0A00B6AD6A /* json-formula_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "json-formula_error.hpp"; path = "json-formula/json-formula_error.hpp"; sourceTree = "<group>"; };
+		BE9C1D652B0C3BD800B6AD6A /* json-formula.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "json-formula.cpp"; sourceTree = "<group>"; };
+		BE9C1D682B0C3BED00B6AD6A /* json-formula.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "json-formula.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +48,8 @@
 		BE653A132AE16D9C00EDDA36 = {
 			isa = PBXGroup;
 			children = (
+				BE9C1D652B0C3BD800B6AD6A /* json-formula.cpp */,
+				BE9C1D682B0C3BED00B6AD6A /* json-formula.h */,
 				BE2D2C512AE17A9900D04840 /* main.cpp */,
 				BE9C1D642B0C3A0A00B6AD6A /* json-formula_error.hpp */,
 				BE9C1D632B0C3A0A00B6AD6A /* json-formula.hpp */,
@@ -119,6 +124,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE9C1D672B0C3BD800B6AD6A /* json-formula.cpp in Sources */,
 				BE2D2C522AE17A9900D04840 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

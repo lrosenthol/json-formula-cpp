@@ -64,83 +64,20 @@
                   endingLineNumber = "4350"
                   offsetFromSymbolStart = "5110">
                </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "main.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
-            landmarkName = "UTEST()"
-            landmarkType = "9">
-            <Locations>
                <Location
-                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5bb9"
+                  uuid = "D3E8FCD0-B5DD-46A2-BA81-7B15F053E6F5 - 15c6eb3e483b8a6a"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "utest_run_json_formula_hacking(int*)"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
                   moduleName = "json-formula"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "367"
-                  endingLineNumber = "367"
-                  offsetFromSymbolStart = "377">
-               </Location>
-               <Location
-                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5bb9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "utest_run_json_formula_hacking(int*)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "367"
-                  endingLineNumber = "367"
-                  offsetFromSymbolStart = "421">
-               </Location>
-               <Location
-                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5bb9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "utest_run_json_formula_hacking(int*)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "367"
-                  endingLineNumber = "367"
-                  offsetFromSymbolStart = "108">
-               </Location>
-               <Location
-                  uuid = "3802BF4C-C276-4C13-B5CF-0E4B5D3336DA - 1650f4c9aaab5b9a"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "utest_run_json_formula_hacking(int*)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "368"
-                  endingLineNumber = "368"
-                  offsetFromSymbolStart = "108">
+                  startingLineNumber = "4351"
+                  endingLineNumber = "4351"
+                  offsetFromSymbolStart = "17906">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -205,6 +142,21 @@
                   endingLineNumber = "4293"
                   offsetFromSymbolStart = "3825">
                </Location>
+               <Location
+                  uuid = "C46561C9-62C5-4B92-AE1C-841FCA120519 - 15c6eb3e483b82cd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "jsoncons::jmespath::detail::jmespath_evaluator&lt;jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt;, jsoncons::basic_json&lt;char, jsoncons::sorted_policy, std::__1::allocator&lt;char&gt; &gt; const&amp;&gt;::compile(char const*, unsigned long, std::__1::error_code&amp;)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/jsoncons/include/jsoncons_ext/jmespath/jmespath.hpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "4294"
+                  endingLineNumber = "4294"
+                  offsetFromSymbolStart = "16652">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -220,7 +172,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2743"
             endingLineNumber = "2743"
-            landmarkName = "evaluate(lhs, rhs, resources, error_code)"
+            landmarkName = "add_expression(expr)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -251,9 +203,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5533"
-            endingLineNumber = "5533"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
+            endingLineNumber = "5533">
             <Locations>
                <Location
                   uuid = "722558BE-B62B-4189-A669-A9AD2EDE10CD - 15c6eb3e483a2256"
@@ -315,8 +265,87 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4800"
             endingLineNumber = "4800"
-            landmarkName = "compile(path, length, ec)"
+            landmarkName = "advance_past_space_character()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "55539E24-36A4-4817-AA21-CCF72D708241"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "json-formula.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "16"
+            endingLineNumber = "16"
+            landmarkName = "parser::eval(s)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "29A29AC3-73E8-4B25-BBA8-71596F09C0CB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "json-formula.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "parser::eval(s)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "29A29AC3-73E8-4B25-BBA8-71596F09C0CB - 84cf5df5cdcae096"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "jsonformula::parser::eval(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/json-formula.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "409">
+               </Location>
+               <Location
+                  uuid = "29A29AC3-73E8-4B25-BBA8-71596F09C0CB - 84cf5df5cdcae096"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "jsonformula::parser::eval(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/json-formula.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "406">
+               </Location>
+               <Location
+                  uuid = "29A29AC3-73E8-4B25-BBA8-71596F09C0CB - 84cf5df5cdcae096"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "jsonformula::parser::eval(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;)"
+                  moduleName = "json-formula"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/json-formula.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "443">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -1,4 +1,4 @@
-// Copyright 2013 Daniel Parker
+// Copyright 2013-2023 Daniel Parker
 // Distributed under the Boost license, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -8,6 +8,8 @@
 #define JSONCONS_JSONPATH_JSONPATH_HPP
 
 #include <jsoncons_ext/jsonpath/json_query.hpp>
+#include <jsoncons_ext/jsonpath/jsonpath_expr.hpp>
 #include <jsoncons_ext/jsonpath/flatten.hpp>
+#include <jsoncons_ext/jsonpath/json_location.hpp>
 
 #endif

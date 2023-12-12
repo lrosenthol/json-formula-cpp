@@ -1,4 +1,4 @@
-// Copyright 2020 Daniel Parker
+// Copyright 2013-2023 Daniel Parker
 // Distributed under the Boost license, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -36,14 +36,7 @@ namespace jmespath {
         lte_op,
         gt_op,
         gte_op,
-        not_op,
-		// json-formula
-		plus_op,
-		minus_op,
-		mult_op,
-		div_op,
-		concat_op,
-		union_op
+        not_op
     };
 
     struct operator_table final
@@ -57,12 +50,6 @@ namespace jmespath {
                 case operator_kind::flatten_projection_op:
                     return 11;
                 case operator_kind::or_op:
-				case operator_kind::plus_op:	// json-formula. right place?
-				case operator_kind::minus_op:
-				case operator_kind::mult_op:
-				case operator_kind::div_op:
-				case operator_kind::concat_op:
-				case operator_kind::union_op:
                     return 9;
                 case operator_kind::and_op:
                     return 8;
@@ -379,15 +366,7 @@ namespace jmespath {
         cmp_gt_or_gte,
         cmp_ne,
         expect_pipe_or_or,
-        expect_and,
-		// json-formula
-		jf_expression,
-		plus_operator,
-		minus_operator,
-		mult_operator,
-		div_operator,
-		concat_operator,
-		union_operator
+        expect_and
     };
 
     // dynamic_resources
@@ -887,18 +866,14 @@ namespace jmespath {
                         return resources.false_value();
                     case json_type::string_value:
                     {
-						if (arg1.is_number()) {
-							auto sv0 = arg0.template as<string_view_type>();
-							auto sv1 = std::to_string(arg1.template as<double>());
-							return sv0.find(sv1) != string_view_type::npos ? resources.true_value() : resources.false_value();
-						} else if (!arg1.is_string())  {
+                        if (!arg1.is_string())
+                        {
                             ec = jmespath_errc::invalid_type;
                             return resources.null_value();
-						} else {
-							auto sv0 = arg0.template as<string_view_type>();
-							auto sv1 = arg1.template as<string_view_type>();
-							return sv0.find(sv1) != string_view_type::npos ? resources.true_value() : resources.false_value();
-						}
+                        }
+                        auto sv0 = arg0.template as<string_view_type>();
+                        auto sv1 = arg1.template as<string_view_type>();
+                        return sv0.find(sv1) != string_view_type::npos ? resources.true_value() : resources.false_value();
                     }
                     default:
                     {
@@ -1854,7 +1829,7 @@ namespace jmespath {
                         {
                             return *resources.create_json(sval);
                         }
-                        jsoncons::detail::to_double_t to_double;
+                        jsoncons::detail::chars_to to_double;
                         try
                         {
                             auto s = arg0.as_string();
@@ -1866,9 +1841,6 @@ namespace jmespath {
                             return resources.null_value();
                         }
                     }
-					case json_type::null_value:	// json-formula addition
-						return *resources.create_json(0);
-
                     default:
                         return resources.null_value();
                 }
@@ -2069,7 +2041,7 @@ namespace jmespath {
 
             token(token&& other) noexcept
             {
-                construct(std::forward<token>(other));
+                construct(std::move(other));
             }
 
             token& operator=(token&& other)
@@ -2105,7 +2077,7 @@ namespace jmespath {
                     else
                     {
                         destroy();
-                        construct(std::forward<token>(other));
+                        construct(std::move(other));
                     }
                 }
                 return *this;
@@ -2529,17 +2501,11 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override 
             {
-				if ( lhs.is_number() && rhs.is_number() ) {
-					return lhs < rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_string() ) {
-					return lhs < rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_number() && rhs.is_string() ) {
-					return lhs < std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_number() ) {
-					return lhs < std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
-				} else {
+                if (!(lhs.is_number() && rhs.is_number()))
+                {
                     return resources.null_value();
                 }
+                return lhs < rhs ? resources.true_value() : resources.false_value();
             }
 
             std::string to_string(std::size_t indent = 0) const override
@@ -2564,17 +2530,11 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override 
             {
-				if ( lhs.is_number() && rhs.is_number() ) {
-					return lhs <= rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_string() ) {
-					return lhs <= rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_number() && rhs.is_string() ) {
-					return lhs <= std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_number() ) {
-					return lhs <= std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
-				} else {
-					return resources.null_value();
-				}
+                if (!(lhs.is_number() && rhs.is_number()))
+                {
+                    return resources.null_value();
+                }
+                return lhs <= rhs ? resources.true_value() : resources.false_value();
             }
 
             std::string to_string(std::size_t indent = 0) const override
@@ -2599,17 +2559,11 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
             {
-				if ( lhs.is_number() && rhs.is_number() ) {
-					return lhs > rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_string() ) {
-					return lhs > rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_number() && rhs.is_string() ) {
-					return lhs > std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_number() ) {
-					return lhs > std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
-				} else {
-					return resources.null_value();
-				}
+                if (!(lhs.is_number() && rhs.is_number()))
+                {
+                    return resources.null_value();
+                }
+                return lhs > rhs ? resources.true_value() : resources.false_value();
             }
 
             std::string to_string(std::size_t indent = 0) const override
@@ -2634,17 +2588,11 @@ namespace jmespath {
 
             reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
             {
-				if ( lhs.is_number() && rhs.is_number() ) {
-					return lhs >= rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_string() ) {
-					return lhs >= rhs ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_number() && rhs.is_string() ) {
-					return lhs >= std::stod(rhs.template as<std::string>()) ? resources.true_value() : resources.false_value();
-				} else if ( lhs.is_string() && rhs.is_number() ) {
-					return lhs >= std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
-				} else {
-					return resources.null_value();
-				}
+                if (!(lhs.is_number() && rhs.is_number()))
+                {
+                    return resources.null_value();
+                }
+                return lhs >= rhs ? resources.true_value() : resources.false_value();
             }
 
             std::string to_string(std::size_t indent = 0) const override
@@ -2658,558 +2606,6 @@ namespace jmespath {
                 return s;
             }
         };
-
-		// for json-fornula
-		class plus_operator final : public binary_operator
-		{
-		public:
-			plus_operator()
-				: binary_operator(operator_kind::plus_op)
-			{
-			}
-
-			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
-			{
-				if ( (lhs.is_number() && rhs.is_number()) ||
-					 (lhs.is_null() || rhs.is_null()) ||
-					 (lhs.is_bool() || rhs.is_bool()) ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::double_value ) {
-						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
-						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
-						l = lhs.template as<bool>() ? 1 : 0;
-					} else if ( !lhs.is_null() ) {
-						l = lhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(lhs) << std::endl;
-					}
-					
-					
-					if ( rhs.type() == json_type::double_value ) {
-						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
-						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
-						r = rhs.template as<bool>() ? 1 : 0;
-					} else if ( !rhs.is_null() ){
-						r = rhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(rhs) << std::endl;
-					}
-					
-					return *resources.create_json(l + r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::string_value )
-						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
-						l = lhs.template as<double>();
-
-					if ( rhs.type() == json_type::string_value )
-						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
-						r = rhs.template as<double>();
-
-					return *resources.create_json(l + r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
-					auto numEnts = std::max( lhs.size(), rhs.size() );
-					for (int64_t i=0; i<numEnts; i++) {
-						double l=0, r=0;
-						if ( i < lhs.size() ) l = lhs[i].template as<double>();
-						if ( i < rhs.size() ) r = rhs[i].template as<double>();
-						result->push_back( l + r);
-					}
-					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
-					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : lhs.array_range()) {
-						result->push_back( v.template as<double>() + d );
-					}
-					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
-					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : rhs.array_range()) {
-						result->push_back( v.template as<double>() + d );
-					}
-					return *result;
-				} else {
-					std::cout << pretty_print(lhs) << " " << pretty_print(rhs) << std::endl;
-				}
-				
-				return resources.null_value();
-			}
-
-			std::string to_string(std::size_t indent = 0) const override
-			{
-				std::string s;
-				for (std::size_t i = 0; i <= indent; ++i)
-				{
-					s.push_back(' ');
-				}
-				s.append("plus_operator\n");
-				return s;
-			}
-		};
-
-		class minus_operator final : public binary_operator
-		{
-		public:
-			minus_operator()
-				: binary_operator(operator_kind::minus_op)
-			{
-			}
-
-			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
-			{
-				if ( (lhs.is_number() && rhs.is_number()) ||
-					 (lhs.is_null() || rhs.is_null()) ||
-					 (lhs.is_bool() || rhs.is_bool()) ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::double_value ) {
-						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
-						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
-						l = lhs.template as<bool>() ? 1 : 0;
-					} else if ( !lhs.is_null() ) {
-						l = lhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(lhs) << std::endl;
-					}
-					
-					
-					if ( rhs.type() == json_type::double_value ) {
-						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
-						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
-						r = rhs.template as<bool>() ? 1 : 0;
-					} else if ( !rhs.is_null() ){
-						r = rhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(rhs) << std::endl;
-					}
-					
-					return *resources.create_json(l - r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::string_value )
-						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
-						l = lhs.template as<double>();
-
-					if ( rhs.type() == json_type::string_value )
-						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
-						r = rhs.template as<double>();
-
-					return *resources.create_json(l - r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
-					auto numEnts = std::max( lhs.size(), rhs.size() );
-					for (int64_t i=0; i<numEnts; i++) {
-						double l=0, r=0;
-						if ( i < lhs.size() ) l = lhs[i].template as<double>();
-						if ( i < rhs.size() ) r = rhs[i].template as<double>();
-						result->push_back( l - r);
-					}
-					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
-					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : lhs.array_range()) {
-						result->push_back( v.template as<double>() - d );
-					}
-					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
-					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : rhs.array_range()) {
-						result->push_back( d - v.template as<double>() );
-					}
-					return *result;
-				}
-				
-				return resources.null_value();
-			}
-
-			std::string to_string(std::size_t indent = 0) const override
-			{
-				std::string s;
-				for (std::size_t i = 0; i <= indent; ++i)
-				{
-					s.push_back(' ');
-				}
-				s.append("minus_operator\n");
-				return s;
-			}
-		};
-
-		class mult_operator final : public binary_operator
-		{
-		public:
-			mult_operator()
-				: binary_operator(operator_kind::mult_op)
-			{
-			}
-
-			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
-			{
-				if ( (lhs.is_number() && rhs.is_number()) ||
-					 (lhs.is_null() || rhs.is_null()) ||
-					 (lhs.is_bool() || rhs.is_bool()) ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::double_value ) {
-						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
-						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
-						l = lhs.template as<bool>() ? 1 : 0;
-					} else if ( !lhs.is_null() ) {
-						l = lhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(lhs) << std::endl;
-					}
-					
-					
-					if ( rhs.type() == json_type::double_value ) {
-						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
-						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
-						r = rhs.template as<bool>() ? 1 : 0;
-					} else if ( !rhs.is_null() ){
-						r = rhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(rhs) << std::endl;
-					}
-					
-					return *resources.create_json(l * r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::string_value )
-						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
-						l = lhs.template as<double>();
-
-					if ( rhs.type() == json_type::string_value )
-						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
-						r = rhs.template as<double>();
-
-					return *resources.create_json(l * r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
-					auto numEnts = std::max( lhs.size(), rhs.size() );
-					for (int64_t i=0; i<numEnts; i++) {
-						double l=0, r=0;
-						if ( i < lhs.size() ) l = lhs[i].template as<double>();
-						if ( i < rhs.size() ) r = rhs[i].template as<double>();
-						result->push_back( l * r);
-					}
-					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
-					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : lhs.array_range()) {
-						result->push_back( v.template as<double>() * d );
-					}
-					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
-					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : rhs.array_range()) {
-						result->push_back( v.template as<double>() * d );
-					}
-					return *result;
-				}
-				
-				return resources.null_value();
-			}
-
-			std::string to_string(std::size_t indent = 0) const override
-			{
-				std::string s;
-				for (std::size_t i = 0; i <= indent; ++i)
-				{
-					s.push_back(' ');
-				}
-				s.append("multiply_operator\n");
-				return s;
-			}
-		};
-
-		class div_operator final : public binary_operator
-		{
-		public:
-			div_operator()
-				: binary_operator(operator_kind::div_op)
-			{
-			}
-
-			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
-			{
-				if ( (lhs.is_number() && rhs.is_number()) ||
-					 (lhs.is_null() || rhs.is_null()) ||
-					 (lhs.is_bool() || rhs.is_bool()) ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::double_value ) {
-						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
-						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
-						l = lhs.template as<bool>() ? 1 : 0;
-					} else if ( !lhs.is_null() ) {
-						l = lhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(lhs) << std::endl;
-					}
-					
-					
-					if ( rhs.type() == json_type::double_value ) {
-						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
-						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
-						r = rhs.template as<bool>() ? 1 : 0;
-					} else if ( !rhs.is_null() ){
-						r = rhs.template as<int64_t>();
-					} else {
-//						std::cout << pretty_print(rhs) << std::endl;
-					}
-					
-					if ( r == 0 ) {
-						// divide by zero is bad - so return `null`
-						return resources.null_value();
-					} else
-						return *resources.create_json(l / r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
-					double l = 0, r = 0;
-					
-					if ( lhs.type() == json_type::string_value )
-						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
-						l = lhs.template as<double>();
-
-					if ( rhs.type() == json_type::string_value )
-						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
-						r = rhs.template as<double>();
-
-					return *resources.create_json(l / r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
-					auto numEnts = std::max( lhs.size(), rhs.size() );
-					for (int64_t i=0; i<numEnts; i++) {
-						double l=0, r=0;
-						if ( i < lhs.size() ) l = lhs[i].template as<double>();
-						if ( i < rhs.size() ) r = rhs[i].template as<double>();
-						result->push_back( l / r);
-					}
-					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
-					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : lhs.array_range()) {
-						result->push_back( v.template as<double>() / d );
-					}
-					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
-					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : rhs.array_range()) {
-						result->push_back( d / v.template as<double>() );
-					}
-					return *result;
-				}
-				
-				return resources.null_value();
-			}
-
-			std::string to_string(std::size_t indent = 0) const override
-			{
-				std::string s;
-				for (std::size_t i = 0; i <= indent; ++i)
-				{
-					s.push_back(' ');
-				}
-				s.append("divide_operator\n");
-				return s;
-			}
-		};
-
-		class concat_operator final : public binary_operator
-		{
-		public:
-			concat_operator()
-				: binary_operator(operator_kind::concat_op)
-			{
-			}
-
-			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
-			{
-				// as per json-formula spec
-				//	Arrays shall be coerced to an array of strings.
-				if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
-					auto numEnts = std::max( lhs.size(), rhs.size() );
-					for (int64_t i=0; i<numEnts; i++) {
-						std::string lhsStr, rhsStr;
-						if ( i < lhs.size() ) lhsStr = to_string(lhs[i]);
-						if ( i < rhs.size() ) rhsStr = to_string(rhs[i]);
-						result->push_back( lhsStr + rhsStr);
-					}
-					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
-					std::string rhsStr{to_string(rhs)};
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : lhs.array_range()) {
-						result->push_back( to_string(v) + rhsStr );
-					}
-					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
-					std::string lhsStr{to_string(lhs)};
-					auto result = resources.create_json(json_array_arg);	// empty array
-					for (auto& v : rhs.array_range()) {
-						result->push_back( lhsStr + to_string(v) );
-					}
-					return *result;
-				} else {
-					std::string lhsStr{to_string(lhs)}, rhsStr{to_string(rhs)};
-					
-					if ( !lhsStr.empty() || !rhsStr.empty() )
-						return *resources.create_json(lhsStr + rhsStr);
-					else
-						return resources.null_value();
-				}
-			}
-
-			std::string to_string(std::size_t indent = 0) const override
-			{
-				std::string s;
-				for (std::size_t i = 0; i <= indent; ++i)
-				{
-					s.push_back(' ');
-				}
-				s.append("concat_operator\n");
-				return s;
-			}
-
-			std::string to_string(reference& r) const
-			{
-				switch ( r.type() ) {
-					case json_type::array_value:
-						// should not get here for this scenario...
-						break;
-					case json_type::uint64_value:
-					case json_type::int64_value:
-						return std::to_string(r.template as<int64_t>());
-						break;
-					case json_type::double_value:
-						return std::to_string(r.template as<double>());
-						break;
-					case json_type::string_value:
-						return r.template as<std::string>();
-						break;
-					case json_type::bool_value:
-						return r.template as<bool>() ? "true" : "false";
-						break;
-					case json_type::null_value:
-					case json_type::object_value:		// technically an error, but we'll treat an NOP
-					case json_type::half_value:			// technically an error, but we'll treat an NOP
-					case json_type::byte_string_value:	// technically an error, but we'll treat an NOP
-						{
-							// do nothing!
-						}
-						break;
-				}
-				
-				return "";
-			}
-
-		};
-
-		class union_operator final : public binary_operator
-		{
-		public:
-			union_operator()
-				: binary_operator(operator_kind::union_op)
-			{
-			}
-
-			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
-			{
-				// lhs must be an array...
-				//	and then we determine what to do based on the type of rhs
-				if ( lhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(lhs);	// copy it since we'll be modifying it
-					switch ( rhs.type() ) {
-						case json_type::array_value:
-							{
-								for (auto& v : rhs.array_range()) {
-									result->push_back(v);
-								}
-							}
-							break;
-						case json_type::uint64_value:
-						case json_type::int64_value:
-							{
-								result->push_back(*resources.create_json(rhs.template as<int64_t>()));
-							}
-							break;
-						case json_type::double_value:
-							{
-								result->push_back(*resources.create_json(rhs.template as<double>()));
-							}
-							break;
-						case json_type::string_value:
-							{
-								result->push_back(*resources.create_json(rhs.template as<std::string>()));
-							}
-							break;
-						case json_type::bool_value:
-							{
-								result->push_back(*resources.create_json(rhs.template as<bool>()));
-							}
-							break;
-						case json_type::null_value:
-						case json_type::object_value:		// technically an error, but we'll treat an NOP
-						case json_type::half_value:			// technically an error, but we'll treat an NOP
-						case json_type::byte_string_value:	// technically an error, but we'll treat an NOP
-							{
-								// do nothing!
-							}
-							break;
-					}
-					return *result;
-				}
-				
-				return resources.null_value();
-			}
-
-			std::string to_string(std::size_t indent = 0) const override
-			{
-				std::string s;
-				for (std::size_t i = 0; i <= indent; ++i)
-				{
-					s.push_back(' ');
-				}
-				s.append("union_operator\n");
-				return s;
-			}
-		};
 
         // basic_expression
         class basic_expression :  public expression_base
@@ -3716,8 +3112,8 @@ namespace jmespath {
             string_type key;
             std::vector<token> tokens;
 
-            key_tokens(string_type&& key, std::vector<token>&& tokens) noexcept
-                : key(std::move(key)), tokens(std::move(tokens))
+            key_tokens(string_type&& Key, std::vector<token>&& Tokens) noexcept
+                : key(std::move(Key)), tokens(std::move(Tokens))
             {
             }
         };
@@ -3866,17 +3262,7 @@ namespace jmespath {
                     {string_type{'t','o','_','a','r','r','a','y',}, &to_array_func},
                     {string_type{'t','o','_', 'n', 'u', 'm','b','e','r'}, &to_number_func},
                     {string_type{'t','o','_', 's', 't', 'r','i','n','g'}, &to_string_func},
-                    {string_type{'n','o','t', '_', 'n', 'u','l','l'}, &not_null_func},
-					
-					// json_formula changes & additions
-					{string_type{'e','n','d', 's', 'W', 'i', 't', 'h'}, &ends_with_func},
-					{string_type{'m','i','n','B','y'}, &min_by_func},
-					{string_type{'s','o','r', 't','B','y'}, &sort_by_func},
-					{string_type{'s','t','a', 'r','t','s','W','i','t','h'}, &starts_with_func},
-					{string_type{'t','o','A','r','r','a','y',}, &to_array_func},
-					{string_type{'t','o','N', 'u', 'm','b','e','r'}, &to_number_func},
-					{string_type{'t','o','S', 't', 'r','i','n','g'}, &to_string_func},
-					{string_type{'n','o','t', 'N', 'u','l','l'}, &not_null_func},
+                    {string_type{'n','o','t', '_', 'n', 'u','l','l'}, &not_null_func}
                 };
                 auto it = functions_.find(name);
                 if (it == functions_.end())
@@ -3943,38 +3329,7 @@ namespace jmespath {
                 static const gte_operator gte_oper;
                 return &gte_oper;
             }
-
-			const binary_operator* get_plus_operator() const
-			{
-				static const plus_operator plus_oper;
-				return &plus_oper;
-			}
-			const binary_operator* get_minus_operator() const
-			{
-				static const minus_operator minus_oper;
-				return &minus_oper;
-			}
-			const binary_operator* get_mult_operator() const
-			{
-				static const mult_operator mult_oper;
-				return &mult_oper;
-			}
-			const binary_operator* get_div_operator() const
-			{
-				static const div_operator div_oper;
-				return &div_oper;
-			}
-			const binary_operator* get_concat_operator() const
-			{
-				static const concat_operator concat_oper;
-				return &concat_oper;
-			}
-			const binary_operator* get_union_operator() const
-			{
-				static const union_operator union_oper;
-				return &union_oper;
-			}
-		};
+        };
 
         class jmespath_expression
         {
@@ -4107,7 +3462,7 @@ namespace jmespath {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case '.': 
                                 ++p_;
@@ -4147,18 +3502,10 @@ namespace jmespath {
                                 break;
                             }
                             case '[':
-								++p_;
-								++column_;
                                 state_stack_.emplace_back(path_state::bracket_specifier);
+                                ++p_;
+                                ++column_;
                                 break;
-							// json-formula
-							case '+':
-							case '-':
-							case '*':
-							case '/':
-							case '~':
-								state_stack_.emplace_back(path_state::jf_expression);
-								break;
                             default:
                                 if (state_stack_.size() > 1)
                                 {
@@ -4176,7 +3523,7 @@ namespace jmespath {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case '<':
                                 ++p_;
@@ -4216,7 +3563,7 @@ namespace jmespath {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case '\"':
                                 state_stack_.back() = path_state::val_expr;
@@ -4288,14 +3635,7 @@ namespace jmespath {
                                     ++p_;
                                     ++column_;
                                 }
-								else if ((*p_ >= '0' && *p_ <= '9') || (*p_ == '-')) //json-formula supports #'s
-								{
-									buffer.push_back(*p_);
-									state_stack_.back() = path_state::digit;
-									++p_;
-									++column_;
-								}
-								else
+                                else
                                 {
                                     ec = jmespath_errc::expected_identifier;
                                     return jmespath_expression();
@@ -4309,7 +3649,7 @@ namespace jmespath {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case '\"':
                                 state_stack_.back() = path_state::val_expr;
@@ -4370,7 +3710,7 @@ namespace jmespath {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case '&':
                                 push_token(token(begin_expression_type_arg), ec);
@@ -4422,7 +3762,7 @@ namespace jmespath {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case ',':
                                 push_token(token(current_node_arg), ec);
@@ -4484,7 +3824,7 @@ namespace jmespath {
                         {
                             case ' ':case '\t':case '\r':case '\n':
                                 state_stack_.pop_back(); // unquoted_string
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             default:
                                 if ((*p_ >= '0' && *p_ <= '9') || (*p_ >= 'A' && *p_ <= 'Z') || (*p_ >= 'a' && *p_ <= 'z') || (*p_ == '_'))
@@ -4797,9 +4137,6 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
-//								push_token(token(literal_arg, Json(buffer)), ec);
-//								if (ec) {return jmespath_expression();}
-//								buffer.clear();
                                 state_stack_.pop_back(); // digit
                                 break;
                         }
@@ -5068,7 +4405,7 @@ namespace jmespath {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case ')':
                                 ++p_;
@@ -5087,7 +4424,7 @@ namespace jmespath {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case '\"':
                                 state_stack_.back() = path_state::expect_colon;
@@ -5133,15 +4470,6 @@ namespace jmespath {
                                 ++p_;
                                 ++column_;
                                 break;
-							// json-formula supports <> for not equal
-							case '>':
-								push_token(token(resources_.get_ne_operator()), ec);
-								push_token(token(current_node_arg), ec);
-								if (ec) {return jmespath_expression();}
-								state_stack_.pop_back();
-								++p_;
-								++column_;
-								break;
                             default:
                                 push_token(token(resources_.get_lt_operator()), ec);
                                 push_token(token(current_node_arg), ec);
@@ -5174,14 +4502,6 @@ namespace jmespath {
                     }
                     case path_state::cmp_eq:
                     {
-#if 1	// json-formula supports both `=` and `==`
-						push_token(token(resources_.get_eq_operator()), ec);
-						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
-						state_stack_.pop_back();
-						++p_;
-						++column_;
-#else
                         switch(*p_)
                         {
                             case '=':
@@ -5196,8 +4516,7 @@ namespace jmespath {
                                 ec = jmespath_errc::expected_comparator;
                                 return jmespath_expression();
                         }
-#endif
-						break;
+                        break;
                     }
                     case path_state::cmp_ne:
                     {
@@ -5217,111 +4536,12 @@ namespace jmespath {
                         }
                         break;
                     }
-					case path_state::jf_expression:
-					{
-						switch(*p_)
-						{
-							case ' ':case '\t':case '\r':case '\n':
-								advance_past_space_character(ec);
-								break;
-							case '+':
-								++p_;
-								++column_;
-								state_stack_.back() = path_state::lhs_expression;
-								state_stack_.emplace_back(path_state::plus_operator);
-								break;
-							case '-':
-								++p_;
-								++column_;
-								state_stack_.back() = path_state::lhs_expression;
-								state_stack_.emplace_back(path_state::minus_operator);
-								break;
-							case '*':
-								++p_;
-								++column_;
-								state_stack_.back() = path_state::lhs_expression;
-								state_stack_.emplace_back(path_state::mult_operator);
-								break;
-							case '/':
-								++p_;
-								++column_;
-								state_stack_.back() = path_state::lhs_expression;
-								state_stack_.emplace_back(path_state::div_operator);
-								break;
-							case '~':
-								++p_;
-								++column_;
-								state_stack_.back() = path_state::lhs_expression;
-								state_stack_.emplace_back(path_state::union_operator);
-								break;
-							default:
-								if (state_stack_.size() > 1)
-								{
-									state_stack_.pop_back();
-								}
-								else
-								{
-									ec = jmespath_errc::syntax_error;
-									return jmespath_expression();
-								}
-								break;
-						}
-						break;
-					}
-					case path_state::plus_operator:
-					{
-						push_token(token(resources_.get_plus_operator()), ec);
-						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
-						state_stack_.pop_back();
-						break;
-					}
-					case path_state::minus_operator:
-					{
-						push_token(token(resources_.get_minus_operator()), ec);
-						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
-						state_stack_.pop_back();
-						break;
-					}
-					case path_state::mult_operator:
-					{
-						push_token(token(resources_.get_mult_operator()), ec);
-						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
-						state_stack_.pop_back();
-						break;
-					}
-					case path_state::div_operator:
-					{
-						push_token(token(resources_.get_div_operator()), ec);
-						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
-						state_stack_.pop_back();
-						break;
-					}
-					case path_state::concat_operator:
-					{
-						push_token(token(resources_.get_concat_operator()), ec);
-						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
-						state_stack_.pop_back();
-						break;
-					}
-					case path_state::union_operator:
-					{
-						push_token(token(resources_.get_union_operator()), ec);
-						push_token(token(current_node_arg), ec);
-						if (ec) {return jmespath_expression();}
-						state_stack_.pop_back();
-						break;
-					}
-                   case path_state::expect_dot:
+                    case path_state::expect_dot:
                     {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case '.':
                                 state_stack_.pop_back(); // expect_dot
@@ -5367,17 +4587,9 @@ namespace jmespath {
                                 ++column_;
                                 break;
                             default:
-								// for json-formula, this is the concat operator
-//                                ec = jmespath_errc::expected_and;
-//                                return jmespath_expression();
-								push_token(token(resources_.get_concat_operator()), ec);
-								push_token(token(current_node_arg), ec);
-								if (ec) {return jmespath_expression();}
-								state_stack_.pop_back(); // expect_and
-								++p_;
-								++column_;
-								break;
-                       }
+                                ec = jmespath_errc::expected_and;
+                                return jmespath_expression();
+                        }
                         break;
                     }
                     case path_state::multi_select_list:
@@ -5385,7 +4597,7 @@ namespace jmespath {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case ',':
                                 push_token(token(separator_arg), ec);
@@ -5431,7 +4643,7 @@ namespace jmespath {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case ']':
                             {
@@ -5453,7 +4665,7 @@ namespace jmespath {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case ',':
                                 push_token(token(separator_arg), ec);
@@ -5491,7 +4703,7 @@ namespace jmespath {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character();
                                 break;
                             case ':':
                                 state_stack_.back() = path_state::expect_rbrace;
@@ -5529,12 +4741,6 @@ namespace jmespath {
                             return jmespath_expression();
                         }
                         break;
-//					case path_state::digit:	// in json-formula, we could end with a digit
-//						push_token(token(literal_arg, Json(buffer)), ec);
-//						if (ec) {return jmespath_expression();}
-//						buffer.clear();
-//						state_stack_.pop_back();
-//						break;
                     case path_state::val_expr:
                         push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
                         if (ec) {return jmespath_expression();}
@@ -5574,7 +4780,7 @@ namespace jmespath {
             return jmespath_expression(std::move(resources_), std::move(output_stack_));
         }
 
-        void advance_past_space_character(std::error_code& ec)
+        void advance_past_space_character()
         {
             switch (*p_)
             {
@@ -5583,13 +4789,11 @@ namespace jmespath {
                     ++column_;
                     break;
                 case '\r':
-                    if (p_+1 >= end_input_)
+                    if (p_+1 < end_input_)
                     {
-                        ec = jmespath_errc::unexpected_end_of_input;
-                        return;
+                        if (*(p_ + 1) == '\n')
+                            ++p_;
                     }
-                    if (*(p_+1) == '\n')
-                        ++p_;
                     ++line_;
                     column_ = 1;
                     ++p_;

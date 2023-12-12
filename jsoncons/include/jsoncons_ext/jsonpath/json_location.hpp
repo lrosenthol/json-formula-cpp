@@ -1,4 +1,4 @@
-﻿// Copyright 2021 Daniel Parker
+﻿// Copyright 2013-2023 Daniel Parker
 // Distributed under the Boost license, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -9,363 +9,82 @@
 
 #include <string>
 #include <vector>
-#include <functional>
-#include <algorithm> // std::reverse
 #include <jsoncons/config/jsoncons_config.hpp>
-#include <jsoncons/detail/write_number.hpp>
-#include <jsoncons_ext/jsonpath/jsonpath_error.hpp>
-#include <jsoncons/json_type.hpp>
+#include <jsoncons_ext/jsonpath/json_location_parser.hpp>
 
 namespace jsoncons { 
-namespace jsonpath {
+namespace jsonpath { 
 
-    template <class CharT>
-    class json_location; 
-
-    enum class json_location_node_kind { root, index, name };
-
-    template <class CharT>
-    class json_location_node 
-    {
-        friend class json_location<CharT>;
-    public:
-        using char_type = CharT;
-        using string_type = std::basic_string<CharT>;
-    private:
-
-        const json_location_node* parent_;
-        json_location_node_kind node_kind_;
-        string_type name_;
-        std::size_t index_;
-    public:
-        json_location_node(char_type c)
-            : parent_(nullptr), node_kind_(json_location_node_kind::root), index_(0)
-        {
-            name_.push_back(c);
-        }
-
-        json_location_node(const json_location_node* parent, const string_type& name)
-            : parent_(parent), node_kind_(json_location_node_kind::name), name_(name), index_(0)
-        {
-        }
-
-        json_location_node(const json_location_node* parent, std::size_t index)
-            : parent_(parent), node_kind_(json_location_node_kind::index), index_(index)
-        {
-        }
-
-        const json_location_node* parent() const { return parent_;}
-
-        json_location_node_kind node_kind() const
-        {
-            return node_kind_;
-        }
-
-        const string_type& name() const
-        {
-            return name_;
-        }
-
-        std::size_t index() const 
-        {
-            return index_;
-        }
-
-        void swap(json_location_node& node)
-        {
-            std::swap(parent_, node.parent_);
-            std::swap(node_kind_, node.node_kind_);
-            std::swap(name_, node.name_);
-            std::swap(index_, node.index_);
-        }
-
-    private:
-
-        std::size_t node_hash() const
-        {
-            std::size_t h = node_kind_ == json_location_node_kind::index ? std::hash<std::size_t>{}(index_) : std::hash<string_type>{}(name_);
-
-            return h;
-        }
-
-        int compare_node(const json_location_node& other) const
-        {
-            int diff = 0;
-            if (node_kind_ != other.node_kind_)
-            {
-                diff = static_cast<int>(node_kind_) - static_cast<int>(other.node_kind_);
-            }
-            else
-            {
-                switch (node_kind_)
-                {
-                    case json_location_node_kind::root:
-                        diff = name_.compare(other.name_);
-                        break;
-                    case json_location_node_kind::index:
-                        diff = index_ < other.index_ ? -1 : index_ > other.index_ ? 1 : 0;
-                        break;
-                    case json_location_node_kind::name:
-                        diff = name_.compare(other.name_);
-                        break;
-                }
-            }
-            return diff;
-        }
-    };
-
-    namespace detail {
-
-        template <class Iterator>
-        class json_location_iterator
-        { 
-            Iterator it_; 
-
-        public:
-            using iterator_category = std::random_access_iterator_tag;
-
-            using value_type = typename std::remove_pointer<typename std::iterator_traits<Iterator>::value_type>::type;
-            using difference_type = typename std::iterator_traits<Iterator>::difference_type;
-            using pointer = const value_type*;
-            using reference = const value_type&;
-
-            json_location_iterator() : it_()
-            { 
-            }
-
-            explicit json_location_iterator(Iterator ptr) : it_(ptr)
-            {
-            }
-
-            json_location_iterator(const json_location_iterator&) = default;
-            json_location_iterator(json_location_iterator&&) = default;
-            json_location_iterator& operator=(const json_location_iterator&) = default;
-            json_location_iterator& operator=(json_location_iterator&&) = default;
-
-            template <class Iter,
-                      class=typename std::enable_if<!std::is_same<Iter,Iterator>::value && std::is_convertible<Iter,Iterator>::value>::type>
-            json_location_iterator(const json_location_iterator<Iter>& other)
-                : it_(other.it_)
-            {
-            }
-
-            operator Iterator() const
-            { 
-                return it_; 
-            }
-
-            reference operator*() const 
-            {
-                return *(*it_);
-            }
-
-            pointer operator->() const 
-            {
-                return (*it_);
-            }
-
-            json_location_iterator& operator++() 
-            {
-                ++it_;
-                return *this;
-            }
-
-            json_location_iterator operator++(int) 
-            {
-                json_location_iterator temp = *this;
-                ++*this;
-                return temp;
-            }
-
-            json_location_iterator& operator--() 
-            {
-                --it_;
-                return *this;
-            }
-
-            json_location_iterator operator--(int) 
-            {
-                json_location_iterator temp = *this;
-                --*this;
-                return temp;
-            }
-
-            json_location_iterator& operator+=(const difference_type offset) 
-            {
-                it_ += offset;
-                return *this;
-            }
-
-            json_location_iterator operator+(const difference_type offset) const 
-            {
-                json_location_iterator temp = *this;
-                return temp += offset;
-            }
-
-            json_location_iterator& operator-=(const difference_type offset) 
-            {
-                return *this += -offset;
-            }
-
-            json_location_iterator operator-(const difference_type offset) const 
-            {
-                json_location_iterator temp = *this;
-                return temp -= offset;
-            }
-
-            difference_type operator-(const json_location_iterator& rhs) const noexcept
-            {
-                return it_ - rhs.it_;
-            }
-
-            reference operator[](const difference_type offset) const noexcept
-            {
-                return *(*(*this + offset));
-            }
-
-            bool operator==(const json_location_iterator& rhs) const noexcept
-            {
-                return it_ == rhs.it_;
-            }
-
-            bool operator!=(const json_location_iterator& rhs) const noexcept
-            {
-                return !(*this == rhs);
-            }
-
-            bool operator<(const json_location_iterator& rhs) const noexcept
-            {
-                return it_ < rhs.it_;
-            }
-
-            bool operator>(const json_location_iterator& rhs) const noexcept
-            {
-                return rhs < *this;
-            }
-
-            bool operator<=(const json_location_iterator& rhs) const noexcept
-            {
-                return !(rhs < *this);
-            }
-
-            bool operator>=(const json_location_iterator& rhs) const noexcept
-            {
-                return !(*this < rhs);
-            }
-
-            inline 
-            friend json_location_iterator<Iterator> operator+(
-                difference_type offset, json_location_iterator<Iterator> next) 
-            {
-                return next += offset;
-            }
-        };
-
-    } // namespace detail
-
-    template <class CharT>
-    class json_location
+    template <class CharT, class Allocator = std::allocator<CharT>>
+    class basic_json_location
     {
     public:
         using char_type = CharT;
-        using string_type = std::basic_string<CharT>;
-        using json_location_node_type = json_location_node<CharT>;
+        using allocator_type = Allocator;
+        using char_allocator_type = typename std::allocator_traits<allocator_type>:: template rebind_alloc<char_type>;
+        using string_type = std::basic_string<char_type,std::char_traits<char_type>,char_allocator_type>;
+        using string_view_type = jsoncons::basic_string_view<char_type, std::char_traits<char_type>>;
+        using path_element_type = basic_path_element<CharT,Allocator>;
+        using path_element_allocator_type = typename std::allocator_traits<allocator_type>:: template rebind_alloc<path_element_type>;
     private:
-        std::vector<const json_location_node_type*> nodes_;
+        allocator_type alloc_;
+        std::vector<path_element_type> elements_;
     public:
-        using iterator = typename detail::json_location_iterator<typename std::vector<const json_location_node_type*>::iterator>;
-        using const_iterator = typename detail::json_location_iterator<typename std::vector<const json_location_node_type*>::const_iterator>;
+        using iterator = typename std::vector<path_element_type>::iterator;
+        using const_iterator = typename std::vector<path_element_type>::const_iterator;
 
-        json_location(const json_location_node_type& node)
+        basic_json_location(const allocator_type& alloc=Allocator())
+            : alloc_(alloc), elements_(alloc)
         {
-            const json_location_node_type* p = std::addressof(node);
-            do
-            {
-                nodes_.push_back(p);
-                p = p->parent_;
-            }
-            while (p != nullptr);
+        }
 
-            std::reverse(nodes_.begin(), nodes_.end());
+        basic_json_location(std::vector<path_element_type>&& elements)
+            : elements_(std::move(elements))
+        {
         }
 
         iterator begin()
         {
-            return iterator(nodes_.begin());
+            return elements_.begin();
         }
 
         iterator end()
         {
-            return iterator(nodes_.end());
+            return elements_.end();
         }
 
         const_iterator begin() const
         {
-            return const_iterator(nodes_.begin());
+            return elements_.begin();
         }
 
         const_iterator end() const
         {
-            return const_iterator(nodes_.end());
+            return elements_.end();
         }
 
-        const json_location_node_type& last() const
+        std::size_t size() const
         {
-            return *nodes_.back();
+            return elements_.size();
         }
 
-        string_type to_string() const
+        const basic_path_element<char_type,allocator_type>& operator[](std::size_t index) const
         {
-            string_type buffer;
-
-            for (const auto& node : nodes_)
-            {
-                switch (node->node_kind())
-                {
-                    case json_location_node_kind::root:
-                        buffer.append(node->name());
-                        break;
-                    case json_location_node_kind::name:
-                        buffer.push_back('[');
-                        buffer.push_back('\'');
-                        for (auto c : node->name())
-                        {
-                            if (c == '\'')
-                            {
-                                buffer.push_back('\\');
-                                buffer.push_back('\'');
-                            }
-                            else
-                            {
-                                buffer.push_back(c);
-                            }
-                        }
-                        buffer.push_back('\'');
-                        buffer.push_back(']');
-                        break;
-                    case json_location_node_kind::index:
-                        buffer.push_back('[');
-                        jsoncons::detail::from_integer(node->index(), buffer);
-                        buffer.push_back(']');
-                        break;
-                }
-            }
-
-            return buffer;
+            return elements_[index];
         }
 
-        int compare(const json_location& other) const
+        int compare(const basic_json_location& other) const
         {
             if (this == &other)
             {
                return 0;
             }
 
-            auto it1 = nodes_.begin();
-            auto it2 = other.nodes_.begin();
-            while (it1 != nodes_.end() && it2 != other.nodes_.end())
+            auto it1 = elements_.begin();
+            auto it2 = other.elements_.begin();
+            while (it1 != elements_.end() && it2 != other.elements_.end())
             {
-                int diff = (*it1)->compare_node(*(*it2));
+                int diff = it1->compare(*it2);
                 if (diff != 0)
                 {
                     return diff;
@@ -373,70 +92,224 @@ namespace jsonpath {
                 ++it1;
                 ++it2;
             }
-            return (nodes_.size() < other.nodes_.size()) ? -1 : (nodes_.size() == other.nodes_.size()) ? 0 : 1;
+            return (elements_.size() < other.elements_.size()) ? -1 : (elements_.size() == other.elements_.size()) ? 0 : 1;
         }
 
-        std::size_t hash() const
+        // Modifiers
+
+        void clear()
         {
-
-            auto it = nodes_.begin();
-            std::size_t hash = (*it).hash();
-            ++it;
-
-            while (it != nodes_.end())
-            {
-                hash += 17*(*it)->node_hash();
-                ++it;
-            }
-
-            return hash;
+            elements_.clear();
         }
 
-        friend bool operator==(const json_location& lhs, const json_location& rhs) 
+        basic_json_location& append(const string_view_type& s)
+        {
+            elements_.emplace_back(string_type(s.data(), s.size(), alloc_));
+            return *this;
+        }
+
+        template <class IntegerType>
+        typename std::enable_if<extension_traits::is_integer<IntegerType>::value, basic_json_location&>::type
+            append(IntegerType val)
+        {
+            elements_.emplace_back(static_cast<std::size_t>(val));
+
+            return *this;
+        }
+
+        basic_json_location& operator/=(const string_view_type& s)
+        {
+            elements_.emplace_back(string_type(s.data(), s.size(), alloc_));
+            return *this;
+        }
+
+        template <class IntegerType>
+        typename std::enable_if<extension_traits::is_integer<IntegerType>::value, basic_json_location&>::type
+            operator/=(IntegerType val)
+        {
+            elements_.emplace_back(static_cast<std::size_t>(val));
+
+            return *this;
+        }
+
+        friend bool operator==(const basic_json_location& lhs, const basic_json_location& rhs) 
         {
             return lhs.compare(rhs) == 0;
         }
 
-        friend bool operator!=(const json_location& lhs, const json_location& rhs)
+        friend bool operator!=(const basic_json_location& lhs, const basic_json_location& rhs)
         {
             return !(lhs == rhs);
         }
 
-        friend bool operator<(const json_location& lhs, const json_location& rhs) 
+        friend bool operator<(const basic_json_location& lhs, const basic_json_location& rhs) 
         {
             return lhs.compare(rhs) < 0;
         }
+
+        static basic_json_location parse(const jsoncons::basic_string_view<char_type>& normalized_path)
+        {
+            jsonpath::detail::json_location_parser<char,std::allocator<char>> parser;
+
+            std::vector<jsonpath::path_element> location = parser.parse(normalized_path);
+            return basic_json_location(std::move(location));
+        }
     };
 
-    template <class Json>
-    Json* select(Json& root, const json_location<typename Json::char_type>& path)
+    template<class Json>
+    std::size_t json_erase(Json& instance, const basic_json_location<typename Json::char_type>& location)
     {
-        Json* current = std::addressof(root);
-        for (const auto& json_location_node : path)
+        std::size_t count = 0;
+
+        Json* p_current = std::addressof(instance);
+
+        std::size_t last = location.size() == 0 ? 0 : location.size() - 1;
+        for (std::size_t i = 0; i < location.size(); ++i)
         {
-            if (json_location_node.node_kind() == json_location_node_kind::index)
+            const auto& element = location[i];
+            if (element.has_name())
             {
-                if (current->type() != json_type::array_value || json_location_node.index() >= current->size())
+                if (p_current->is_object())
                 {
-                    return nullptr; 
+                    auto it = p_current->find(element.name());
+                    if (it != p_current->object_range().end())
+                    {
+                        if (i < last)
+                        {
+                            p_current = std::addressof(it->value());
+                        }
+                        else
+                        {
+                            p_current->erase(it);
+                            count = 1;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                current = std::addressof(current->at(json_location_node.index()));
+                else
+                {
+                    break;
+                }
             }
-            else if (json_location_node.node_kind() == json_location_node_kind::name)
+            else // if (element.has_index())
             {
-                if (current->type() != json_type::object_value)
+                if (p_current->is_array() && element.index() < p_current->size())
                 {
-                    return nullptr;
+                    if (i < last)
+                    {
+                        p_current = std::addressof(p_current->at(element.index()));
+                    }
+                    else
+                    {
+                        p_current->erase(p_current->array_range().begin()+element.index());
+                        count = 1;
+                    }
                 }
-                auto it = current->find(json_location_node.name());
-                if (it == current->object_range().end())
+                else
                 {
-                    return nullptr;
+                    break;
                 }
-                current = std::addressof(it->value());
             }
         }
-        return current;
+        return count;
+    }
+
+    template<class Json>
+    Json* json_get(Json& instance, const basic_json_location<typename Json::char_type>& location)
+    {
+        Json* p_current = std::addressof(instance);
+        bool found = false;
+
+        std::size_t last = location.size() == 0 ? 0 : location.size() - 1;
+        for (std::size_t i = 0; i < location.size(); ++i)
+        {
+            const auto& element = location[i];
+            if (element.has_name())
+            {
+                if (p_current->is_object())
+                {
+                    auto it = p_current->find(element.name());
+                    if (it != p_current->object_range().end())
+                    {
+                        p_current = std::addressof(it->value());
+                        if (i == last)
+                        {
+                            found = true;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else // if (element.has_index())
+            {
+                if (p_current->is_array() && element.index() < p_current->size())
+                {
+                    p_current = std::addressof(p_current->at(element.index()));
+                    if (i == last)
+                    {
+                        found = true;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        return found ? p_current : nullptr;
+    }
+
+    template <class CharT, class Allocator = std::allocator<CharT>>
+    std::basic_string<CharT, std::char_traits<CharT>, Allocator> to_basic_string(const basic_json_location<CharT,Allocator>& location, 
+        const Allocator& alloc = Allocator())
+    {
+        std::basic_string<CharT, std::char_traits<CharT>, Allocator> buffer(alloc);
+
+        buffer.push_back('$');
+        for (const auto& element : location)
+        {
+            if (element.has_name())
+            {
+                buffer.push_back('[');
+                buffer.push_back('\'');
+                jsoncons::jsonpath::escape_string(element.name().data(), element.name().size(), buffer);
+                buffer.push_back('\'');
+                buffer.push_back(']');
+            }
+            else
+            {
+                buffer.push_back('[');
+                jsoncons::detail::from_integer(element.index(), buffer);
+                buffer.push_back(']');
+            }
+        }
+
+        return buffer;
+    }
+
+    using json_location = basic_json_location<char>;
+    using wjson_location = basic_json_location<wchar_t>;
+
+    inline
+    std::string to_string(const json_location& location)
+    {
+        return to_basic_string(location);
+    }
+
+    inline
+    std::wstring to_wstring(const wjson_location& location)
+    {
+        return to_basic_string(location);
     }
 
 } // namespace jsonpath
