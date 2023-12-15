@@ -8,7 +8,7 @@
 #include "json-formula.h"
 
 
-namespace jsonformula {
+namespace jsonformulaX {
 
 jsoncons::json parser::eval( const std::string& s )
 {

@@ -1,4 +1,5 @@
 /// Copyright 2020 Daniel Parker
+// Copyright 2023, Adobe
 // Distributed under the Boost license, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -11,9 +12,9 @@
 #include <jsoncons/json_exception.hpp>
 #include <system_error>
 
-namespace jsoncons { namespace jsonformula {
+namespace jsonformula {
 
-    class jsonformula_error : public std::system_error, public virtual json_exception
+class jsonformula_error : public std::system_error, public virtual jsoncons::json_exception
     {
         std::size_t line_number_;
         std::size_t column_number_;
@@ -204,11 +205,11 @@ std::error_code make_error_code(jsonformula_errc result)
     return std::error_code(static_cast<int>(result),jsonformula_error_category());
 }
 
-}}
+}
 
 namespace std {
     template<>
-    struct is_error_code_enum<jsoncons::jsonformula::jsonformula_errc> : public true_type
+    struct is_error_code_enum<jsonformula::jsonformula_errc> : public true_type
     {
     };
 }

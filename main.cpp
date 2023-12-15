@@ -23,21 +23,21 @@ UTEST_MAIN();
 
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
-	jsoncons::json r = jsoncons::jsonformula::search(j,e);
+	jsoncons::json r = jsonformula::search(j,e);
 	if ( print )
 		std::cout << e << " = " << jsoncons::print(r) << "\n";
 	
 	return r;
 }
 
-static jsoncons::json evalNew(const jsoncons::json& j, const std::string& e, bool print=false)
-{
-	jsoncons::json r = jsonformula::parser::eval(j,e);
-	if ( print )
-		std::cout << e << " = " << jsoncons::print(r) << "\n";
-	
-	return r;
-}
+//static jsoncons::json evalNew(const jsoncons::json& j, const std::string& e, bool print=false)
+//{
+//	jsoncons::json r = jsonformula::parser::eval(j,e);
+//	if ( print )
+//		std::cout << e << " = " << jsoncons::print(r) << "\n";
+//
+//	return r;
+//}
 
 //static std::string evalToString(const jsoncons::json& j, const std::string& e)
 //{
@@ -377,7 +377,9 @@ UTEST(json_formula, misc) {
 UTEST(json_formula, hacking) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 	
-	EXPECT_TRUE(eval(j,"10 + 1", true) == jsoncons::json(200));
+	EXPECT_TRUE(eval(j,"10 + 1", true) == jsoncons::json(11));
+	EXPECT_TRUE(eval(j,"100 * 3", true) == jsoncons::json(300));
+	EXPECT_TRUE(eval(j,"100/2", true) == jsoncons::json(50));
 }
 
 //// MARK: New parser

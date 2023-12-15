@@ -11,7 +11,7 @@
 #include "jsoncons/json.hpp"
 #include "jsoncons_ext/jmespath/jmespath.hpp"
 
-namespace jsonformula {
+namespace jsonformulaX {
 
 	enum class token_kind
 	{

@@ -1,11 +1,15 @@
 // Copyright 2020 Daniel Parker
+// Copyright 2023, Adobe
 // Distributed under the Boost license, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-// See https://github.com/danielaparker/jsoncons for latest version
+// This started as the JMESPath parser for JsonCons
+// and was extended by Leonard Rosenthol (lrosenth@adobe.com)
+// to support JsonFormula
 
-#ifndef JSONCONS_JMESPATH_JMESPATH_HPP
-#define JSONCONS_JMESPATH_JMESPATH_HPP
+
+#ifndef JSONFORMULA_HPP
+#define JSONFORMULA_HPP
 
 #include <string>
 #include <vector>
@@ -20,7 +24,6 @@
 #include <jsoncons/json.hpp>
 #include "json-formula_error.hpp"
 
-namespace jsoncons { 
 namespace jsonformula {
 
     enum class operator_kind
@@ -392,6 +395,8 @@ namespace jsonformula {
 
     // dynamic_resources
 
+#define JSONFORMULA_STRING_CONSTANT(CharT, Str) jsoncons::string_constant_of_type<CharT>(Str, JSONCONS_WIDEN(Str))
+
     template<class Json, class JsonReference>
     class dynamic_resources
     {
@@ -412,61 +417,61 @@ namespace jsonformula {
 
         reference number_type_name() 
         {
-            static Json number_type_name(JSONCONS_STRING_CONSTANT(char_type, "number"));
+            static Json number_type_name(JSONFORMULA_STRING_CONSTANT(char_type, "number"));
 
             return number_type_name;
         }
 
         reference boolean_type_name()
         {
-            static Json boolean_type_name(JSONCONS_STRING_CONSTANT(char_type, "boolean"));
+            static Json boolean_type_name(JSONFORMULA_STRING_CONSTANT(char_type, "boolean"));
 
             return boolean_type_name;
         }
 
         reference string_type_name()
         {
-            static Json string_type_name(JSONCONS_STRING_CONSTANT(char_type, "string"));
+            static Json string_type_name(JSONFORMULA_STRING_CONSTANT(char_type, "string"));
 
             return string_type_name;
         }
 
         reference object_type_name()
         {
-            static Json object_type_name(JSONCONS_STRING_CONSTANT(char_type, "object"));
+            static Json object_type_name(JSONFORMULA_STRING_CONSTANT(char_type, "object"));
 
             return object_type_name;
         }
 
         reference array_type_name()
         {
-            static Json array_type_name(JSONCONS_STRING_CONSTANT(char_type, "array"));
+            static Json array_type_name(JSONFORMULA_STRING_CONSTANT(char_type, "array"));
 
             return array_type_name;
         }
 
         reference null_type_name()
         {
-            static Json null_type_name(JSONCONS_STRING_CONSTANT(char_type, "null"));
+            static Json null_type_name(JSONFORMULA_STRING_CONSTANT(char_type, "null"));
 
             return null_type_name;
         }
 
         reference true_value() const
         {
-            static const Json true_value(true, semantic_tag::none);
+			static const Json true_value(true, jsoncons::semantic_tag::none);
             return true_value;
         }
 
         reference false_value() const
         {
-            static const Json false_value(false, semantic_tag::none);
+            static const Json false_value(false, jsoncons::semantic_tag::none);
             return false_value;
         }
 
         reference null_value() const
         {
-            static const Json null_value(null_type(), semantic_tag::none);
+            static const Json null_value(jsoncons::null_type(), jsoncons::semantic_tag::none);
             return null_value;
         }
 
@@ -752,13 +757,13 @@ namespace jsonformula {
                 reference arg0 = args[0].value();
                 switch (arg0.type())
                 {
-                    case json_type::uint64_value:
+					case jsoncons::json_type::uint64_value:
                         return arg0;
-                    case json_type::int64_value:
+					case jsoncons::json_type::int64_value:
                     {
                         return arg0.template as<int64_t>() >= 0 ? arg0 : *resources.create_json(std::abs(arg0.template as<int64_t>()));
                     }
-                    case json_type::double_value:
+					case jsoncons::json_type::double_value:
                     {
                         return arg0.template as<double>() >= 0 ? arg0 : *resources.create_json(std::abs(arg0.template as<double>()));
                     }
@@ -836,12 +841,12 @@ namespace jsonformula {
                 reference arg0 = args[0].value();
                 switch (arg0.type())
                 {
-                    case json_type::uint64_value:
-                    case json_type::int64_value:
+					case jsoncons::json_type::uint64_value:
+					case jsoncons::json_type::int64_value:
                     {
                         return *resources.create_json(arg0.template as<double>());
                     }
-                    case json_type::double_value:
+					case jsoncons::json_type::double_value:
                     {
                         return *resources.create_json(std::ceil(arg0.template as<double>()));
                     }
@@ -876,7 +881,7 @@ namespace jsonformula {
 
                 switch (arg0.type())
                 {
-                    case json_type::array_value:
+					case jsoncons::json_type::array_value:
                         for (auto& j : arg0.array_range())
                         {
                             if (j == arg1)
@@ -885,7 +890,7 @@ namespace jsonformula {
                             }
                         }
                         return resources.false_value();
-                    case json_type::string_value:
+					case jsoncons::json_type::string_value:
                     {
 						if (arg1.is_number()) {
 							auto sv0 = arg0.template as<string_view_type>();
@@ -976,12 +981,12 @@ namespace jsonformula {
                 reference arg0 = args[0].value();
                 switch (arg0.type())
                 {
-                    case json_type::uint64_value:
-                    case json_type::int64_value:
+                    case jsoncons::json_type::uint64_value:
+                    case jsoncons::json_type::int64_value:
                     {
                         return *resources.create_json(arg0.template as<double>());
                     }
-                    case json_type::double_value:
+                    case jsoncons::json_type::double_value:
                     {
                         return *resources.create_json(std::floor(arg0.template as<double>()));
                     }
@@ -1066,13 +1071,13 @@ namespace jsonformula {
 
                 switch (arg0.type())
                 {
-                    case json_type::object_value:
-                    case json_type::array_value:
+                    case jsoncons::json_type::object_value:
+                    case jsoncons::json_type::array_value:
                         return *resources.create_json(arg0.size());
-                    case json_type::string_value:
+                    case jsoncons::json_type::string_value:
                     {
                         auto sv0 = arg0.template as<string_view_type>();
-                        auto length = unicode_traits::count_codepoints(sv0.data(), sv0.size());
+                        auto length = jsoncons::unicode_traits::count_codepoints(sv0.data(), sv0.size());
                         return *resources.create_json(length);
                     }
                     default:
@@ -1227,7 +1232,7 @@ namespace jsonformula {
                     return resources.null_value();
                 }
 
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
 
                 for (auto& item : arg0.array_range())
                 {
@@ -1237,7 +1242,7 @@ namespace jsonformula {
                         ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
-                    result->emplace_back(json_const_pointer_arg, std::addressof(j));
+                    result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                 }
 
                 return *result;
@@ -1443,17 +1448,17 @@ namespace jsonformula {
 
                 switch (arg0.type())
                 {
-                    case json_type::int64_value:
-                    case json_type::uint64_value:
-                    case json_type::double_value:
+                    case jsoncons::json_type::int64_value:
+                    case jsoncons::json_type::uint64_value:
+                    case jsoncons::json_type::double_value:
                         return resources.number_type_name();
-                    case json_type::bool_value:
+                    case jsoncons::json_type::bool_value:
                         return resources.boolean_type_name();
-                    case json_type::string_value:
+                    case jsoncons::json_type::string_value:
                         return resources.string_type_name();
-                    case json_type::object_value:
+                    case jsoncons::json_type::object_value:
                         return resources.object_type_name();
-                    case json_type::array_value:
+                    case jsoncons::json_type::array_value:
                         return resources.array_type_name();
                     default:
                         return resources.null_type_name();
@@ -1601,7 +1606,7 @@ namespace jsonformula {
                     return resources.null_value();
                 }
 
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
                 result->reserve(args.size());
 
                 for (auto& item : arg0.object_range())
@@ -1637,7 +1642,7 @@ namespace jsonformula {
                     return resources.null_value();
                 }
 
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
                 result->reserve(args.size());
 
                 for (auto& item : arg0.object_range())
@@ -1669,17 +1674,17 @@ namespace jsonformula {
                 reference arg0 = args[0].value();
                 switch (arg0.type())
                 {
-                    case json_type::string_value:
+                    case jsoncons::json_type::string_value:
                     {
                         string_view_type sv = arg0.as_string_view();
                         std::basic_string<char32_t> buf;
-                        unicode_traits::convert(sv.data(), sv.size(), buf);
+                        jsoncons::unicode_traits::convert(sv.data(), sv.size(), buf);
                         std::reverse(buf.begin(), buf.end());
                         string_type s;
-                        unicode_traits::convert(buf.data(), buf.size(), s);
+                        jsoncons::unicode_traits::convert(buf.data(), buf.size(), s);
                         return *resources.create_json(s);
                     }
-                    case json_type::array_value:
+                    case jsoncons::json_type::array_value:
                     {
                         auto result = resources.create_json(arg0);
                         std::reverse(result->array_range().begin(),result->array_range().end());
@@ -1802,7 +1807,7 @@ namespace jsonformula {
                 }
                 else
                 {
-                    auto result = resources.create_json(json_array_arg);
+                    auto result = resources.create_json(jsoncons::json_array_arg);
                     result->push_back(arg0);
                     return *result;
                 }
@@ -1835,11 +1840,11 @@ namespace jsonformula {
                 reference arg0 = args[0].value();
                 switch (arg0.type())
                 {
-                    case json_type::int64_value:
-                    case json_type::uint64_value:
-                    case json_type::double_value:
+                    case jsoncons::json_type::int64_value:
+                    case jsoncons::json_type::uint64_value:
+                    case jsoncons::json_type::double_value:
                         return arg0;
-                    case json_type::string_value:
+                    case jsoncons::json_type::string_value:
                     {
                         auto sv = arg0.as_string_view();
                         uint64_t uval{ 0 };
@@ -1866,7 +1871,7 @@ namespace jsonformula {
                             return resources.null_value();
                         }
                     }
-					case json_type::null_value:	// json-formula addition
+					case jsoncons::json_type::null_value:	// json-formula addition
 						return *resources.create_json(0);
 
                     default:
@@ -2675,11 +2680,11 @@ namespace jsonformula {
 					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::double_value ) {
+					if ( lhs.type() == jsoncons::json_type::double_value ) {
 						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::bool_value ) {
 						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
@@ -2688,11 +2693,11 @@ namespace jsonformula {
 					}
 					
 					
-					if ( rhs.type() == json_type::double_value ) {
+					if ( rhs.type() == jsoncons::json_type::double_value ) {
 						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::bool_value ) {
 						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
@@ -2701,22 +2706,22 @@ namespace jsonformula {
 					}
 					
 					return *resources.create_json(l + r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::string_value || rhs.type() == jsoncons::json_type::string_value ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::string_value )
+					if ( lhs.type() == jsoncons::json_type::string_value )
 						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
+					else if ( lhs.type() != jsoncons::json_type::null_value )
 						l = lhs.template as<double>();
 
-					if ( rhs.type() == json_type::string_value )
+					if ( rhs.type() == jsoncons::json_type::string_value )
 						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
+					else if ( rhs.type() != jsoncons::json_type::null_value )
 						r = rhs.template as<double>();
 
 					return *resources.create_json(l + r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
+				} else if ( lhs.type() == jsoncons::json_type::array_value && rhs.type() == jsoncons::json_type::array_value ) {
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					auto numEnts = std::max( lhs.size(), rhs.size() );
 					for (int64_t i=0; i<numEnts; i++) {
 						double l=0, r=0;
@@ -2725,16 +2730,16 @@ namespace jsonformula {
 						result->push_back( l + r);
 					}
 					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::array_value ) {
 					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : lhs.array_range()) {
 						result->push_back( v.template as<double>() + d );
 					}
 					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
+				} else if ( rhs.type() == jsoncons::json_type::array_value ) {
 					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : rhs.array_range()) {
 						result->push_back( v.template as<double>() + d );
 					}
@@ -2773,11 +2778,11 @@ namespace jsonformula {
 					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::double_value ) {
+					if ( lhs.type() == jsoncons::json_type::double_value ) {
 						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::bool_value ) {
 						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
@@ -2786,11 +2791,11 @@ namespace jsonformula {
 					}
 					
 					
-					if ( rhs.type() == json_type::double_value ) {
+					if ( rhs.type() == jsoncons::json_type::double_value ) {
 						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::bool_value ) {
 						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
@@ -2799,22 +2804,22 @@ namespace jsonformula {
 					}
 					
 					return *resources.create_json(l - r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::string_value || rhs.type() == jsoncons::json_type::string_value ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::string_value )
+					if ( lhs.type() == jsoncons::json_type::string_value )
 						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
+					else if ( lhs.type() != jsoncons::json_type::null_value )
 						l = lhs.template as<double>();
 
-					if ( rhs.type() == json_type::string_value )
+					if ( rhs.type() == jsoncons::json_type::string_value )
 						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
+					else if ( rhs.type() != jsoncons::json_type::null_value )
 						r = rhs.template as<double>();
 
 					return *resources.create_json(l - r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
+				} else if ( lhs.type() == jsoncons::json_type::array_value && rhs.type() == jsoncons::json_type::array_value ) {
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					auto numEnts = std::max( lhs.size(), rhs.size() );
 					for (int64_t i=0; i<numEnts; i++) {
 						double l=0, r=0;
@@ -2823,16 +2828,16 @@ namespace jsonformula {
 						result->push_back( l - r);
 					}
 					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::array_value ) {
 					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : lhs.array_range()) {
 						result->push_back( v.template as<double>() - d );
 					}
 					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
+				} else if ( rhs.type() == jsoncons::json_type::array_value ) {
 					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : rhs.array_range()) {
 						result->push_back( d - v.template as<double>() );
 					}
@@ -2869,11 +2874,11 @@ namespace jsonformula {
 					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::double_value ) {
+					if ( lhs.type() == jsoncons::json_type::double_value ) {
 						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::bool_value ) {
 						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
@@ -2882,11 +2887,11 @@ namespace jsonformula {
 					}
 					
 					
-					if ( rhs.type() == json_type::double_value ) {
+					if ( rhs.type() == jsoncons::json_type::double_value ) {
 						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::bool_value ) {
 						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
@@ -2895,22 +2900,22 @@ namespace jsonformula {
 					}
 					
 					return *resources.create_json(l * r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::string_value || rhs.type() == jsoncons::json_type::string_value ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::string_value )
+					if ( lhs.type() == jsoncons::json_type::string_value )
 						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
+					else if ( lhs.type() != jsoncons::json_type::null_value )
 						l = lhs.template as<double>();
 
-					if ( rhs.type() == json_type::string_value )
+					if ( rhs.type() == jsoncons::json_type::string_value )
 						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
+					else if ( rhs.type() != jsoncons::json_type::null_value )
 						r = rhs.template as<double>();
 
 					return *resources.create_json(l * r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
+				} else if ( lhs.type() == jsoncons::json_type::array_value && rhs.type() == jsoncons::json_type::array_value ) {
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					auto numEnts = std::max( lhs.size(), rhs.size() );
 					for (int64_t i=0; i<numEnts; i++) {
 						double l=0, r=0;
@@ -2919,16 +2924,16 @@ namespace jsonformula {
 						result->push_back( l * r);
 					}
 					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::array_value ) {
 					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : lhs.array_range()) {
 						result->push_back( v.template as<double>() * d );
 					}
 					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
+				} else if ( rhs.type() == jsoncons::json_type::array_value ) {
 					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : rhs.array_range()) {
 						result->push_back( v.template as<double>() * d );
 					}
@@ -2965,11 +2970,11 @@ namespace jsonformula {
 					 (lhs.is_bool() || rhs.is_bool()) ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::double_value ) {
+					if ( lhs.type() == jsoncons::json_type::double_value ) {
 						l = lhs.template as<double>();
-					} else if ( lhs.type() == json_type::string_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::string_value ) {
 						l = std::stod(lhs.template as<std::string>());
-					} else if ( lhs.type() == json_type::bool_value ) {
+					} else if ( lhs.type() == jsoncons::json_type::bool_value ) {
 						l = lhs.template as<bool>() ? 1 : 0;
 					} else if ( !lhs.is_null() ) {
 						l = lhs.template as<int64_t>();
@@ -2978,11 +2983,11 @@ namespace jsonformula {
 					}
 					
 					
-					if ( rhs.type() == json_type::double_value ) {
+					if ( rhs.type() == jsoncons::json_type::double_value ) {
 						r = rhs.template as<double>();
-					} else if ( rhs.type() == json_type::string_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::string_value ) {
 						r = std::stod(rhs.template as<std::string>());
-					} else if ( rhs.type() == json_type::bool_value ) {
+					} else if ( rhs.type() == jsoncons::json_type::bool_value ) {
 						r = rhs.template as<bool>() ? 1 : 0;
 					} else if ( !rhs.is_null() ){
 						r = rhs.template as<int64_t>();
@@ -2995,22 +3000,22 @@ namespace jsonformula {
 						return resources.null_value();
 					} else
 						return *resources.create_json(l / r);
-				} else if ( lhs.type() == json_type::string_value || rhs.type() == json_type::string_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::string_value || rhs.type() == jsoncons::json_type::string_value ) {
 					double l = 0, r = 0;
 					
-					if ( lhs.type() == json_type::string_value )
+					if ( lhs.type() == jsoncons::json_type::string_value )
 						l = std::stod(lhs.template as<std::string>());
-					else if ( lhs.type() != json_type::null_value )
+					else if ( lhs.type() != jsoncons::json_type::null_value )
 						l = lhs.template as<double>();
 
-					if ( rhs.type() == json_type::string_value )
+					if ( rhs.type() == jsoncons::json_type::string_value )
 						r = std::stod(rhs.template as<std::string>());
-					else if ( rhs.type() != json_type::null_value )
+					else if ( rhs.type() != jsoncons::json_type::null_value )
 						r = rhs.template as<double>();
 
 					return *resources.create_json(l / r);
-				} else if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
+				} else if ( lhs.type() == jsoncons::json_type::array_value && rhs.type() == jsoncons::json_type::array_value ) {
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					auto numEnts = std::max( lhs.size(), rhs.size() );
 					for (int64_t i=0; i<numEnts; i++) {
 						double l=0, r=0;
@@ -3019,16 +3024,16 @@ namespace jsonformula {
 						result->push_back( l / r);
 					}
 					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::array_value ) {
 					double d = rhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : lhs.array_range()) {
 						result->push_back( v.template as<double>() / d );
 					}
 					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
+				} else if ( rhs.type() == jsoncons::json_type::array_value ) {
 					double d = lhs.template as<double>();
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : rhs.array_range()) {
 						result->push_back( d / v.template as<double>() );
 					}
@@ -3062,8 +3067,8 @@ namespace jsonformula {
 			{
 				// as per json-formula spec
 				//	Arrays shall be coerced to an array of strings.
-				if ( lhs.type() == json_type::array_value && rhs.type() == json_type::array_value ) {
-					auto result = resources.create_json(json_array_arg);	// empty array
+				if ( lhs.type() == jsoncons::json_type::array_value && rhs.type() == jsoncons::json_type::array_value ) {
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					auto numEnts = std::max( lhs.size(), rhs.size() );
 					for (int64_t i=0; i<numEnts; i++) {
 						std::string lhsStr, rhsStr;
@@ -3072,16 +3077,16 @@ namespace jsonformula {
 						result->push_back( lhsStr + rhsStr);
 					}
 					return *result;
-				} else if ( lhs.type() == json_type::array_value ) {
+				} else if ( lhs.type() == jsoncons::json_type::array_value ) {
 					std::string rhsStr{to_string(rhs)};
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : lhs.array_range()) {
 						result->push_back( to_string(v) + rhsStr );
 					}
 					return *result;
-				} else if ( rhs.type() == json_type::array_value ) {
+				} else if ( rhs.type() == jsoncons::json_type::array_value ) {
 					std::string lhsStr{to_string(lhs)};
-					auto result = resources.create_json(json_array_arg);	// empty array
+					auto result = resources.create_json(jsoncons::json_array_arg);	// empty array
 					for (auto& v : rhs.array_range()) {
 						result->push_back( lhsStr + to_string(v) );
 					}
@@ -3110,26 +3115,26 @@ namespace jsonformula {
 			std::string to_string(reference& r) const
 			{
 				switch ( r.type() ) {
-					case json_type::array_value:
+					case jsoncons::json_type::array_value:
 						// should not get here for this scenario...
 						break;
-					case json_type::uint64_value:
-					case json_type::int64_value:
+					case jsoncons::json_type::uint64_value:
+					case jsoncons::json_type::int64_value:
 						return std::to_string(r.template as<int64_t>());
 						break;
-					case json_type::double_value:
+					case jsoncons::json_type::double_value:
 						return std::to_string(r.template as<double>());
 						break;
-					case json_type::string_value:
+					case jsoncons::json_type::string_value:
 						return r.template as<std::string>();
 						break;
-					case json_type::bool_value:
+					case jsoncons::json_type::bool_value:
 						return r.template as<bool>() ? "true" : "false";
 						break;
-					case json_type::null_value:
-					case json_type::object_value:		// technically an error, but we'll treat an NOP
-					case json_type::half_value:			// technically an error, but we'll treat an NOP
-					case json_type::byte_string_value:	// technically an error, but we'll treat an NOP
+					case jsoncons::json_type::null_value:
+					case jsoncons::json_type::object_value:		// technically an error, but we'll treat an NOP
+					case jsoncons::json_type::half_value:			// technically an error, but we'll treat an NOP
+					case jsoncons::json_type::byte_string_value:	// technically an error, but we'll treat an NOP
 						{
 							// do nothing!
 						}
@@ -3153,41 +3158,41 @@ namespace jsonformula {
 			{
 				// lhs must be an array...
 				//	and then we determine what to do based on the type of rhs
-				if ( lhs.type() == json_type::array_value ) {
+				if ( lhs.type() == jsoncons::json_type::array_value ) {
 					auto result = resources.create_json(lhs);	// copy it since we'll be modifying it
 					switch ( rhs.type() ) {
-						case json_type::array_value:
+						case jsoncons::json_type::array_value:
 							{
 								for (auto& v : rhs.array_range()) {
 									result->push_back(v);
 								}
 							}
 							break;
-						case json_type::uint64_value:
-						case json_type::int64_value:
+						case jsoncons::json_type::uint64_value:
+						case jsoncons::json_type::int64_value:
 							{
 								result->push_back(*resources.create_json(rhs.template as<int64_t>()));
 							}
 							break;
-						case json_type::double_value:
+						case jsoncons::json_type::double_value:
 							{
 								result->push_back(*resources.create_json(rhs.template as<double>()));
 							}
 							break;
-						case json_type::string_value:
+						case jsoncons::json_type::string_value:
 							{
 								result->push_back(*resources.create_json(rhs.template as<std::string>()));
 							}
 							break;
-						case json_type::bool_value:
+						case jsoncons::json_type::bool_value:
 							{
 								result->push_back(*resources.create_json(rhs.template as<bool>()));
 							}
 							break;
-						case json_type::null_value:
-						case json_type::object_value:		// technically an error, but we'll treat an NOP
-						case json_type::half_value:			// technically an error, but we'll treat an NOP
-						case json_type::byte_string_value:	// technically an error, but we'll treat an NOP
+						case jsoncons::json_type::null_value:
+						case jsoncons::json_type::object_value:		// technically an error, but we'll treat an NOP
+						case jsoncons::json_type::half_value:			// technically an error, but we'll treat an NOP
+						case jsoncons::json_type::byte_string_value:	// technically an error, but we'll treat an NOP
 							{
 								// do nothing!
 							}
@@ -3381,7 +3386,7 @@ namespace jsonformula {
                     return resources.null_value();
                 }
 
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
                 for (auto& item : val.object_range())
                 {
                     if (!item.value().is_null())
@@ -3389,7 +3394,7 @@ namespace jsonformula {
                         reference j = this->apply_expressions(item.value(), resources, ec);
                         if (!j.is_null())
                         {
-                            result->emplace_back(json_const_pointer_arg, std::addressof(j));
+                            result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                         }
                     }
                 }
@@ -3429,7 +3434,7 @@ namespace jsonformula {
                     return resources.null_value();
                 }
 
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
                 for (reference item : val.array_range())
                 {
                     if (!item.is_null())
@@ -3437,7 +3442,7 @@ namespace jsonformula {
                         reference j = this->apply_expressions(item, resources, ec);
                         if (!j.is_null())
                         {
-                            result->emplace_back(json_const_pointer_arg, std::addressof(j));
+                            result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                         }
                     }
                 }
@@ -3488,7 +3493,7 @@ namespace jsonformula {
                     return resources.null_value();
                 }
 
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
                 if (step > 0)
                 {
                     if (start < 0)
@@ -3504,7 +3509,7 @@ namespace jsonformula {
                         reference j = this->apply_expressions(val.at(static_cast<std::size_t>(i)), resources, ec);
                         if (!j.is_null())
                         {
-                            result->emplace_back(json_const_pointer_arg, std::addressof(j));
+                            result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                         }
                     }
                 }
@@ -3523,7 +3528,7 @@ namespace jsonformula {
                         reference j = this->apply_expressions(val.at(static_cast<std::size_t>(i)), resources, ec);
                         if (!j.is_null())
                         {
-                            result->emplace_back(json_const_pointer_arg, std::addressof(j));
+                            result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                         }
                     }
                 }
@@ -3564,17 +3569,17 @@ namespace jsonformula {
                 {
                     return resources.null_value();
                 }
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
 
                 for (auto& item : val.array_range())
                 {
-                    Json j(json_const_pointer_arg, evaluate_tokens(item, token_list_, resources, ec));
+                    Json j(jsoncons::json_const_pointer_arg, evaluate_tokens(item, token_list_, resources, ec));
                     if (is_true(j))
                     {
                         reference jj = this->apply_expressions(item, resources, ec);
                         if (!jj.is_null())
                         {
-                            result->emplace_back(json_const_pointer_arg, std::addressof(jj));
+                            result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(jj));
                         }
                     }
                 }
@@ -3614,7 +3619,7 @@ namespace jsonformula {
                     return resources.null_value();
                 }
 
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
                 for (reference current_elem : val.array_range())
                 {
                     if (current_elem.is_array())
@@ -3626,7 +3631,7 @@ namespace jsonformula {
                                 reference j = this->apply_expressions(elem, resources, ec);
                                 if (!j.is_null())
                                 {
-                                    result->emplace_back(json_const_pointer_arg, std::addressof(j));
+                                    result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                                 }
                             }
                         }
@@ -3638,7 +3643,7 @@ namespace jsonformula {
                             reference j = this->apply_expressions(current_elem, resources, ec);
                             if (!j.is_null())
                             {
-                                result->emplace_back(json_const_pointer_arg, std::addressof(j));
+                                result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                             }
                         }
                     }
@@ -3679,12 +3684,12 @@ namespace jsonformula {
                 {
                     return val;
                 }
-                auto result = resources.create_json(json_array_arg);
+                auto result = resources.create_json(jsoncons::json_array_arg);
                 result->reserve(token_lists_.size());
 
                 for (auto& list : token_lists_)
                 {
-                    result->emplace_back(json_const_pointer_arg, evaluate_tokens(val, list, resources, ec));
+                    result->emplace_back(jsoncons::json_const_pointer_arg, evaluate_tokens(val, list, resources, ec));
                 }
                 return *result;
             }
@@ -3738,11 +3743,11 @@ namespace jsonformula {
                 {
                     return val;
                 }
-                auto resultp = resources.create_json(json_object_arg);
+                auto resultp = resources.create_json(jsoncons::json_object_arg);
                 resultp->reserve(key_toks_.size());
                 for (auto& item : key_toks_)
                 {
-                    resultp->try_emplace(item.key, json_const_pointer_arg, evaluate_tokens(val, item.tokens, resources, ec));
+                    resultp->try_emplace(item.key, jsoncons::json_const_pointer_arg, evaluate_tokens(val, item.tokens, resources, ec));
                 }
 
                 return *resultp;
@@ -4027,7 +4032,7 @@ namespace jsonformula {
 
             static jsonformula_expression compile(const string_view_type& expr)
             {
-                jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
+                jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
                 std::error_code ec;
                 jsonformula_expression result = evaluator.compile(expr.data(), expr.size(), ec);
                 if (ec)
@@ -4040,7 +4045,7 @@ namespace jsonformula {
             static jsonformula_expression compile(const string_view_type& expr,
                                                std::error_code& ec)
             {
-                jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
+                jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
                 return evaluator.compile(expr.data(), expr.size(), ec);
             }
         };
@@ -4107,7 +4112,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case '.': 
                                 ++p_;
@@ -4141,7 +4146,7 @@ namespace jsonformula {
                                 state_stack_.emplace_back(path_state::cmp_ne);
                                 break;
                             }
-                            case ')':
+							case ')':
                             {
                                 state_stack_.pop_back();
                                 break;
@@ -4176,7 +4181,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case '<':
                                 ++p_;
@@ -4216,7 +4221,7 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case '\"':
                                 state_stack_.back() = path_state::val_expr;
@@ -4290,8 +4295,9 @@ namespace jsonformula {
                                 }
 								else if ((*p_ >= '0' && *p_ <= '9') || (*p_ == '-')) //json-formula supports #'s
 								{
+									state_stack_.back() = path_state::rhs_slice_expression_stop; // this will cause it to turn into a number when complete
+									state_stack_.back() = path_state::number;
 									buffer.push_back(*p_);
-									state_stack_.back() = path_state::digit;
 									++p_;
 									++column_;
 								}
@@ -4309,7 +4315,7 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case '\"':
                                 state_stack_.back() = path_state::val_expr;
@@ -4370,7 +4376,7 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case '&':
                                 push_token(token(begin_expression_type_arg), ec);
@@ -4422,7 +4428,7 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case ',':
                                 push_token(token(current_node_arg), ec);
@@ -4483,8 +4489,11 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                state_stack_.pop_back(); // unquoted_string
-                                advance_past_space_character(ec);
+								{
+									string_type dummy;
+									state_stack_.pop_back(); // unquoted_string
+									advance_past_space_character(ec, dummy);
+								}
                                 break;
                             default:
                                 if ((*p_ >= '0' && *p_ <= '9') || (*p_ >= 'A' && *p_ <= 'Z') || (*p_ >= 'a' && *p_ <= 'z') || (*p_ == '_'))
@@ -4615,7 +4624,7 @@ namespace jsonformula {
                         {
                             return jsonformula_expression();
                         }
-                        if (unicode_traits::is_high_surrogate(cp))
+                        if (jsoncons::unicode_traits::is_high_surrogate(cp))
                         {
                             ++p_;
                             ++column_;
@@ -4623,7 +4632,7 @@ namespace jsonformula {
                         }
                         else
                         {
-                            unicode_traits::convert(&cp, 1, buffer);
+                            jsoncons::unicode_traits::convert(&cp, 1, buffer);
                             ++p_;
                             ++column_;
                             state_stack_.pop_back();
@@ -4693,7 +4702,7 @@ namespace jsonformula {
                             return jsonformula_expression();
                         }
                         uint32_t codepoint = 0x10000 + ((cp & 0x3FF) << 10) + (cp2 & 0x3FF);
-                        unicode_traits::convert(&codepoint, 1, buffer);
+                        jsoncons::unicode_traits::convert(&codepoint, 1, buffer);
                         state_stack_.pop_back();
                         ++p_;
                         ++column_;
@@ -4729,8 +4738,8 @@ namespace jsonformula {
                         {
                             case '`':
                             {
-                                json_decoder<Json> decoder;
-                                basic_json_reader<char_type,string_source<char_type>> reader(buffer, decoder);
+								jsoncons::json_decoder<Json> decoder;
+								jsoncons::basic_json_reader<char_type,jsoncons::string_source<char_type>> reader(buffer, decoder);
                                 std::error_code parse_ec;
                                 reader.read(parse_ec);
                                 if (parse_ec)
@@ -5068,7 +5077,7 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case ')':
                                 ++p_;
@@ -5087,7 +5096,7 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case '\"':
                                 state_stack_.back() = path_state::expect_colon;
@@ -5219,10 +5228,16 @@ namespace jsonformula {
                     }
 					case path_state::jf_expression:
 					{
+						// check if there is anything in the buffer...
+						// if so, we need to process it, as a literal (as that is most flexible!)
+						if (!buffer.empty()) {
+							push_token(token(literal_arg, Json(buffer)), ec);
+							buffer.clear();
+						}
 						switch(*p_)
 						{
 							case ' ':case '\t':case '\r':case '\n':
-								advance_past_space_character(ec);
+								advance_past_space_character(ec, buffer);
 								break;
 							case '+':
 								++p_;
@@ -5321,7 +5336,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case '.':
                                 state_stack_.pop_back(); // expect_dot
@@ -5385,7 +5400,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case ',':
                                 push_token(token(separator_arg), ec);
@@ -5431,7 +5446,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case ']':
                             {
@@ -5453,7 +5468,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case ',':
                                 push_token(token(separator_arg), ec);
@@ -5491,7 +5506,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec);
+                                advance_past_space_character(ec, buffer);
                                 break;
                             case ':':
                                 state_stack_.back() = path_state::expect_rbrace;
@@ -5529,12 +5544,13 @@ namespace jsonformula {
                             return jsonformula_expression();
                         }
                         break;
-//					case path_state::digit:	// in json-formula, we could end with a digit
-//						push_token(token(literal_arg, Json(buffer)), ec);
-//						if (ec) {return jsonformula_expression();}
-//						buffer.clear();
-//						state_stack_.pop_back();
-//						break;
+					case path_state::number:	// in json-formula, we could end with a number
+					case path_state::digit:	// in json-formula, we could end with a digit
+						push_token(token(literal_arg, Json(buffer)), ec);
+						if (ec) {return jsonformula_expression();}
+						buffer.clear();
+						state_stack_.pop_back();
+						break;
                     case path_state::val_expr:
                         push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
                         if (ec) {return jsonformula_expression();}
@@ -5574,8 +5590,14 @@ namespace jsonformula {
             return jsonformula_expression(std::move(resources_), std::move(output_stack_));
         }
 
-        void advance_past_space_character(std::error_code& ec)
+        void advance_past_space_character(std::error_code& ec, string_type& buffer)
         {
+			// check if there is anything in the buffer...
+			// if so, we need to process it, as a literal (as that is most flexible!)
+			if (!buffer.empty()) {
+				push_token(token(literal_arg, Json(buffer)), ec);
+				buffer.clear();
+			}
             switch (*p_)
             {
                 case ' ':case '\t':
@@ -5763,7 +5785,7 @@ namespace jsonformula {
                     }
                     if (it == output_stack_.rend())
                     {
-                        JSONCONS_THROW(json_runtime_error<std::runtime_error>("Unbalanced braces"));
+                        JSONCONS_THROW(jsoncons::json_runtime_error<std::runtime_error>("Unbalanced braces"));
                     }
                     if (toks.back().type() != token_kind::literal)
                     {
@@ -5952,12 +5974,12 @@ namespace jsonformula {
     } // detail
 
     template <class Json>
-    using jsonformula_expression = typename jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&>::jsonformula_expression;
+    using jsonformula_expression = typename jsonformula::detail::jsonformula_evaluator<Json,const Json&>::jsonformula_expression;
 
     template<class Json>
     Json search(const Json& doc, const typename Json::string_view_type& path)
     {
-        jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
+        jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
         std::error_code ec;
         auto expr = evaluator.compile(path.data(), path.size(), ec);
         if (ec)
@@ -5975,7 +5997,7 @@ namespace jsonformula {
     template<class Json>
     Json search(const Json& doc, const typename Json::string_view_type& path, std::error_code& ec)
     {
-        jsoncons::jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
+        jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
         auto expr = evaluator.compile(path.data(), path.size(), ec);
         if (ec)
         {
@@ -5990,13 +6012,13 @@ namespace jsonformula {
     }
 
     template <class Json>
-    jsonformula_expression<Json> make_expression(const typename json::string_view_type& expr)
+    jsonformula_expression<Json> make_expression(const typename jsoncons::json::string_view_type& expr)
     {
         return jsonformula_expression<Json>::compile(expr);
     }
 
     template <class Json>
-    jsonformula_expression<Json> make_expression(const typename json::string_view_type& expr,
+    jsonformula_expression<Json> make_expression(const typename jsoncons::json::string_view_type& expr,
                                               std::error_code& ec)
     {
         return jsonformula_expression<Json>::compile(expr, ec);
@@ -6004,6 +6026,5 @@ namespace jsonformula {
 
 
 } // namespace jsonformula
-} // namespace jsoncons
 
 #endif
