@@ -4787,11 +4787,19 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case '-':
+							case '+':	// JSONFormula also supports exponents
                                 buffer.push_back(*p_);
                                 state_stack_.back() = path_state::digit;
                                 ++p_;
                                 ++column_;
                                 break;
+							case 'e':	// JSONFormula also supports exponents
+							case 'E':
+								buffer.push_back(*p_);
+								state_stack_.back() = path_state::number;	// keep a number since it might be fllowed by +/-
+								++p_;
+								++column_;
+								break;
                             default:
                                 state_stack_.back() = path_state::digit;
                                 break;
@@ -4806,9 +4814,6 @@ namespace jsonformula {
                                 ++column_;
                                 break;
                             default:
-//								push_token(token(literal_arg, Json(buffer)), ec);
-//								if (ec) {return jsonformula_expression();}
-//								buffer.clear();
                                 state_stack_.pop_back(); // digit
                                 break;
                         }
@@ -5231,7 +5236,17 @@ namespace jsonformula {
 						// check if there is anything in the buffer...
 						// if so, we need to process it, as a literal (as that is most flexible!)
 						if (!buffer.empty()) {
-							push_token(token(literal_arg, Json(buffer)), ec);
+							jsoncons::json_decoder<Json> decoder;
+							jsoncons::basic_json_reader<char_type,jsoncons::string_source<char_type>> reader(buffer, decoder);
+							std::error_code parse_ec;
+							reader.read(parse_ec);
+							if (parse_ec)
+							{
+								ec = jsonformula_errc::invalid_literal;
+								return jsonformula_expression();
+							}
+							auto j = decoder.get_result();
+							push_token(token(literal_arg, std::move(j)), ec);
 							buffer.clear();
 						}
 						switch(*p_)
@@ -5546,10 +5561,22 @@ namespace jsonformula {
                         break;
 					case path_state::number:	// in json-formula, we could end with a number
 					case path_state::digit:	// in json-formula, we could end with a digit
-						push_token(token(literal_arg, Json(buffer)), ec);
-						if (ec) {return jsonformula_expression();}
-						buffer.clear();
-						state_stack_.pop_back();
+						{
+							jsoncons::json_decoder<Json> decoder;
+							jsoncons::basic_json_reader<char_type,jsoncons::string_source<char_type>> reader(buffer, decoder);
+							std::error_code parse_ec;
+							reader.read(parse_ec);
+							if (parse_ec)
+							{
+								ec = jsonformula_errc::invalid_literal;
+								return jsonformula_expression();
+							}
+							auto j = decoder.get_result();
+							push_token(token(literal_arg, std::move(j)), ec);
+							if (ec) {return jsonformula_expression();}
+							buffer.clear();
+							state_stack_.pop_back();
+						}
 						break;
                     case path_state::val_expr:
                         push_token(token(jsoncons::make_unique<identifier_selector>(buffer)), ec);
@@ -5595,7 +5622,17 @@ namespace jsonformula {
 			// check if there is anything in the buffer...
 			// if so, we need to process it, as a literal (as that is most flexible!)
 			if (!buffer.empty()) {
-				push_token(token(literal_arg, Json(buffer)), ec);
+				jsoncons::json_decoder<Json> decoder;
+				jsoncons::basic_json_reader<char_type,jsoncons::string_source<char_type>> reader(buffer, decoder);
+				std::error_code parse_ec;
+				reader.read(parse_ec);
+				if (parse_ec)
+				{
+					ec = jsonformula_errc::invalid_literal;
+					return;
+				}
+				auto j = decoder.get_result();
+				push_token(token(literal_arg, std::move(j)), ec);
 				buffer.clear();
 			}
             switch (*p_)

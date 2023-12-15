@@ -21,11 +21,29 @@
 // use the standard user testing main
 UTEST_MAIN();
 
+static std::string GetType(const jsoncons::json& j)
+{
+	if ( j.is_double() )
+		return "double";
+	else if ( j.is_number() )
+		return "number";
+	else if ( j.is_bool() )
+		return "bool";
+	else if ( j.is_string() )
+		return "string";
+	else if ( j.is_array() )
+		return "array";
+	else if ( j.is_object() )
+		return "object";
+	else
+		return "other";
+}
+
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
 	jsoncons::json r = jsonformula::search(j,e);
 	if ( print )
-		std::cout << e << " = " << jsoncons::print(r) << "\n";
+		std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << "\n";
 	
 	return r;
 }
@@ -373,13 +391,32 @@ UTEST(json_formula, misc) {
 }
 
 
-// MARK: Hacking
-UTEST(json_formula, hacking) {
+// MARK: native numbers
+UTEST(json_formula, native_numbers) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 	
+	// plain numbers
+	EXPECT_TRUE(eval(j,"`200`", true) == jsoncons::json(200));
+	EXPECT_TRUE(eval(j,"200", true) == jsoncons::json(200));
+	EXPECT_TRUE(eval(j,"-200", true) == jsoncons::json(-200));
+
+	// exponents!!
+	EXPECT_TRUE(eval(j,"`2e4`", true) == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2e4", true) == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2E4", true) == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"`2e+4`", true) == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2e+4", true) == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2E+4", true) == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"`2e-4`", true) == jsoncons::json(0.0002));
+	EXPECT_TRUE(eval(j,"2e-4", true) == jsoncons::json(0.0002));
+	EXPECT_TRUE(eval(j,"2E-4", true) == jsoncons::json(0.0002));
+
+	// some math
 	EXPECT_TRUE(eval(j,"10 + 1", true) == jsoncons::json(11));
 	EXPECT_TRUE(eval(j,"100 * 3", true) == jsoncons::json(300));
 	EXPECT_TRUE(eval(j,"100/2", true) == jsoncons::json(50));
+	
+	// equality
 }
 
 //// MARK: New parser
