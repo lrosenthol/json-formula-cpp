@@ -21,7 +21,7 @@ jsonpath_expression<Json> make_expression(const Json::string_view_type& expr,
 ```cpp
 template <class Json>                                                           
 jsonpath_expression<Json> make_expression(const Json::string_view_type& expr,
-    const custom_functions<Json>& funcs, std::error_code& ec);                  (3) (since 0.164.0)
+    const custom_functions<Json>& funcs, std::error_code& ec);                          (3) (since 0.164.0)
 ```
 ```cpp
 template <class Json, class TempAllocator>                                              (4) (since 0.170.0)
@@ -71,83 +71,6 @@ Returns a [jsonpath_expression](jsonpath_expression.md) object that represents t
 (2) sets the out-parameter `ec` to the [jsonpath_error_category](jsonpath_errc.md) if JSONPath compilation fails. 
 
 ### Examples
-
-The examples below uses the sample data file `books.json`, 
-
-```json
-{
-    "books":
-    [
-        {
-            "category": "fiction",
-            "title" : "A Wild Sheep Chase",
-            "author" : "Haruki Murakami",
-            "price" : 22.72
-        },
-        {
-            "category": "fiction",
-            "title" : "The Night Watch",
-            "author" : "Sergei Lukyanenko",
-            "price" : 23.58
-        },
-        {
-            "category": "fiction",
-            "title" : "The Comedians",
-            "author" : "Graham Greene",
-            "price" : 21.99
-        },
-        {
-            "category": "memoir",
-            "title" : "The Night Watch",
-            "author" : "Phillips, David Atlee"
-        }
-    ]
-}
-```
-
-#### Return copies
-
-```cpp
-int main()
-{
-    auto expr = jsonpath::make_expression<json>("$.books[?(@.price > avg($.books[*].price))].title");
-
-    std::ifstream is("./input/books.json");
-    json data = json::parse(is);
-
-    json result = expr.evaluate(data);
-    std::cout << pretty_print(result) << "\n\n";
-}
-```
-Output:
-```
-[
-    "The Night Watch"
-]
-```
-
-#### Access path and reference to original value
-
-```cpp
-int main()
-{
-    auto expr = jsonpath::make_expression<json>("$.books[?(@.price >= 22.0)]");
-
-    std::ifstream is("./input/books.json");
-    json data = json::parse(is);
-
-    auto callback = [](const std::string& path, const json& val)
-    {
-        std::cout << path << ": " << val << "\n";
-    };
-    expr.evaluate(data, callback, jsonpath::result_options::path);
-}
-```
-Output:
-```
-$['books'][0]: {"author":"Haruki Murakami","category":"fiction","price":22.72,"title":"A Wild Sheep Chase"}
-$['books'][1]: {"author":"Sergei Lukyanenko","category":"fiction","price":23.58,"title":"The Night Watch"}
-```
 
 #### Custom functions
 
@@ -210,6 +133,8 @@ Output:
 using my_alloc = FreeListAllocator<char>; // an allocator with a single-argument constructor
 using my_json = jsoncons::basic_json<char,jsoncons::sorted_policy,my_alloc>;
 
+namespace jsonpath = jsoncons::jsonpath;
+
 int main()
 {
     auto alloc = my_alloc(1);        
@@ -221,7 +146,7 @@ int main()
     // since 0.170.1
     jsoncons::json_decoder<my_json,my_alloc> decoder(alloc, alloc); 
 
-    std::ifstream is("./input/books.json");
+    std::ifstream is(/*path_to_books_file*/);
 
     jsoncons::basic_json_reader<char,jsoncons::stream_source<char>,my_alloc> reader(is, decoder, alloc);
     reader.read();
@@ -229,7 +154,7 @@ int main()
     my_json doc = decoder.get_result();
 
     std::string_view p{"$.books[?(@.category == 'fiction')].title"};
-    auto expr = jsoncons::jsonpath::make_expression<my_json>(combine_allocators(alloc), p);  
+    auto expr = jsonpath::make_expression<my_json>(combine_allocators(alloc), p);  
     auto result = expr.evaluate(doc);
 
     std::cout << pretty_print(result) << "\n\n";

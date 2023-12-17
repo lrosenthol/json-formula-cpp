@@ -1,3 +1,66 @@
+0.173.0
+-------
+
+Defect fixes:
+
+- Fixed issue #473 about `bigint` and `-Werror=stringop-overflow` 
+
+- Fixed jmespath issue #471 about `jmespath::search` and `ojson` with `AddressSanitizer` in macos environment
+ 
+- Fixed jsonpointer issue with `json_pointer::parse` for empty string keys (which had implications
+for jsonschema `definitions` keyword with empty keys.)
+
+- Fixed jsonschema issue with `definitions` keyword with empty keys
+
+- Fixed jsonschema issue #474 about JSON Schema maximum keyword error message
+
+- Fixed jsonschema issue with `multipleOf` keyword and type integer and `multipleOf` a floating point number
+
+- Fixed jsonschema issue with the behavior of `$id` for rebasing in some keywords, particularly `if`, `then`, and `else`.
+
+Enhancements:
+
+- The `jsonschema::make_schema` functions now support providing a retrieval URI, to initialize the base URI.
+
+0.172.1
+-------
+
+Defect fixes:
+
+- Fixed issue #470 concerning jsonpath::make_expression with ec broken 
+
+0.172.0
+-------
+
+Defect fixes:
+
+- Fixed issue #469 affecting JSMESPath expressions with terminating CR
+
+Enhancements to jsonpath
+
+- Added `result_option` `sort_descending`.
+
+- Added new classes `basic_json_location`, `basic_path_element`, and `basic_path_node`.
+
+- Added a new function `get` for selecting a single JSON value from a JSON document at
+a location represented by a `json_location`.
+
+- Added a new function `remove` for removing a single JSON value from a JSON document at a
+location represented by a `json_location`.
+
+- Added member function `select` to `jsonpath_expression`.
+
+- Added member function `select_paths` to `jsonpath_expression`.
+
+- Added member function `update` to `jsonpath_expression`, to support
+update-in-place for compiled JSONPath expressions.
+
+Enhancements to jsonpointer:
+
+- Added free functions `to_string` and `to_wstring`.
+
+- Added `append` function to `basic_json_pointer`.
+
 0.171.1
 -------
 

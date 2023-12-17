@@ -32,7 +32,7 @@ include (CTest)
 # -fsanitize=undefined clang issue
 if (JSONCONS_SANITIZE)
     if(NOT MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -fsanitize=address -fno-omit-frame-pointer")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
         message(STATUS "SANITIZE ON")
     endif()
 endif()
@@ -92,7 +92,7 @@ add_executable(unit_tests
                jsonpath/src/json_location_parser_tests.cpp
                jsonpath/src/jsonpath_custom_function_tests.cpp
                jsonpath/src/jsonpath_json_query_tests.cpp
-               jsonpath/src/jsonpath_make_expression_tests.cpp
+               jsonpath/src/jsonpath_expression_tests.cpp
                jsonpath/src/jsonpath_json_replace_tests.cpp
                jsonpath/src/jsonpath_select_paths_tests.cpp
                jsonpath/src/jsonpath_test_suite.cpp
@@ -102,7 +102,7 @@ add_executable(unit_tests
                jsonschema/src/format_validator_tests.cpp
                jsonschema/src/jsonschema_defaults_tests.cpp
                jsonschema/src/jsonschema_output_format_tests.cpp
-               jsonschema/src/jsonschema_tests.cpp
+               jsonschema/src/jsonschema_draft7_tests.cpp
                jsonschema/src/schema_version_tests.cpp
                msgpack/src/decode_msgpack_tests.cpp
                msgpack/src/encode_msgpack_tests.cpp
@@ -163,6 +163,7 @@ add_executable(unit_tests
                corelib/src/json_type_traits_chrono_tests.cpp
                corelib/src/json_type_traits_container_tests.cpp
                corelib/src/json_type_traits_tests.cpp
+               corelib/src/uri_tests.cpp
                corelib/src/json_validation_tests.cpp
                corelib/src/jsoncons_tests.cpp
                corelib/src/JSONTestSuite_tests.cpp
@@ -198,7 +199,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_
     message(STATUS Version " ${CMAKE_CXX_COMPILER_VERSION}")
     # older GCC versions don't support 
    target_compile_options(unit_tests PRIVATE
-       $<$<CXX_COMPILER_ID:GNU>:-Wnon-virtual-dtor -Werror -Wall -Wextra -Wcast-align -Wcast-qual -Wimplicit-fallthrough -Wsign-compare -pedantic -Wnonnull -Werror=nonnull>
+       $<$<CXX_COMPILER_ID:GNU>:-Wnon-virtual-dtor -Werror=stringop-overflow -Werror -Wall -Wextra -Wcast-align -Wcast-qual -Wimplicit-fallthrough -Wsign-compare -pedantic -Wnonnull -Werror=nonnull>
    )
 endif()
 

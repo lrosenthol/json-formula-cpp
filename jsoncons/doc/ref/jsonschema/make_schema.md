@@ -4,14 +4,22 @@
 #include <jsoncons_ext/jsonschema/jsonschema.hpp>
 
 template <class Json>
-std::shared_ptr<json_schema<Json>> make_schema(const Json& schema); (1)
+std::shared_ptr<json_schema<Json>> make_schema(const Json& schema);  (1)
+
+template <class Json>
+std::shared_ptr<json_schema<Json>> make_schema(const Json& schema,
+    const std::string& retrieval_uri);                               (2) (since 0.173.0)
+
+template <class Json,class URIResolver>
+std::shared_ptr<json_schema<Json>> make_schema(const Json& schema,
+    const std::string& retrieval_uri, const URIResolver& resolver);  (3) (since 0.173.0)
 
 template <class Json,class URIResolver>
 std::shared_ptr<json_schema<Json>> make_schema(const Json& schema, 
-                                               const URIResolver& resolver); (2)
+    const URIResolver& resolver);                                    (4)
 ```
 
-Returns a `shared_ptr` to a `json_schema`.
+Returns a `shared_ptr` to a `json_schema<Json>`.
 
 #### Parameters
 
@@ -24,13 +32,14 @@ Returns a `shared_ptr` to a `json_schema`.
     <td>resolver</td>
     <td>A function object with the signature of <code>resolver</code> being equivalent to 
     <pre>
-            Json fun(const jsoncons::uri& uri)</pre></td> 
+    Json fun(const jsoncons::uri& uri)   
+    </pre></td>   
   </tr>
 </table>
 
 #### Return value
 
-Returns a `shared_ptr` to a `json_schema`.
+Returns a `shared_ptr` to a `json_schema<Json>`.
 
 #### Exceptions
 
