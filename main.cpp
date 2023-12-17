@@ -13,8 +13,6 @@
 
 #include "json-formula/json-formula.hpp"
 
-#include "json-formula.h"
-
 // our user testing framework
 #include "utest.h"
 
@@ -48,20 +46,11 @@ static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool p
 	return r;
 }
 
-//static jsoncons::json evalNew(const jsoncons::json& j, const std::string& e, bool print=false)
-//{
-//	jsoncons::json r = jsonformula::parser::eval(j,e);
-//	if ( print )
-//		std::cout << e << " = " << jsoncons::print(r) << "\n";
-//
-//	return r;
-//}
-
-//static std::string evalToString(const jsoncons::json& j, const std::string& e)
-//{
-//	jsoncons::json r = jsoncons::jmespath::search(j,e);
-//	return static_cast<std::string>(r.as<std::string_view>());
-//}
+static std::string evalToString(const jsoncons::json& j, const std::string& e)
+{
+	jsoncons::json r = jsonformula::search(j,e);
+	return static_cast<std::string>(r.as<std::string_view>());
+}
 
 // tests!
 // MARK: Equality
@@ -447,10 +436,3 @@ UTEST(json_formula, native_numbers) {
 	EXPECT_FALSE(eval(j,R"(2 >= `6`)").as<bool>());
 }
 
-//// MARK: New parser
-//UTEST(json_formula, newParser) {
-//	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
-//	
-//	EXPECT_TRUE(evalNew(j,R"(2 + 2 * `'foo'` - `[100,200,300]`)", true) == jsoncons::json(4));
-//}
-//
