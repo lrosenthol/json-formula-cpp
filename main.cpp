@@ -415,7 +415,13 @@ UTEST(json_formula, native_numbers) {
 	EXPECT_TRUE(eval(j,"10 + 1") == jsoncons::json(11));
 	EXPECT_TRUE(eval(j,"100 * 3") == jsoncons::json(300));
 	EXPECT_TRUE(eval(j,"100/2") == jsoncons::json(50));
-	
+	EXPECT_EQ(eval(j,"100.56 + 3").as<double>(), 103.56);
+	EXPECT_EQ(eval(j,"100.56 - 3").as<double>(), 97.56);
+	EXPECT_EQ(eval(j,"100.56 * 3").as<double>(), 301.68);
+	EXPECT_EQ(eval(j,"100.80 / 4").as<double>(), 25.20);
+	EXPECT_EQ(eval(j,"0.25 * 4").as<double>(), 1.0);
+	EXPECT_EQ(eval(j,".25 * 4.0").as<double>(), 1.0);
+
 	// equality
 	EXPECT_TRUE(eval(j,"2 == 2").as<bool>());
 	EXPECT_TRUE(eval(j,"2 = 2").as<bool>());
@@ -425,6 +431,20 @@ UTEST(json_formula, native_numbers) {
 	EXPECT_TRUE(eval(j,"2=2").as<bool>());
 	EXPECT_FALSE(eval(j,"2!=2").as<bool>());
 	EXPECT_FALSE(eval(j,"2<>2").as<bool>());
+	
+	// comparisons
+	EXPECT_TRUE(eval(j,R"(2 < 6)").as<bool>());
+	EXPECT_TRUE(eval(j,R"(2 <= 6)").as<bool>());
+	EXPECT_FALSE(eval(j,R"(2 > 6)").as<bool>());
+	EXPECT_FALSE(eval(j,R"(2 >= 6)").as<bool>());
+	EXPECT_TRUE(eval(j,R"(`2` < 6)").as<bool>());
+	EXPECT_TRUE(eval(j,R"(2 < `6`)").as<bool>());
+	EXPECT_TRUE(eval(j,R"(`2` <= 6)").as<bool>());
+	EXPECT_TRUE(eval(j,R"(2 <= `6`)").as<bool>());
+	EXPECT_FALSE(eval(j,R"(`2` > 6)").as<bool>());
+	EXPECT_FALSE(eval(j,R"(2 > `6`)").as<bool>());
+	EXPECT_FALSE(eval(j,R"(`2` >= 6)").as<bool>());
+	EXPECT_FALSE(eval(j,R"(2 >= `6`)").as<bool>());
 }
 
 //// MARK: New parser

@@ -4309,7 +4309,7 @@ namespace jsonformula {
                                     ++p_;
                                     ++column_;
                                 }
-								else if ((*p_ >= '0' && *p_ <= '9') || (*p_ == '-')) //json-formula supports #'s
+								else if ((*p_ >= '0' && *p_ <= '9') || (*p_ == '-') || (*p_ == '.')) //json-formula supports #'s
 								{
 									state_stack_.back() = path_state::rhs_slice_expression_stop; // this will cause it to turn into a number when complete
 									state_stack_.back() = path_state::number;
@@ -4804,7 +4804,8 @@ namespace jsonformula {
                         {
                             case '-':
 							case '+':	// JSONFormula also supports exponents
-                                buffer.push_back(*p_);
+							case '.':	// don't forget decimal places!
+                               buffer.push_back(*p_);
                                 state_stack_.back() = path_state::digit;
                                 ++p_;
                                 ++column_;
@@ -4816,7 +4817,7 @@ namespace jsonformula {
 								++p_;
 								++column_;
 								break;
-                            default:
+                           default:
                                 state_stack_.back() = path_state::digit;
                                 break;
                         }
@@ -4825,6 +4826,7 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':
+							case '.':	// don't forget decimal places!
                                 buffer.push_back(*p_);
                                 ++p_;
                                 ++column_;
@@ -5639,8 +5641,10 @@ namespace jsonformula {
 				std::error_code parse_ec;
 				reader.read(parse_ec);
 				if (parse_ec) {
-					ec = jsonformula_errc::invalid_literal;
-					return;
+					// we had some problem with the literal, so let's force it to number & back
+					auto bufD = std::stod(buffer);
+					buffer = std::to_string(bufD);
+					return;	// will cause it to run again with the new buffer...
 				}
 				auto j = decoder.get_result();
 				push_token(token(literal_arg, std::move(j)), ec);
