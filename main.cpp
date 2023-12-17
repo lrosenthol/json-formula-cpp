@@ -396,27 +396,35 @@ UTEST(json_formula, native_numbers) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 	
 	// plain numbers
-	EXPECT_TRUE(eval(j,"`200`", true) == jsoncons::json(200));
-	EXPECT_TRUE(eval(j,"200", true) == jsoncons::json(200));
-	EXPECT_TRUE(eval(j,"-200", true) == jsoncons::json(-200));
+	EXPECT_TRUE(eval(j,"`200`") == jsoncons::json(200));
+	EXPECT_TRUE(eval(j,"200") == jsoncons::json(200));
+	EXPECT_TRUE(eval(j,"-200") == jsoncons::json(-200));
 
 	// exponents!!
-	EXPECT_TRUE(eval(j,"`2e4`", true) == jsoncons::json(20000));
-	EXPECT_TRUE(eval(j,"2e4", true) == jsoncons::json(20000));
-	EXPECT_TRUE(eval(j,"2E4", true) == jsoncons::json(20000));
-	EXPECT_TRUE(eval(j,"`2e+4`", true) == jsoncons::json(20000));
-	EXPECT_TRUE(eval(j,"2e+4", true) == jsoncons::json(20000));
-	EXPECT_TRUE(eval(j,"2E+4", true) == jsoncons::json(20000));
-	EXPECT_TRUE(eval(j,"`2e-4`", true) == jsoncons::json(0.0002));
-	EXPECT_TRUE(eval(j,"2e-4", true) == jsoncons::json(0.0002));
-	EXPECT_TRUE(eval(j,"2E-4", true) == jsoncons::json(0.0002));
+	EXPECT_TRUE(eval(j,"`2e4`") == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2e4") == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2E4") == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"`2e+4`") == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2e+4") == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"2E+4") == jsoncons::json(20000));
+	EXPECT_TRUE(eval(j,"`2e-4`") == jsoncons::json(0.0002));
+	EXPECT_TRUE(eval(j,"2e-4") == jsoncons::json(0.0002));
+	EXPECT_TRUE(eval(j,"2E-4") == jsoncons::json(0.0002));
 
 	// some math
-	EXPECT_TRUE(eval(j,"10 + 1", true) == jsoncons::json(11));
-	EXPECT_TRUE(eval(j,"100 * 3", true) == jsoncons::json(300));
-	EXPECT_TRUE(eval(j,"100/2", true) == jsoncons::json(50));
+	EXPECT_TRUE(eval(j,"10 + 1") == jsoncons::json(11));
+	EXPECT_TRUE(eval(j,"100 * 3") == jsoncons::json(300));
+	EXPECT_TRUE(eval(j,"100/2") == jsoncons::json(50));
 	
 	// equality
+	EXPECT_TRUE(eval(j,"2 == 2").as<bool>());
+	EXPECT_TRUE(eval(j,"2 = 2").as<bool>());
+	EXPECT_FALSE(eval(j,"2 != 2").as<bool>());
+	EXPECT_FALSE(eval(j,"2 <> 2").as<bool>());
+	EXPECT_TRUE(eval(j,"2==2").as<bool>());
+	EXPECT_TRUE(eval(j,"2=2").as<bool>());
+	EXPECT_FALSE(eval(j,"2!=2").as<bool>());
+	EXPECT_FALSE(eval(j,"2<>2").as<bool>());
 }
 
 //// MARK: New parser

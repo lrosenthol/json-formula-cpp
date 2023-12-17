@@ -4084,6 +4084,22 @@ namespace jsonformula {
                                     std::size_t length,
                                     std::error_code& ec)
         {
+			auto _checkBuffer = [this, &ec](string_type& buffer) {
+				if (!buffer.empty()) {
+					jsoncons::json_decoder<Json> decoder;
+					jsoncons::basic_json_reader<char_type,jsoncons::string_source<char_type>> reader(buffer, decoder);
+					std::error_code parse_ec;
+					reader.read(parse_ec);
+					if (parse_ec) {
+						ec = jsonformula_errc::invalid_literal;
+						return;
+					}
+					auto j = decoder.get_result();
+					push_token(token(literal_arg, std::move(j)), ec);
+					buffer.clear();
+				}
+			};
+			
             push_token(current_node_arg, ec);
             if (ec) {return jsonformula_expression();}
             state_stack_.emplace_back(path_state::start);
@@ -5137,7 +5153,12 @@ namespace jsonformula {
                     }
                     case path_state::cmp_lt_or_lte:
                     {
-                        switch(*p_)
+						// JSONFormula
+						// check if there is anything in the buffer...
+						// if so, we need to process it
+						_checkBuffer(buffer);
+
+						switch(*p_)
                         {
                             case '=':
                                 push_token(token(resources_.get_lte_operator()), ec);
@@ -5167,7 +5188,12 @@ namespace jsonformula {
                     }
                     case path_state::cmp_gt_or_gte:
                     {
-                        switch(*p_)
+						// JSONFormula
+						// check if there is anything in the buffer...
+						// if so, we need to process it
+						_checkBuffer(buffer);
+
+						switch(*p_)
                         {
                             case '=':
                                 push_token(token(resources_.get_gte_operator()), ec);
@@ -5188,34 +5214,30 @@ namespace jsonformula {
                     }
                     case path_state::cmp_eq:
                     {
-#if 1	// json-formula supports both `=` and `==`
+						// JSONFormula
+						// check if there is anything in the buffer...
+						// if so, we need to process it
+						_checkBuffer(buffer);
+
+						// json-formula supports both `=` and `==`
 						push_token(token(resources_.get_eq_operator()), ec);
 						push_token(token(current_node_arg), ec);
 						if (ec) {return jsonformula_expression();}
 						state_stack_.pop_back();
-						++p_;
-						++column_;
-#else
-                        switch(*p_)
-                        {
-                            case '=':
-                                push_token(token(resources_.get_eq_operator()), ec);
-                                push_token(token(current_node_arg), ec);
-                                if (ec) {return jsonformula_expression();}
-                                state_stack_.pop_back(); 
-                                ++p_;
-                                ++column_;
-                                break;
-                            default:
-                                ec = jsonformula_errc::expected_comparator;
-                                return jsonformula_expression();
-                        }
-#endif
+						if ( *p_ == '=' ) {	// be careful not to move past something else!
+							++p_;
+							++column_;
+						}
 						break;
                     }
                     case path_state::cmp_ne:
                     {
-                        switch(*p_)
+						// JSONFormula
+						// check if there is anything in the buffer...
+						// if so, we need to process it
+						_checkBuffer(buffer);
+
+						switch(*p_)
                         {
                             case '=':
                                 push_token(token(resources_.get_ne_operator()), ec);
@@ -5233,22 +5255,11 @@ namespace jsonformula {
                     }
 					case path_state::jf_expression:
 					{
+						// JSONFormula
 						// check if there is anything in the buffer...
-						// if so, we need to process it, as a literal (as that is most flexible!)
-						if (!buffer.empty()) {
-							jsoncons::json_decoder<Json> decoder;
-							jsoncons::basic_json_reader<char_type,jsoncons::string_source<char_type>> reader(buffer, decoder);
-							std::error_code parse_ec;
-							reader.read(parse_ec);
-							if (parse_ec)
-							{
-								ec = jsonformula_errc::invalid_literal;
-								return jsonformula_expression();
-							}
-							auto j = decoder.get_result();
-							push_token(token(literal_arg, std::move(j)), ec);
-							buffer.clear();
-						}
+						// if so, we need to process it
+						_checkBuffer(buffer);
+						
 						switch(*p_)
 						{
 							case ' ':case '\t':case '\r':case '\n':
@@ -5619,15 +5630,15 @@ namespace jsonformula {
 
         void advance_past_space_character(std::error_code& ec, string_type& buffer)
         {
+			// JSONFormula
 			// check if there is anything in the buffer...
-			// if so, we need to process it, as a literal (as that is most flexible!)
+			// if so, we need to process it
 			if (!buffer.empty()) {
 				jsoncons::json_decoder<Json> decoder;
 				jsoncons::basic_json_reader<char_type,jsoncons::string_source<char_type>> reader(buffer, decoder);
 				std::error_code parse_ec;
 				reader.read(parse_ec);
-				if (parse_ec)
-				{
+				if (parse_ec) {
 					ec = jsonformula_errc::invalid_literal;
 					return;
 				}
@@ -5635,7 +5646,8 @@ namespace jsonformula {
 				push_token(token(literal_arg, std::move(j)), ec);
 				buffer.clear();
 			}
-            switch (*p_)
+
+			switch (*p_)
             {
                 case ' ':case '\t':
                     ++p_;
