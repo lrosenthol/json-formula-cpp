@@ -769,7 +769,7 @@ namespace jsonformula {
                     }
                     default:
                     {
-						auto at = arg0.type();
+//						auto at = arg0.type();
                         ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
@@ -4130,12 +4130,15 @@ namespace jsonformula {
 
         std::vector<token> output_stack_;
         std::vector<token> operator_stack_;
+		
+		
+		bool debug_;
 
     public:
         jsonformula_evaluator()
             : line_(1), column_(1),
               begin_input_(nullptr), end_input_(nullptr),
-              p_(nullptr)
+              p_(nullptr), debug_(false)
         {
         }
 
@@ -4148,6 +4151,8 @@ namespace jsonformula {
         {
             return column_;
         }
+		
+		void debug(bool d=true) { debug_ = d; }
 
         jsonformula_expression compile(const char_type* path,
                                     std::size_t length,
@@ -4385,7 +4390,6 @@ namespace jsonformula {
                                 }
 								else if ((*p_ >= '0' && *p_ <= '9') || (*p_ == '-') || (*p_ == '.')) //json-formula supports #'s
 								{
-									state_stack_.back() = path_state::rhs_slice_expression_stop; // this will cause it to turn into a number when complete
 									state_stack_.back() = path_state::number;
 									buffer.push_back(*p_);
 									++p_;
@@ -5718,11 +5722,14 @@ namespace jsonformula {
             push_token(end_of_expression_arg, ec);
             if (ec) {return jsonformula_expression();}
 
-            //for (auto& t : output_stack_)
-            //{
-            //    std::cout << t.to_string() << std::endl;
-            //}
-
+			// debug the output stack...
+			if ( debug_ ) {
+				for (auto& t : output_stack_)
+				{
+					std::cout << t.to_string() << std::endl;
+				}
+			}
+			
             return jsonformula_expression(std::move(resources_), std::move(output_stack_));
         }
 
@@ -6159,6 +6166,24 @@ namespace jsonformula {
         }
         return result;
     }
+
+	template<class Json>
+	Json debug_search(const Json& doc, const typename Json::string_view_type& path, std::error_code& ec)
+	{
+		jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
+		evaluator.debug();	// enable debugging!
+		auto expr = evaluator.compile(path.data(), path.size(), ec);
+		if (ec)
+		{
+			return Json::null();
+		}
+		auto result = expr.evaluate(doc, ec);
+		if (ec)
+		{
+			return Json::null();
+		}
+		return result;
+	}
 
     template <class Json>
     jsonformula_expression<Json> make_expression(const typename jsoncons::json::string_view_type& expr)

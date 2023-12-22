@@ -42,10 +42,32 @@ static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool p
 {
 	jsoncons::json r = jsonformula::search(j,e);
 	if ( print )
-		std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << "\n";
+		std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
 	
 	return r;
 }
+
+static jsoncons::json eval_debug(const jsoncons::json& j, const std::string& e)
+{
+	std::error_code ec;
+	
+	try {
+		jsoncons::json r = jsonformula::debug_search(j,e,ec);
+		if (ec) {
+			std::cout << "Error #" << ec.value() << ": " << ec.message() << std::endl;
+		} else {	// it's debug, we always print!
+			std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
+		}
+		return r;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << "";
+	}
+	
+	return jsoncons::json();
+}
+
 
 static std::string evalToString(const jsoncons::json& j, const std::string& e)
 {
@@ -57,7 +79,7 @@ static jsoncons::json evalJP(const jsoncons::json& j, const std::string& e, bool
 {
 	jsoncons::json r = jsoncons::jmespath::search(j,e);
 	if ( print )
-		std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << "\n";
+		std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
 	
 	return r;
 }
@@ -476,8 +498,6 @@ UTEST(json_formula, misc_json_formula) {
 	EXPECT_TRUE(eval(j,"value(@.a,`2`)") == jsoncons::json(12));
 	EXPECT_TRUE(eval(j,"value(@.a,\"2\")") == jsoncons::json(nullptr));
 	EXPECT_TRUE(eval(j,"value(@,'c')") == jsoncons::json(33.3));
-//	EXPECT_TRUE(eval(j,"value(@.a,`2+3`)", true) == jsoncons::json(15));
-//	EXPECT_TRUE(eval(j,"value(@.a,2+3)", true) == jsoncons::json(15));
 
 	EXPECT_TRUE(eval(j,"foo.bar") == jsoncons::json(jsoncons::json_object_arg, {{"baz", "correct"}}));
 	EXPECT_TRUE(eval(j,"foo.bar.baz") == jsoncons::json("correct"));
@@ -489,7 +509,6 @@ UTEST(json_formula, jf_func_single_params) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 
 	EXPECT_TRUE(eval(j,"to_string({sum : `25`})") == jsoncons::json("{\"sum\":25}"));
-//	EXPECT_TRUE(eval(j,"to_string({sum : 25})", true) == jsoncons::json(4));
 
 	EXPECT_TRUE(eval(j,"abs(`2`)") == jsoncons::json(2));
 	EXPECT_TRUE(eval(j,"abs(2)") == jsoncons::json(2));
@@ -507,11 +526,19 @@ UTEST(json_formula, jf_func_single_params) {
 
 	EXPECT_TRUE(eval(j,R"(type(100))") == jsoncons::json("number"));
 	EXPECT_TRUE(eval(j,R"(type(123.456))") == jsoncons::json("number"));
-
 }
 
 UTEST(json_formula, jf_func_form_params) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 	
-	EXPECT_TRUE(eval(j,"abs(2 + 2)", true) == jsoncons::json(4));
+	EXPECT_TRUE(eval_debug(j,"abs(`2`)") == jsoncons::json(4));
+	EXPECT_TRUE(eval_debug(j,"abs(2 + 2)") == jsoncons::json(4));
+}
+
+UTEST(json_formula, jf_other) {
+	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+	
+	//	EXPECT_TRUE(eval(j,"value(@.a,`2+3`)", true) == jsoncons::json(15));
+	//	EXPECT_TRUE(eval(j,"value(@.a,2+3)", true) == jsoncons::json(15));
+	//	EXPECT_TRUE(eval(j,"to_string({sum : 25})", true) == jsoncons::json(4));
 }
