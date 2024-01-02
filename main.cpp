@@ -14,14 +14,27 @@
 
 #include "json-formula/json-formula.hpp"
 
+// command line processing
+#include "popl.hpp"
+
 // our user testing framework
 #include "utest.h"
 
 // helper methods
 #include "jfHelpers.h"
 
+#ifdef USE_UTEST_MAIN
 // use the standard user testing main
 UTEST_MAIN();
+#else
+// use our own main
+UTEST_STATE();
+
+int main(int argc, const char *const argv[]) {
+  // do your own thing
+  return utest_main(argc, argv);
+}
+#endif
 
 
 // tests!

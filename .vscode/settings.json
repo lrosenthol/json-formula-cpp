@@ -3,5 +3,12 @@
 		"jsoncons",
 		"jsonformula",
 		"UTEST"
-	]
+	],
+	"files.associations": {
+		"*.cos": "pdf",
+		"*.mp": "python",
+		"*.joboptions": "postscript",
+		"*.icml": "xml",
+		"numbers": "cpp"
+	}
 }
