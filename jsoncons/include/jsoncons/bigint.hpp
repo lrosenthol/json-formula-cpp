@@ -44,7 +44,7 @@ namespace detail {
     private:
         basic_type_allocator_type alloc_;
     public:
-       using allocator_traits_type = std::allocator_traits<allocator_type>;
+       using allocator_traits_type = std::allocator_traits<basic_type_allocator_type>;
        using stored_allocator_type = allocator_type;
        using pointer = typename allocator_traits_type::pointer;
        using value_type = typename allocator_traits_type::value_type;
@@ -735,7 +735,7 @@ public:
 
     basic_bigint& operator<<=( uint64_t k )
     {
-        size_type q = (size_type)(k / basic_type_bits);
+        size_type q = size_type(k / basic_type_bits);
         if ( q ) // Increase common_stor_.length_ by q:
         {
             resize(length() + q);
@@ -761,7 +761,7 @@ public:
 
     basic_bigint& operator>>=(uint64_t k)
     {
-        size_type q = (size_type)(k / basic_type_bits);
+        size_type q = size_type(k / basic_type_bits);
         if ( q >= length() )
         {
             resize( 0 );
@@ -769,8 +769,8 @@ public:
         }
         if (q > 0)
         {
-            memmove( data(), data()+q, (size_type)((length() - q)*sizeof(uint64_t)) );
-            resize( length() - q );
+            memmove( data(), data()+q, size_type((length() - q)*sizeof(uint64_t)) );
+            resize( size_type(length() - q) );
             k %= basic_type_bits;
             if ( k == 0 )
             {
@@ -779,7 +779,7 @@ public:
             }
         }
 
-        size_type n = (size_type)(length() - 1);
+        size_type n = size_type(length() - 1);
         int64_t k1 = basic_type_bits - k;
         uint64_t mask = (uint64_t(1) << k) - 1;
         for (size_type i = 0; i <= n; i++)

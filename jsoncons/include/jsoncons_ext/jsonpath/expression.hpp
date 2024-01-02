@@ -132,7 +132,7 @@ namespace jsonpath {
     };
     constexpr argument_arg_t argument_arg{};
 
-    enum class result_options {value=0, nodups=1, sort=2, path=4};
+    enum class result_options {value=0, nodups=1, sort=2, sort_descending=4, path=8};
 
     using result_type = result_options;
 
@@ -2107,6 +2107,16 @@ namespace detail {
     };
 
     template <class Json,class JsonReference>
+    struct path_value_pair_greater
+    {
+        bool operator()(const path_value_pair<Json,JsonReference>& lhs,
+                        const path_value_pair<Json,JsonReference>& rhs) const noexcept
+        {
+            return rhs.path() < lhs.path();
+        }
+    };
+
+    template <class Json,class JsonReference>
     struct path_value_pair_equal
     {
         bool operator()(const path_value_pair<Json,JsonReference>& lhs,
@@ -3008,6 +3018,7 @@ namespace detail {
         using string_view_type = typename Json::string_view_type;
         using path_value_pair_type = path_value_pair<Json,JsonReference>;
         using path_value_pair_less_type = path_value_pair_less<Json,JsonReference>;
+        using path_value_pair_greater_type = path_value_pair_greater<Json,JsonReference>;
         using path_value_pair_equal_type = path_value_pair_equal<Json,JsonReference>;
         using value_type = Json;
         using reference = typename path_value_pair_type::reference;
@@ -3082,21 +3093,37 @@ namespace detail {
 
             options |= required_options_;
 
-            const result_options require_more = result_options::nodups | result_options::sort;
+            const result_options require_more = result_options::nodups | result_options::sort | result_options::sort_descending;
 
             if (selector_ != nullptr && (options & require_more) != result_options())
             {
                 path_value_receiver<Json,JsonReference> receiver{alloc_};
                 selector_->select(resources, root, path, current, receiver, options);
 
-                if (receiver.nodes.size() > 1 && (options & result_options::sort) == result_options::sort)
+                if (receiver.nodes.size() > 1) 
                 {
-                    std::sort(receiver.nodes.begin(), receiver.nodes.end(), path_value_pair_less_type());
+                    if ((options & result_options::sort_descending) == result_options::sort_descending)
+                    {
+                        std::sort(receiver.nodes.begin(), receiver.nodes.end(), path_value_pair_greater_type());
+                    } 
+                    else if ((options & result_options::sort) == result_options::sort)
+                    {
+                        std::sort(receiver.nodes.begin(), receiver.nodes.end(), path_value_pair_less_type());
+                    }
                 }
 
                 if (receiver.nodes.size() > 1 && (options & result_options::nodups) == result_options::nodups)
                 {
-                    if ((options & result_options::sort) == result_options::sort)
+                    if ((options & result_options::sort_descending) == result_options::sort_descending)
+                    {
+                        auto last = std::unique(receiver.nodes.rbegin(),receiver.nodes.rend(),path_value_pair_equal_type());
+                        receiver.nodes.erase(receiver.nodes.begin(), last.base());
+                        for (auto& node : receiver.nodes)
+                        {
+                            callback(node.path(), node.value());
+                        }
+                    }
+                    else if ((options & result_options::sort) == result_options::sort)
                     {
                         auto last = std::unique(receiver.nodes.begin(),receiver.nodes.end(),path_value_pair_equal_type());
                         receiver.nodes.erase(last,receiver.nodes.end());
@@ -3144,37 +3171,6 @@ namespace detail {
             }
         }
 
-        template <class Callback>
-        typename std::enable_if<extension_traits::is_binary_function_object<Callback,const path_node_type&,reference>::value,void>::type
-        evaluate_with_replacement(dynamic_resources<Json,JsonReference>& resources, 
-                 reference root,
-                 const path_node_type& path, 
-                 reference current, 
-                 Callback callback) const
-        {
-            std::error_code ec;
-
-            result_options options = result_options::path | result_options::nodups | result_options::sort;
-
-            path_value_receiver<Json,JsonReference> receiver{alloc_};
-            selector_->select(resources, root, path, current, receiver, options);
-
-            if (!receiver.nodes.empty())
-            {
-                if (receiver.nodes.size() > 1)
-                {
-                    std::sort(receiver.nodes.begin(), receiver.nodes.end(), path_value_pair_less_type());
-                    auto last = std::unique(receiver.nodes.begin(),receiver.nodes.end(),path_value_pair_equal_type());
-                    receiver.nodes.erase(last,receiver.nodes.end());
-                }
-                for (std::size_t i = receiver.nodes.size(); i-- > 0;)
-                {
-                    auto& node = receiver.nodes[i];
-                    callback(node.path(), node.value());
-                }
-            }
-        }
-
         std::string to_string(int level) const
         {
             std::string s;
@@ -3207,6 +3203,7 @@ namespace detail {
         using string_type = typename Json::string_type;
         using string_view_type = typename Json::string_view_type;
         using path_value_pair_less_type = path_value_pair_less<Json,reference>;
+        using path_value_pair_greater_type = path_value_pair_greater<Json,reference>;
         using path_value_pair_equal_type = path_value_pair_equal<Json,reference>;
         using parameter_type = parameter<Json>;
         using token_type = token<Json,reference>;

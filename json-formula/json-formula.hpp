@@ -744,6 +744,11 @@ namespace jsonformula {
             {
             }
 
+			virtual std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("abs() function");
+			}
+
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
                 JSONCONS_ASSERT(args.size() == *this->arity());
@@ -769,6 +774,7 @@ namespace jsonformula {
                     }
                     default:
                     {
+//						auto at = arg0.type();
                         ec = jsonformula_errc::invalid_type;
                         return resources.null_value();
                     }
@@ -864,6 +870,11 @@ namespace jsonformula {
                 : function_base(2)
             {
             }
+			
+			virtual std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("contains() function");
+			}
 
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
@@ -1434,6 +1445,11 @@ namespace jsonformula {
             {
             }
 
+			virtual std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("type() function");
+			}
+
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
                 JSONCONS_ASSERT(args.size() == *this->arity());
@@ -1909,7 +1925,7 @@ namespace jsonformula {
 
             std::string to_string(std::size_t = 0) const override
             {
-                return std::string("to_string_function\n");
+                return std::string("to_string() function");
             }
         };
 
@@ -1935,9 +1951,75 @@ namespace jsonformula {
 
             std::string to_string(std::size_t = 0) const override
             {
-                return std::string("to_string_function\n");
+                return std::string("not_null_function");
             }
         };
+
+		class value_function final : public function_base
+		{
+		public:
+			value_function()
+				: function_base(2)
+			{
+			}
+
+			reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
+			{
+				JSONCONS_ASSERT(args.size() == *this->arity());
+
+				// we need two params
+				if (!(args[0].is_value() && args[1].is_value()))
+				{
+					ec = jsonformula_errc::invalid_type;
+					return resources.null_value();
+				}
+
+				reference arg0 = args[0].value();
+				reference arg1 = args[1].value();
+
+				switch (arg0.type())
+				{
+					case jsoncons::json_type::array_value:
+					{
+						int64_t idx = -1;	// start with a bogus value
+						auto a1t = arg1.type();
+						if ( a1t == jsoncons::json_type::int64_value ||
+							 a1t == jsoncons::json_type::uint64_value ||
+							 a1t == jsoncons::json_type::double_value ) {
+							idx = arg1.template as<int64_t>();
+						} else if ( a1t == jsoncons::json_type::string_value ) {
+								auto sv = arg0.as_string_view();
+								auto result2 = jsoncons::detail::to_integer(sv.data(), sv.length(), idx);
+						}
+						if ( idx >=0 )
+							return arg0[idx];
+						else
+							return resources.null_value();
+					}
+					case jsoncons::json_type::object_value:
+					{
+						auto a1t = arg1.type();
+						if ( arg1.is_string() ) {
+							return arg0[arg1.as_string_view()];
+						} else
+							return resources.null_value();
+					}
+					default:
+					{
+						ec = jsonformula_errc::invalid_type;
+						return resources.null_value();
+					}
+				}
+
+				// return empty/null
+				return resources.null_value();
+			}
+
+			std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("value_function");
+			}
+		};
 
         // token
 
@@ -2437,7 +2519,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("or_operator\n");
+                s.append("or_operator");
                 return s;
             }
         };
@@ -2469,7 +2551,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("and_operator\n");
+                s.append("and_operator");
                 return s;
             }
         };
@@ -2494,7 +2576,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("eq_operator\n");
+                s.append("eq_operator");
                 return s;
             }
         };
@@ -2519,7 +2601,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("ne_operator\n");
+                s.append("ne_operator");
                 return s;
             }
         };
@@ -2554,7 +2636,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("lt_operator\n");
+                s.append("lt_operator");
                 return s;
             }
         };
@@ -2589,7 +2671,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("lte_operator\n");
+                s.append("lte_operator");
                 return s;
             }
         };
@@ -2624,7 +2706,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("gt_operator\n");
+                s.append("gt_operator");
                 return s;
             }
         };
@@ -2659,7 +2741,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("gte_operator\n");
+                s.append("gte_operator");
                 return s;
             }
         };
@@ -2758,7 +2840,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("plus_operator\n");
+				s.append("plus_operator");
 				return s;
 			}
 		};
@@ -2854,7 +2936,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("minus_operator\n");
+				s.append("minus_operator");
 				return s;
 			}
 		};
@@ -2950,7 +3032,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("multiply_operator\n");
+				s.append("multiply_operator");
 				return s;
 			}
 		};
@@ -3050,7 +3132,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("divide_operator\n");
+				s.append("divide_operator");
 				return s;
 			}
 		};
@@ -3108,7 +3190,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("concat_operator\n");
+				s.append("concat_operator");
 				return s;
 			}
 
@@ -3211,7 +3293,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("union_operator\n");
+				s.append("union_operator");
 				return s;
 			}
 		};
@@ -3760,7 +3842,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("multi_select_list\n");
+                s.append("multi_select_list");
                 return s;
             }
         };
@@ -3842,6 +3924,7 @@ namespace jsonformula {
                 static to_number_function to_number_func;
                 static to_string_function to_string_func;
                 static not_null_function not_null_func;
+				static value_function value_func;
 
                 using function_dictionary = std::unordered_map<string_type,const function_base*>;
                 static const function_dictionary functions_ =
@@ -3876,12 +3959,13 @@ namespace jsonformula {
 					// json_formula changes & additions
 					{string_type{'e','n','d', 's', 'W', 'i', 't', 'h'}, &ends_with_func},
 					{string_type{'m','i','n','B','y'}, &min_by_func},
+					{string_type{'n','o','t', 'N', 'u','l','l'}, &not_null_func},
 					{string_type{'s','o','r', 't','B','y'}, &sort_by_func},
 					{string_type{'s','t','a', 'r','t','s','W','i','t','h'}, &starts_with_func},
 					{string_type{'t','o','A','r','r','a','y',}, &to_array_func},
 					{string_type{'t','o','N', 'u', 'm','b','e','r'}, &to_number_func},
 					{string_type{'t','o','S', 't', 'r','i','n','g'}, &to_string_func},
-					{string_type{'n','o','t', 'N', 'u','l','l'}, &not_null_func},
+					{string_type{'v','a','l', 'u','e'}, &value_func},
                 };
                 auto it = functions_.find(name);
                 if (it == functions_.end())
@@ -4061,12 +4145,15 @@ namespace jsonformula {
 
         std::vector<token> output_stack_;
         std::vector<token> operator_stack_;
+		
+		
+		bool debug_;
 
     public:
         jsonformula_evaluator()
             : line_(1), column_(1),
               begin_input_(nullptr), end_input_(nullptr),
-              p_(nullptr)
+              p_(nullptr), debug_(false)
         {
         }
 
@@ -4079,6 +4166,8 @@ namespace jsonformula {
         {
             return column_;
         }
+		
+		void debug(bool d=true) { debug_ = d; }
 
         jsonformula_expression compile(const char_type* path,
                                     std::size_t length,
@@ -4164,7 +4253,12 @@ namespace jsonformula {
                             }
 							case ')':
                             {
-                                state_stack_.pop_back();
+								// JSONFormula
+								// check if there is anything in the buffer...
+								// if so, we need to process it
+								_checkBuffer(buffer);
+
+								state_stack_.pop_back();
                                 break;
                             }
                             case '[':
@@ -4311,7 +4405,6 @@ namespace jsonformula {
                                 }
 								else if ((*p_ >= '0' && *p_ <= '9') || (*p_ == '-') || (*p_ == '.')) //json-formula supports #'s
 								{
-									state_stack_.back() = path_state::rhs_slice_expression_stop; // this will cause it to turn into a number when complete
 									state_stack_.back() = path_state::number;
 									buffer.push_back(*p_);
 									++p_;
@@ -4403,6 +4496,21 @@ namespace jsonformula {
                                 ++p_;
                                 ++column_;
                                 break;
+							//json-formula supports #'s
+							case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':
+							case '.':	// don't forget decimal places!
+							case '-':	// don't forget negative numbers!
+								// we need to first mark this as an argument
+								state_stack_.back() = path_state::argument;
+								state_stack_.emplace_back(path_state::rhs_expression);
+								state_stack_.emplace_back(path_state::lhs_expression);
+
+								// and now handle the number part...
+								state_stack_.back() = path_state::number;
+								buffer.push_back(*p_);
+								++p_;
+								++column_;
+								break;
                             default:
                                 state_stack_.back() = path_state::argument;
                                 state_stack_.emplace_back(path_state::rhs_expression);
@@ -4441,30 +4549,37 @@ namespace jsonformula {
                         break;
 
                     case path_state::function_expression:
-                        switch (*p_)
-                        {
-                            case ' ':case '\t':case '\r':case '\n':
-                                advance_past_space_character(ec, buffer);
-                                break;
-                            case ',':
-                                push_token(token(current_node_arg), ec);
-                                if (ec) {return jsonformula_expression();}
-                                state_stack_.emplace_back(path_state::expression_or_expression_type);
-                                ++p_;
-                                ++column_;
-                                break;
-                            case ')':
-                            {
-                                push_token(token(end_function_arg), ec);
-                                if (ec) {return jsonformula_expression();}
-                                state_stack_.pop_back(); 
-                                ++p_;
-                                ++column_;
-                                break;
-                            }
-                            default:
-                                break;
-                        }
+					{
+						// JSONFormula
+						// check if there is anything in the buffer...
+						// if so, we need to process it
+						_checkBuffer(buffer);
+
+						switch (*p_)
+						{
+							case ' ':case '\t':case '\r':case '\n':
+								advance_past_space_character(ec, buffer);
+								break;
+							case ',':
+								push_token(token(current_node_arg), ec);
+								if (ec) {return jsonformula_expression();}
+								state_stack_.emplace_back(path_state::expression_or_expression_type);
+								++p_;
+								++column_;
+								break;
+							case ')':
+							{
+								push_token(token(end_function_arg), ec);
+								if (ec) {return jsonformula_expression();}
+								state_stack_.pop_back();
+								++p_;
+								++column_;
+								break;
+							}
+							default:
+								break;
+						}
+					}
                         break;
 
                     case path_state::argument:
@@ -4803,7 +4918,17 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case '-':
-							case '+':	// JSONFormula also supports exponents
+							case '+':
+								if ( buffer[buffer.length()-1]=='e' || buffer[buffer.length()-1]=='E' ) { // JSONFormula also supports exponents
+									buffer.push_back(*p_);
+									 state_stack_.back() = path_state::digit;
+									 ++p_;
+									 ++column_;
+								} else {	// it's an equation/formula, so pop out of number!
+									state_stack_.pop_back();
+								}
+								break;
+								
 							case '.':	// don't forget decimal places!
                                buffer.push_back(*p_);
                                 state_stack_.back() = path_state::digit;
@@ -5493,7 +5618,12 @@ namespace jsonformula {
                     }
                     case path_state::expect_rbrace:
                     {
-                        switch(*p_)
+						// JSONFormula
+						// check if there is anything in the buffer...
+						// if so, we need to process it
+						_checkBuffer(buffer);
+
+						switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
                                 advance_past_space_character(ec, buffer);
@@ -5523,7 +5653,16 @@ namespace jsonformula {
                                 ++column_;
                                 break;
                             }
+							// JSONFormula supports functions
+							case '+':
+							case '-':
+							case '*':
+							case '/':
+								state_stack_.emplace_back(path_state::jf_expression);
+								break;
                             default:
+								if ( debug_ ) { std::cout << "rbrace: " << *p_ << std::endl; }
+								
                                 ec = jsonformula_errc::expected_rbrace;
                                 return jsonformula_expression();
                         }
@@ -5622,11 +5761,14 @@ namespace jsonformula {
             push_token(end_of_expression_arg, ec);
             if (ec) {return jsonformula_expression();}
 
-            //for (auto& t : output_stack_)
-            //{
-            //    std::cout << t.to_string() << std::endl;
-            //}
-
+			// debug the output stack...
+			if ( debug_ ) {
+				for (auto& t : output_stack_)
+				{
+					std::cout << t.to_string() << std::endl;
+				}
+			}
+			
             return jsonformula_expression(std::move(resources_), std::move(output_stack_));
         }
 
@@ -5698,7 +5840,16 @@ namespace jsonformula {
 
         void push_token(token&& tok, std::error_code& ec)
         {
-            switch (tok.type())
+			// debug the output stack...
+			if ( debug_ ) {
+				std::cout << "pre-push" << std::endl;
+				for (auto& t : output_stack_)
+				{
+					std::cout << t.to_string() << std::endl;
+				}
+			}
+
+			switch (tok.type())
             {
                 case token_kind::end_filter:
                 {
@@ -5880,17 +6031,38 @@ namespace jsonformula {
                     {
                         unwind_rparen(ec);
                         std::vector<token> toks;
-                        auto it = output_stack_.rbegin();
-                        std::size_t arg_count = 0;
+                        auto it = output_stack_.rbegin(), prev=output_stack_.rbegin();
+                        std::size_t arg_count = 0, tok_count=0;
                         while (it != output_stack_.rend() && it->type() != token_kind::function)
                         {
                             if (it->type() == token_kind::argument)
                             {
                                 ++arg_count;
-                            }
+							}
+														
                             toks.emplace_back(std::move(*it));
+							tok_count++;
+
+							// json formula supports operators as params
+							// swap it with the argument!
+							if (it->type() == token_kind::argument &&
+							   prev->type() == token_kind::binary_operator) {
+								std::swap(toks[tok_count-1], toks[tok_count-2]);
+							}
+
+							prev=it;
                             ++it;
                         }
+						
+						// debug the toks...
+						if ( debug_ ) {
+							std::cout << "toks-1" << std::endl;
+							for (auto& t : toks)
+							{
+								std::cout << t.to_string() << std::endl;
+							}
+						}
+						
                         if (it == output_stack_.rend())
                         {
                             ec = jsonformula_errc::unbalanced_parentheses;
@@ -5910,7 +6082,16 @@ namespace jsonformula {
                         ++it;
                         output_stack_.erase(it.base(),output_stack_.end());
 
-                        if (!output_stack_.empty() && output_stack_.back().is_projection() && 
+						// debug the toks...
+						if ( debug_ ) {
+							std::cout << "toks-2" << std::endl;
+							for (auto& t : toks)
+							{
+								std::cout << t.to_string() << std::endl;
+							}
+						}
+						
+                        if (!output_stack_.empty() && output_stack_.back().is_projection() &&
                             (tok.precedence_level() < output_stack_.back().precedence_level() ||
                             (tok.precedence_level() == output_stack_.back().precedence_level() && tok.is_right_associative())))
                         {
@@ -5999,7 +6180,16 @@ namespace jsonformula {
                 default:
                     break;
             }
-        }
+
+			// debug the output stack...
+			if ( debug_ ) {
+				std::cout << "post-push" << std::endl;
+				for (auto& t : output_stack_)
+				{
+					std::cout << t.to_string() << std::endl;
+				}
+			}
+		}
 
         uint32_t append_to_codepoint(uint32_t cp, int c, std::error_code& ec)
         {
@@ -6063,6 +6253,24 @@ namespace jsonformula {
         }
         return result;
     }
+
+	template<class Json>
+	Json debug_search(const Json& doc, const typename Json::string_view_type& path, std::error_code& ec)
+	{
+		jsonformula::detail::jsonformula_evaluator<Json,const Json&> evaluator;
+		evaluator.debug();	// enable debugging!
+		auto expr = evaluator.compile(path.data(), path.size(), ec);
+		if (ec)
+		{
+			return Json::null();
+		}
+		auto result = expr.evaluate(doc, ec);
+		if (ec)
+		{
+			return Json::null();
+		}
+		return result;
+	}
 
     template <class Json>
     jsonformula_expression<Json> make_expression(const typename jsoncons::json::string_view_type& expr)

@@ -74,7 +74,7 @@ TEST_CASE("json_location remove tests")
         CHECK(doc["store"]["book"].size() == 3);
         CHECK(doc["store"]["book"][1]["author"].as<std::string>() == "Evelyn Waugh");
 
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
 
         CHECK(count == 1);
         CHECK(doc["store"]["book"].size() == 2);
@@ -90,7 +90,7 @@ TEST_CASE("json_location remove tests")
         CHECK(doc["store"]["book"].size() == 3);
         CHECK(doc["store"]["book"][2]["author"].as<std::string>() == "Herman Melville");
 
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
 
         CHECK(count == 1);
         CHECK(doc["store"]["book"].size() == 2);
@@ -107,7 +107,7 @@ TEST_CASE("json_location remove tests")
         CHECK(doc["store"]["book"].size() == 3);
         CHECK(doc["store"]["book"][2]["author"].as<std::string>() == "Herman Melville");
 
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
 
         CHECK(count == 0);
         CHECK(doc == orig);
@@ -118,7 +118,7 @@ TEST_CASE("json_location remove tests")
         jsonpath::json_location loc;
         loc.append("store");
 
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
         CHECK(count == 1);
         CHECK(doc.size() == 0);
     }
@@ -129,7 +129,7 @@ TEST_CASE("json_location remove tests")
         loc.append("store").append("book");
 
         CHECK(doc["store"]["book"].size() == 3);
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
         CHECK(count == 1);
         CHECK(doc["store"]["book"].size() == 0);
     }
@@ -142,7 +142,7 @@ TEST_CASE("json_location remove tests")
         loc.append("store").append("lost&found");
 
         CHECK(doc["store"].size() == 1);
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
         CHECK(count == 0);
         CHECK(doc == orig);
     }
@@ -156,7 +156,7 @@ TEST_CASE("json_location remove tests")
         CHECK(doc["store"]["book"][2]["author"].as<std::string>() == "Herman Melville");
         CHECK(doc["store"]["book"][2].contains("price"));
 
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
 
         CHECK(count == 1);
         CHECK(doc["store"]["book"].size() == 3);
@@ -174,7 +174,7 @@ TEST_CASE("json_location remove tests")
         CHECK(doc["store"]["book"].size() == 3);
         CHECK(doc["store"]["book"][2].contains("price"));
 
-        std::size_t count = jsonpath::json_erase(doc, loc);
+        std::size_t count = jsonpath::remove(doc, loc);
 
         CHECK(count == 0);
         CHECK(doc == orig);
@@ -215,7 +215,7 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store").append("book").append(1);
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
 
         CHECK_FALSE(p_json == nullptr);
         CHECK(*p_json == doc.at("store").at("book").at(1));
@@ -226,7 +226,7 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store").append("book").append(2);
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
 
         CHECK_FALSE(p_json == nullptr);
         CHECK(*p_json == doc.at("store").at("book").at(2));
@@ -237,7 +237,7 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store").append("book").append(3);
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
 
         CHECK(p_json == nullptr);
     }
@@ -247,7 +247,7 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store");
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
         CHECK_FALSE(p_json == nullptr);
         CHECK(*p_json == doc.at("store"));
     }
@@ -257,7 +257,7 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store").append("book");
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
         CHECK_FALSE(p_json == nullptr);
         CHECK(*p_json == doc.at("store").at("book"));
     }
@@ -267,7 +267,7 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store").append("lost&found");
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
         CHECK(p_json == nullptr);
     }
 
@@ -276,7 +276,7 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store").append("book").append(2).append("price");
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
 
         CHECK_FALSE(p_json == nullptr);
         CHECK(*p_json == doc.at("store").at("book").at(2).at("price"));
@@ -287,9 +287,28 @@ TEST_CASE("json_location select tests")
         jsonpath::json_location loc;
         loc.append("store").append(0);
 
-        json* p_json = jsonpath::json_get(doc, loc);
+        json* p_json = jsonpath::get(doc, loc);
 
         CHECK(p_json == nullptr);
+    }
+}
+
+TEST_CASE("test json_location from path_node")
+{
+    SECTION("test 1")
+    {
+        jsonpath::path_node a1{};
+        jsonpath::path_node a2(&a1,"foo");
+        jsonpath::path_node a3(&a2,"bar");
+        jsonpath::path_node a4(&a3,7);
+
+        jsonpath::json_location location;
+        location.append("foo").append("bar").append(7);
+
+        std::string jsonpath_string = "$['foo']['bar'][7]";
+
+        CHECK((jsonpath::json_location{ a4 } == location));
+        CHECK((jsonpath::to_string(location) == jsonpath_string));
     }
 }
 
