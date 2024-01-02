@@ -432,6 +432,8 @@ UTEST(json_formula, native_numbers) {
 	
 	// some math
 	EXPECT_TRUE(eval(j,"10 + 1") == jsoncons::json(11));
+	EXPECT_TRUE(eval(j,"10+1") == jsoncons::json(11));
+	EXPECT_TRUE(eval(j,"10-1") == jsoncons::json(9));
 	EXPECT_TRUE(eval(j,"100 * 3") == jsoncons::json(300));
 	EXPECT_TRUE(eval(j,"100/2") == jsoncons::json(50));
 	EXPECT_EQ(eval(j,"100.56 + 3").as<double>(), 103.56);
@@ -535,7 +537,9 @@ UTEST(json_formula, jf_func_form_params_1) {
 	EXPECT_EQ(eval(j,"2 + 2").as<int32_t>(), 4);
 
 	EXPECT_EQ(eval(j,"abs(2 + 2)").as<int32_t>(), 4);
-	EXPECT_TRUE(eval(j,"abs(-1 * 5)") == jsoncons::json(5));
+	EXPECT_EQ(eval(j,"abs(2+2)").as<int32_t>(), 4);
+	EXPECT_EQ(eval(j,"abs(-1 * 5)").as<int32_t>(), 5);
+	EXPECT_EQ(eval(j,"abs(3-6)").as<int32_t>(), 3);
 
 	EXPECT_TRUE(eval(j,"length(2 & 2)") == jsoncons::json(2));
 	EXPECT_TRUE(eval(j,"length('foo' & 'bar')") == jsoncons::json(6));
@@ -550,18 +554,18 @@ UTEST(json_formula, jf_func_form_params_2) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 
 	EXPECT_TRUE(eval(j,"2 & 2") == jsoncons::json("22"));
-	EXPECT_TRUE(eval_debug(j,"not_null('Catch22', 5+5, 2=2)").as<bool>());
-	
-	EXPECT_TRUE(eval_debug(j,"contains('Catch22', 2&2)").as<bool>());
+	EXPECT_TRUE(eval(j,"not_null('foo', 5 + 5)") == jsoncons::json("foo"));
+	EXPECT_TRUE(eval(j,"contains('Catch22', 2 & 2)").as<bool>());
 
 //	EXPECT_TRUE(eval(j,R"(and(10 > 8, length("foo") < 5))", true).as<bool>());
 //	EXPECT_FALSE(eval(j,R"(and(`nullptr`, length("foo") < 5))", true).as<bool>());
 }
 
 UTEST(json_formula, jf_other) {
-	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+	jsoncons::json j = jsoncons::json::parse(R"({"a":[0,1,2,3,4,5], "c":100})");
 	
-	//	EXPECT_TRUE(eval(j,"value(@.a,`2+3`)", true) == jsoncons::json(15));
-	//	EXPECT_TRUE(eval(j,"value(@.a,2+3)", true) == jsoncons::json(15));
+	EXPECT_TRUE(eval(j,"value(@.a,`5`)") == jsoncons::json(5));
+	EXPECT_TRUE(eval(j,"value(@.a, 2 + 3)") == jsoncons::json(5));
+	EXPECT_TRUE(eval(j,"value(@.a, 5-4)") == jsoncons::json(1));
 	//	EXPECT_TRUE(eval(j,"to_string({sum : 25})", true) == jsoncons::json(4));
 }

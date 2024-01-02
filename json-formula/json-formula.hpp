@@ -1951,7 +1951,7 @@ namespace jsonformula {
 
             std::string to_string(std::size_t = 0) const override
             {
-                return std::string("not_null_function\n");
+                return std::string("not_null_function");
             }
         };
 
@@ -2017,7 +2017,7 @@ namespace jsonformula {
 
 			std::string to_string(std::size_t = 0) const override
 			{
-				return std::string("value_function\n");
+				return std::string("value_function");
 			}
 		};
 
@@ -4918,7 +4918,17 @@ namespace jsonformula {
                         switch(*p_)
                         {
                             case '-':
-							case '+':	// JSONFormula also supports exponents
+							case '+':
+								if ( buffer[buffer.length()-1]=='e' || buffer[buffer.length()-1]=='E' ) { // JSONFormula also supports exponents
+									buffer.push_back(*p_);
+									 state_stack_.back() = path_state::digit;
+									 ++p_;
+									 ++column_;
+								} else {	// it's an equation/formula, so pop out of number!
+									state_stack_.pop_back();
+								}
+								break;
+								
 							case '.':	// don't forget decimal places!
                                buffer.push_back(*p_);
                                 state_stack_.back() = path_state::digit;
