@@ -744,6 +744,11 @@ namespace jsonformula {
             {
             }
 
+			virtual std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("abs() function");
+			}
+
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
                 JSONCONS_ASSERT(args.size() == *this->arity());
@@ -865,6 +870,11 @@ namespace jsonformula {
                 : function_base(2)
             {
             }
+			
+			virtual std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("contains() function");
+			}
 
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
@@ -1434,6 +1444,11 @@ namespace jsonformula {
                 : function_base(1)
             {
             }
+
+			virtual std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("type() function");
+			}
 
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
@@ -2504,7 +2519,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("or_operator\n");
+                s.append("or_operator");
                 return s;
             }
         };
@@ -2536,7 +2551,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("and_operator\n");
+                s.append("and_operator");
                 return s;
             }
         };
@@ -2561,7 +2576,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("eq_operator\n");
+                s.append("eq_operator");
                 return s;
             }
         };
@@ -2586,7 +2601,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("ne_operator\n");
+                s.append("ne_operator");
                 return s;
             }
         };
@@ -2621,7 +2636,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("lt_operator\n");
+                s.append("lt_operator");
                 return s;
             }
         };
@@ -2656,7 +2671,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("lte_operator\n");
+                s.append("lte_operator");
                 return s;
             }
         };
@@ -2691,7 +2706,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("gt_operator\n");
+                s.append("gt_operator");
                 return s;
             }
         };
@@ -2726,7 +2741,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("gte_operator\n");
+                s.append("gte_operator");
                 return s;
             }
         };
@@ -2825,7 +2840,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("plus_operator\n");
+				s.append("plus_operator");
 				return s;
 			}
 		};
@@ -2921,7 +2936,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("minus_operator\n");
+				s.append("minus_operator");
 				return s;
 			}
 		};
@@ -3017,7 +3032,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("multiply_operator\n");
+				s.append("multiply_operator");
 				return s;
 			}
 		};
@@ -3117,7 +3132,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("divide_operator\n");
+				s.append("divide_operator");
 				return s;
 			}
 		};
@@ -3175,7 +3190,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("concat_operator\n");
+				s.append("concat_operator");
 				return s;
 			}
 
@@ -3278,7 +3293,7 @@ namespace jsonformula {
 				{
 					s.push_back(' ');
 				}
-				s.append("union_operator\n");
+				s.append("union_operator");
 				return s;
 			}
 		};
@@ -5801,7 +5816,16 @@ namespace jsonformula {
 
         void push_token(token&& tok, std::error_code& ec)
         {
-            switch (tok.type())
+			// debug the output stack...
+			if ( debug_ ) {
+				std::cout << "pre-push" << std::endl;
+				for (auto& t : output_stack_)
+				{
+					std::cout << t.to_string() << std::endl;
+				}
+			}
+
+			switch (tok.type())
             {
                 case token_kind::end_filter:
                 {
@@ -5983,17 +6007,38 @@ namespace jsonformula {
                     {
                         unwind_rparen(ec);
                         std::vector<token> toks;
-                        auto it = output_stack_.rbegin();
-                        std::size_t arg_count = 0;
+                        auto it = output_stack_.rbegin(), prev=output_stack_.rbegin();
+                        std::size_t arg_count = 0, tok_count=0;
                         while (it != output_stack_.rend() && it->type() != token_kind::function)
                         {
                             if (it->type() == token_kind::argument)
                             {
                                 ++arg_count;
-                            }
+							}
+														
                             toks.emplace_back(std::move(*it));
+							tok_count++;
+
+							// json formula supports operators as params
+							// swap it with the argument!
+							if (it->type() == token_kind::argument &&
+							   prev->type() == token_kind::binary_operator) {
+								std::swap(toks[tok_count-1], toks[tok_count-2]);
+							}
+
+							prev=it;
                             ++it;
                         }
+						
+						// debug the toks...
+						if ( debug_ ) {
+							std::cout << "toks-1" << std::endl;
+							for (auto& t : toks)
+							{
+								std::cout << t.to_string() << std::endl;
+							}
+						}
+						
                         if (it == output_stack_.rend())
                         {
                             ec = jsonformula_errc::unbalanced_parentheses;
@@ -6013,7 +6058,16 @@ namespace jsonformula {
                         ++it;
                         output_stack_.erase(it.base(),output_stack_.end());
 
-                        if (!output_stack_.empty() && output_stack_.back().is_projection() && 
+						// debug the toks...
+						if ( debug_ ) {
+							std::cout << "toks-2" << std::endl;
+							for (auto& t : toks)
+							{
+								std::cout << t.to_string() << std::endl;
+							}
+						}
+						
+                        if (!output_stack_.empty() && output_stack_.back().is_projection() &&
                             (tok.precedence_level() < output_stack_.back().precedence_level() ||
                             (tok.precedence_level() == output_stack_.back().precedence_level() && tok.is_right_associative())))
                         {
@@ -6102,7 +6156,16 @@ namespace jsonformula {
                 default:
                     break;
             }
-        }
+
+			// debug the output stack...
+			if ( debug_ ) {
+				std::cout << "post-push" << std::endl;
+				for (auto& t : output_stack_)
+				{
+					std::cout << t.to_string() << std::endl;
+				}
+			}
+		}
 
         uint32_t append_to_codepoint(uint32_t cp, int c, std::error_code& ec)
         {

@@ -528,11 +528,34 @@ UTEST(json_formula, jf_func_single_params) {
 	EXPECT_TRUE(eval(j,R"(type(123.456))") == jsoncons::json("number"));
 }
 
-UTEST(json_formula, jf_func_form_params) {
+UTEST(json_formula, jf_func_form_params_1) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 	
-	EXPECT_TRUE(eval_debug(j,"abs(`2`)") == jsoncons::json(4));
-	EXPECT_TRUE(eval_debug(j,"abs(2 + 2)") == jsoncons::json(4));
+	EXPECT_EQ(eval(j,"abs(`2`)").as<int32_t>(), 2);
+	EXPECT_EQ(eval(j,"2 + 2").as<int32_t>(), 4);
+
+	EXPECT_EQ(eval(j,"abs(2 + 2)").as<int32_t>(), 4);
+	EXPECT_TRUE(eval(j,"abs(-1 * 5)") == jsoncons::json(5));
+
+	EXPECT_TRUE(eval(j,"length(2 & 2)") == jsoncons::json(2));
+	EXPECT_TRUE(eval(j,"length('foo' & 'bar')") == jsoncons::json(6));
+
+	EXPECT_TRUE(eval(j,R"(to_string(12/4))") == jsoncons::json("3.0"));
+
+	EXPECT_TRUE(eval(j,R"(type(`2` == `2`))") == jsoncons::json("boolean"));
+	EXPECT_TRUE(eval(j,R"(type(2 == 2))") == jsoncons::json("boolean"));
+}
+
+UTEST(json_formula, jf_func_form_params_2) {
+	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+
+	EXPECT_TRUE(eval(j,"2 & 2") == jsoncons::json("22"));
+	EXPECT_TRUE(eval_debug(j,"not_null('Catch22', 5+5, 2=2)").as<bool>());
+	
+	EXPECT_TRUE(eval_debug(j,"contains('Catch22', 2&2)").as<bool>());
+
+//	EXPECT_TRUE(eval(j,R"(and(10 > 8, length("foo") < 5))", true).as<bool>());
+//	EXPECT_FALSE(eval(j,R"(and(`nullptr`, length("foo") < 5))", true).as<bool>());
 }
 
 UTEST(json_formula, jf_other) {
