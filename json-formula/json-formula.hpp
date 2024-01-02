@@ -1925,7 +1925,7 @@ namespace jsonformula {
 
             std::string to_string(std::size_t = 0) const override
             {
-                return std::string("to_string_function\n");
+                return std::string("to_string() function");
             }
         };
 
@@ -3842,7 +3842,7 @@ namespace jsonformula {
                 {
                     s.push_back(' ');
                 }
-                s.append("multi_select_list\n");
+                s.append("multi_select_list");
                 return s;
             }
         };
@@ -5618,7 +5618,12 @@ namespace jsonformula {
                     }
                     case path_state::expect_rbrace:
                     {
-                        switch(*p_)
+						// JSONFormula
+						// check if there is anything in the buffer...
+						// if so, we need to process it
+						_checkBuffer(buffer);
+
+						switch(*p_)
                         {
                             case ' ':case '\t':case '\r':case '\n':
                                 advance_past_space_character(ec, buffer);
@@ -5648,7 +5653,16 @@ namespace jsonformula {
                                 ++column_;
                                 break;
                             }
+							// JSONFormula supports functions
+							case '+':
+							case '-':
+							case '*':
+							case '/':
+								state_stack_.emplace_back(path_state::jf_expression);
+								break;
                             default:
+								if ( debug_ ) { std::cout << "rbrace: " << *p_ << std::endl; }
+								
                                 ec = jsonformula_errc::expected_rbrace;
                                 return jsonformula_expression();
                         }

@@ -510,8 +510,6 @@ UTEST(json_formula, misc_json_formula) {
 UTEST(json_formula, jf_func_single_params) {
 	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
 
-	EXPECT_TRUE(eval(j,"to_string({sum : `25`})") == jsoncons::json("{\"sum\":25}"));
-
 	EXPECT_TRUE(eval(j,"abs(`2`)") == jsoncons::json(2));
 	EXPECT_TRUE(eval(j,"abs(2)") == jsoncons::json(2));
 	EXPECT_TRUE(eval(j,"abs(-2)") == jsoncons::json(2));
@@ -525,6 +523,10 @@ UTEST(json_formula, jf_func_single_params) {
 	EXPECT_EQ(eval(j,"floor(1)").as<int32_t>(), 1);
 
 	EXPECT_TRUE(eval(j,R"(to_string(0))") == jsoncons::json("0"));
+
+	EXPECT_TRUE(eval(j,"to_string({sum : `25`})") == jsoncons::json("{\"sum\":25}"));
+	EXPECT_TRUE(eval(j,"to_string({sum : 25})") == jsoncons::json("{\"sum\":25}"));
+	EXPECT_TRUE(eval(j,"to_string({sum : 5*5})") == jsoncons::json("{\"sum\":25.0}"));
 
 	EXPECT_TRUE(eval(j,R"(type(100))") == jsoncons::json("number"));
 	EXPECT_TRUE(eval(j,R"(type(123.456))") == jsoncons::json("number"));
@@ -567,5 +569,4 @@ UTEST(json_formula, jf_other) {
 	EXPECT_TRUE(eval(j,"value(@.a,`5`)") == jsoncons::json(5));
 	EXPECT_TRUE(eval(j,"value(@.a, 2 + 3)") == jsoncons::json(5));
 	EXPECT_TRUE(eval(j,"value(@.a, 5-4)") == jsoncons::json(1));
-	//	EXPECT_TRUE(eval(j,"to_string({sum : 25})", true) == jsoncons::json(4));
 }
