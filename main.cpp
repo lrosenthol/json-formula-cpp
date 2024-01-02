@@ -30,9 +30,90 @@ UTEST_MAIN();
 // use our own main
 UTEST_STATE();
 
-int main(int argc, const char *const argv[]) {
-  // do your own thing
-  return utest_main(argc, argv);
+void ProcessOneTestFile( jsoncons::json& jt )
+{
+	if ( jt.is_array() ) {
+		for (const auto& tObj : jt.array_range()) {
+			if ( tObj.is_object() ) {
+				std::string comment = tObj["comment"].as<std::string>();
+				auto given = tObj["given"];
+				auto cases = tObj["cases"];
+				if ( (given.is_object() || given.is_array()) && cases.is_array() ) {
+					std::cout << "Running Test: '" << comment << "'" << std::endl;
+					
+					for ( auto oneCase : cases.array_range() ) {
+						if ( oneCase.is_object() ) {
+							std::string expression = oneCase["expression"].as<std::string>();
+							auto expected = oneCase["result"];
+							auto result = eval( given, expression, true );
+							
+							bool passed(expected == result);
+							std::cout << "\t" << (passed ? "PASSED" : "FAILED") << std::endl;
+						} else {
+							std::cout << "Not a valid test file: case isn't an object" << std::endl;
+						}
+					}
+				} else {
+					std::cout << "Not a valid test file: invalid given or cases" << std::endl;
+				}
+			} else {
+				std::cout << "Not a valid test file: not an object in the array" << std::endl;
+			}
+		}
+
+	} else {
+		std::cout << "Not a valid test file: not an array at root" << std::endl;
+	}
+}
+
+int main(int argc, const char *const argv[])
+{
+	namespace fs = std::filesystem;
+
+	// setup the options parser
+	popl::OptionParser op("Allowed options");
+	auto help_option     = op.add<popl::Switch>("h", "help", "produce help message");
+
+	op.parse(argc, argv);
+
+	std::vector<std::string> filepaths;
+
+	// show unknown options (undefined ones, like "-u" or "--undefined")
+	for (const auto& unknown_option: op.unknown_options())
+		std::cout << "unknown_options: " << unknown_option <<  std::endl;
+
+	// find/capture all non option arguments - should be the filenames!
+	for (const auto& non_option_arg: op.non_option_args()) {
+		std::cout << "non_option_args: " << non_option_arg <<  std::endl;
+		filepaths.push_back( non_option_arg );
+	}
+
+	// if the user specified some test files, then run those
+	// otherwise, run the utests!
+	if ( filepaths.size() ) {
+		for ( auto f : filepaths ) {
+			fs::path fp(f);
+			if ( fs::exists(fp) ) {
+				std::ifstream is(f);
+				
+				try {
+					jsoncons::json j = jsoncons::json::parse(is);
+					
+//					std::cout << j << "\n\n";
+					
+					ProcessOneTestFile( j );
+				}
+				catch (const std::exception& e) {
+					std::cout << e.what() << "";
+				}
+			} else {
+				std::cout << "Current path is " << fs::current_path() <<  std::endl;
+				std::cout << "File not found ('" << f << "')" <<  std::endl;
+			}
+		}
+	} else {
+		return utest_main(argc, argv);
+	}
 }
 #endif
 

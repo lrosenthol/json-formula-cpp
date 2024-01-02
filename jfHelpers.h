@@ -12,6 +12,8 @@ static std::string GetType(const jsoncons::json& j)
 		return "array";
 	else if ( j.is_object() )
 		return "object";
+	else if ( j.is_null() )
+		return "null";
 	else
 		return "other";
 }

@@ -50,6 +50,16 @@
             ReferencedContainer = "container:json-formula.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/basic.json"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/*"
+            isEnabled = "NO">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
