@@ -1988,8 +1988,8 @@ namespace jsonformula {
 							 a1t == jsoncons::json_type::double_value ) {
 							idx = arg1.template as<int64_t>();
 						} else if ( a1t == jsoncons::json_type::string_value ) {
-								auto sv = arg0.as_string_view();
-								auto result2 = jsoncons::detail::to_integer(sv.data(), sv.length(), idx);
+							auto sv = arg0.as_string_view();
+							jsoncons::detail::to_integer(sv.data(), sv.length(), idx);
 						}
 						if ( idx >=0 )
 							return arg0[idx];
@@ -1998,7 +1998,7 @@ namespace jsonformula {
 					}
 					case jsoncons::json_type::object_value:
 					{
-						auto a1t = arg1.type();
+//						auto a1t = arg1.type();
 						if ( arg1.is_string() ) {
 							return arg0[arg1.as_string_view()];
 						} else
