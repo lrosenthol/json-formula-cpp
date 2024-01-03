@@ -33,6 +33,8 @@ UTEST_STATE();
 void ProcessOneTestFile( jsoncons::json& jt )
 {
 	if ( jt.is_array() ) {
+		int32_t numFails = 0;
+		
 		for (const auto& tObj : jt.array_range()) {
 			if ( tObj.is_object() ) {
 				auto comment = tObj.at_or_null("comment");
@@ -52,6 +54,8 @@ void ProcessOneTestFile( jsoncons::json& jt )
 							auto result = eval( given, expression, true );
 							
 							bool passed(expected == result);
+							if ( !passed ) numFails++;
+							
 							std::cout 	<< "\t"
 										<< (passed ? "PASSED" : "FAILED")
 										<< (case_commentStr.length() ? ": " : "")
@@ -68,7 +72,16 @@ void ProcessOneTestFile( jsoncons::json& jt )
 				std::cout << "Not a valid test file: not an object in the array" << std::endl;
 			}
 		}
-
+		
+		if ( numFails > 0 ) {
+			std::cout 	<< std::endl
+						<< "Failed: "
+						<< numFails
+						<< " tests."
+						<< std::endl;
+		} else {
+			std::cout << std::endl << "Passed All Tests!" << std::endl;
+		}
 	} else {
 		std::cout << "Not a valid test file: not an array at root" << std::endl;
 	}
@@ -441,7 +454,7 @@ UTEST(json_formula, expressions_contents) {
 
 // MARK: misc
 UTEST(json_formula, misc) {
-	jsoncons::json j = jsoncons::json::parse(R"({"a":"b", "c":100})");
+	jsoncons::json j = jsoncons::json::parse(R"({"foo": {"bar": ["zero", "one", "two"]}})");
 	
 	EXPECT_TRUE(eval(j,"[`3`]") == jsoncons::json(jsoncons::json_array_arg, {3}));
 	EXPECT_TRUE(eval(j,"`[3]`") == jsoncons::json(jsoncons::json_array_arg, {3}));
@@ -449,6 +462,10 @@ UTEST(json_formula, misc) {
 	EXPECT_TRUE(eval(j,"[length('123')]") == jsoncons::json(jsoncons::json_array_arg, {3}));
 	EXPECT_TRUE(eval(j,"[]") == jsoncons::json(nullptr));
 	EXPECT_TRUE(eval(j,"[[]]") == jsoncons::json(jsoncons::json_array_arg, {nullptr}));
+	
+	EXPECT_TRUE(eval(j,"foo.bar[0]") == jsoncons::json("zero"));
+	EXPECT_TRUE(eval(j,"foo.bar[3]") == jsoncons::json(nullptr));
+	EXPECT_TRUE(eval(j,"foo.bar[-1]") == jsoncons::json("two"));
 }
 
 

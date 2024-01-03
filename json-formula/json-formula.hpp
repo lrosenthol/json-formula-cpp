@@ -4919,14 +4919,25 @@ namespace jsonformula {
                         {
                             case '-':
 							case '+':
-								if ( buffer[buffer.length()-1]=='e' || buffer[buffer.length()-1]=='E' ) { // JSONFormula also supports exponents
+							{
+								bool digit_follows = false;	// assume the worst
+								if ( buffer[buffer.length()-1]=='e' || buffer[buffer.length()-1]=='E' ) {
+									// JSONFormula also supports exponents, and next is a digit
+									digit_follows = true;
+								} else if ( state_stack_[state_stack_.size()-2] == path_state::index_or_slice_expression ) {
+									// we are in an index or slice expression
+									digit_follows = true;
+								}
+								
+								if ( digit_follows ) {
 									buffer.push_back(*p_);
-									 state_stack_.back() = path_state::digit;
-									 ++p_;
-									 ++column_;
+									state_stack_.back() = path_state::digit;
+									++p_;
+									++column_;
 								} else {	// it's an equation/formula, so pop out of number!
 									state_stack_.pop_back();
 								}
+							}
 								break;
 								
 							case '.':	// don't forget decimal places!
