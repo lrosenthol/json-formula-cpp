@@ -503,6 +503,7 @@ namespace jsonformula {
                    (ref.is_object() && ref.empty()) ||
                    (ref.is_string() && ref.as_string_view().size() == 0) ||
                    (ref.is_bool() && !ref.as_bool()) ||
+				   (ref.is_number() && ref.template as<int>()==0) ||	// json-formula also treats 0 as false
                    ref.is_null();
         }
 
