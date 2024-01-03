@@ -35,20 +35,28 @@ void ProcessOneTestFile( jsoncons::json& jt )
 	if ( jt.is_array() ) {
 		for (const auto& tObj : jt.array_range()) {
 			if ( tObj.is_object() ) {
-				std::string comment = tObj["comment"].as<std::string>();
+				auto comment = tObj.at_or_null("comment");
 				auto given = tObj["given"];
 				auto cases = tObj["cases"];
 				if ( (given.is_object() || given.is_array()) && cases.is_array() ) {
-					std::cout << "Running Test: '" << comment << "'" << std::endl;
+					std::string commentStr = comment.is_null() ? "" : comment.as<std::string>();
+					std::cout << "Running Test: '" << commentStr << "'" << std::endl;
 					
 					for ( auto oneCase : cases.array_range() ) {
 						if ( oneCase.is_object() ) {
+							auto case_comment = oneCase.at_or_null("comment");
+							std::string case_commentStr = case_comment.is_null() ? "" : case_comment.as<std::string>();
+
 							std::string expression = oneCase["expression"].as<std::string>();
 							auto expected = oneCase["result"];
 							auto result = eval( given, expression, true );
 							
 							bool passed(expected == result);
-							std::cout << "\t" << (passed ? "PASSED" : "FAILED") << std::endl;
+							std::cout 	<< "\t"
+										<< (passed ? "PASSED" : "FAILED")
+										<< (case_commentStr.length() ? ": " : "")
+										<< (case_commentStr.length() ? case_commentStr : "")
+										<< std::endl;
 						} else {
 							std::cout << "Not a valid test file: case isn't an object" << std::endl;
 						}
