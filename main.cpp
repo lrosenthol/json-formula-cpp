@@ -50,7 +50,8 @@ void ProcessOneTestFile( jsoncons::json& jt )
 							std::string case_commentStr = case_comment.is_null() ? "" : case_comment.as<std::string>();
 
 							std::string expression = oneCase["expression"].as<std::string>();
-							auto expected = oneCase["result"];
+							auto expected = oneCase.at_or_null("result");
+							auto is_error = oneCase.at_or_null("error");
 
 							bool passed = false;
 							try {
@@ -59,6 +60,8 @@ void ProcessOneTestFile( jsoncons::json& jt )
 							}
 							catch (const std::exception& e) {
 								std::cout << "\tException: " << e.what() << std::endl;
+								if (!is_error.is_null()) // looking for an error and found one!
+									passed = true;
 							}
 
 							if ( !passed ) numFails++;
