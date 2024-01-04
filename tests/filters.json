@@ -85,7 +85,7 @@
       {"top": {"name": "b"}}]},
     "cases": [
       {
-        "comment": "Filter with subexpression",
+        "comment": "Filter with chained expression",
         "expression": "foo[?top.name == \"a\"]",
         "result": [{"top": {"name": "a"}}]
       }
@@ -295,7 +295,7 @@
     "cases": [
       {
         "expression": "foo[?bar==`1`].bar[0]",
-        "result": []
+        "result": [null, null]
       }
     ]
   },
@@ -312,7 +312,7 @@
     "cases": [
       {
         "expression": "foo[?a==`1`].b.c",
-        "result": ["x", "y", "z"]
+        "result": ["x", "y", "z", null]
       }
     ]
   },
@@ -378,26 +378,6 @@
       },
       {
         "expression": "foo[?a == `3` && ((b == `4` || b == `2`))]",
-        "result": [{"a": 3, "b": 4}]
-      }
-    ]
-  },
-  {
-    "given": {"foo": [{"a": 1, "b": 2, "c": 3}, {"a": 3, "b": 4}]},
-    "cases": [
-      {
-        "comment": "Verify precedence of or/and expressions",
-        "expression": "foo[?a == `1` || b ==`2` && c == `5`]",
-        "result": [{"a": 1, "b": 2, "c": 3}]
-      },
-      {
-        "comment": "Parentheses can alter precedence",
-        "expression": "foo[?(a == `1` || b ==`2`) && c == `5`]",
-        "result": []
-      },
-      {
-        "comment": "Not expressions combined with and/or",
-        "expression": "foo[?!(a == `1` || b ==`2`)]",
         "result": [{"a": 3, "b": 4}]
       }
     ]

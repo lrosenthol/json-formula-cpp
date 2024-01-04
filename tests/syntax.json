@@ -8,31 +8,31 @@
     },
     {
       "expression": "foo.1",
-      "error": "syntax"
+      "error": "SyntaxError"
     },
     {
       "expression": "foo.-11",
-      "error": "syntax"
+      "error": "SyntaxError"
     },
     {
       "expression": "foo.",
-      "error": "syntax"
+      "error": "SyntaxError"
     },
     {
       "expression": ".foo",
-      "error": "syntax"
+      "error": "SyntaxError"
     },
     {
       "expression": "foo..bar",
-      "error": "syntax"
+      "error": "SyntaxError"
     },
     {
       "expression": "foo.bar.",
-      "error": "syntax"
+      "error": "SyntaxError"
     },
     {
       "expression": "foo[.]",
-      "error": "syntax"
+      "error": "SyntaxError"
     }
   ]
 },
@@ -42,67 +42,67 @@
     "cases": [
       {
         "expression": ".",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": ":",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": ",",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "[",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "{",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": ")",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "(",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "((&",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "a[",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "a]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "a][",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "!",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "@=",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "@``",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -112,7 +112,7 @@
     "cases": [
       {
         "expression": "![!(!",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -123,7 +123,7 @@
       {
         "comment": "missing closing paren",
         "expression": "(@",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -134,12 +134,90 @@
       {
         "comment": "invalid start of function",
         "expression": "@(foo)",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "function names cannot be quoted",
-        "expression": "\"foo\"(bar)",
-        "error": "syntax"
+        "expression": "'foo'(bar)",
+        "error": "SyntaxError"
+      }
+    ]
+  },
+  {
+    "comment": "Wildcard combinations",
+    "given": {"a": 3},
+    "cases": [
+      {
+        "expression": "(@.*)",
+        "result": [3]
+      },
+      {
+        "expression": "(*)",
+        "result": [3]
+      },
+      {
+        "expression": "!@.*",
+        "result": false
+      },
+      {
+        "expression": "!*",
+        "result": false
+      },
+      {
+        "expression": "a * @.*",
+        "result": [9]
+      },
+      {
+        "expression": "a + *",
+        "result": [6]
+      },
+      {
+        "expression": "a - *",
+        "result": [0]
+      },
+      {
+        "expression": "a / *",
+        "result": [1]
+      },
+      {
+        "expression": "a ~ *",
+        "result": [3,3]
+      },
+      {
+        "expression": "a > *",
+        "result": false
+      },
+      {
+        "expression": "a >= *",
+        "result": false
+      },
+      {
+        "expression": "a < *",
+        "result": false
+      },
+      {
+        "expression": "a <= *",
+        "result": false
+      },
+      {
+        "expression": "a == *",
+        "result": false
+      },
+      {
+        "expression": "a = *",
+        "result": false
+      },
+      {
+        "expression": "a <> *",
+        "result": true
+      },
+      {
+        "expression": "a != *",
+        "result": true
+      },
+      {
+        "expression": "a & *",
+        "result": ["33"]
       }
     ]
   },
@@ -153,35 +231,35 @@
       },
       {
         "expression": "*.*",
-        "result": []
+        "result": [null]
       },
       {
         "expression": "*.foo",
-        "result": []
+        "result": [null]
       },
       {
         "expression": "*[0]",
-        "result": []
+        "result": [null]
       },
       {
         "expression": ".*",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "*foo",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "*0",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[*]bar",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[*]*",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -210,7 +288,7 @@
       {
         "expression": "*.[0]",
         "result": [[0]],
-        "was": "syntax"
+        "was": "SyntaxError"
       },
       {
         "expression": "*.[\"0\"]",
@@ -233,12 +311,12 @@
       },
       {
         "expression": "foo[#]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "missing rbracket for led wildcard index",
         "expression": "led[*",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -249,29 +327,27 @@
       {
         "comment": "slice expected colon or rbracket",
         "expression": "[:@]",
-        "result": null,
-        "was": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "slice has too many colons",
         "expression": "[:::]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "slice expected number",
         "expression": "[:@:]",
-        "result": null,
-        "was": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "slice expected number of colon",
         "expression": "[:1@]",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
   {
-    "comment": "Multi-select list syntax",
+    "comment": "Array expression syntax",
     "given": {"type": "object"},
     "cases": [
       {
@@ -279,181 +355,180 @@
         "result": null
       },
       {
-        "comment": "Valid multi-select of a list",
+        "comment": "Valid Array expression",
         "expression": "foo[0, 1]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo.[0]",
         "result": [0],
-        "was": "syntax"
+        "was": "SyntaxError"
       },
       {
         "expression": "foo.[*]",
         "result": [null]
       },
       {
-        "comment": "Multi-select of a list with trailing comma",
+        "comment": "Array expression with trailing comma",
         "expression": "foo[0, ]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a list with trailing comma and no close",
+        "comment": "Array expression with trailing comma and no close",
         "expression": "foo[0,",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a list with trailing comma and no close",
+        "comment": "Array expression with trailing comma and no close",
         "expression": "foo.[a",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a list with extra comma",
+        "comment": "Array expression with extra comma",
         "expression": "foo[0,, 1]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a list using an identifier index",
+        "comment": "Array expression using an identifier index",
         "expression": "foo[abc]",
-        "was": "syntax",
-        "result": null
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a list using identifier indices",
+        "comment": "Array expression using identifier indices",
         "expression": "foo[abc, def]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a list using an identifier index",
+        "comment": "Array expression using an identifier index",
         "expression": "foo[abc, 1]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a list using an identifier index with trailing comma",
+        "comment": "Array expression using an identifier index with trailing comma",
         "expression": "foo[abc, ]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Valid multi-select of a hash using an identifier index",
+        "comment": "Valid Object expression using an identifier index",
         "expression": "foo.[abc]",
         "result": [null]
       },
       {
-        "comment": "Valid multi-select of a hash",
+        "comment": "Valid Object expression",
         "expression": "foo.[abc, def]",
         "result": [null, null]
       },
       {
-        "comment": "Multi-select of a hash using a numeric index",
+        "comment": "Object expression using a numeric index",
         "expression": "foo.[abc, 1]",
         "result": [null, 1],
-        "was": "syntax"
+        "was": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a hash with a trailing comma",
+        "comment": "Object expression with a trailing comma",
         "expression": "foo.[abc, ]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a hash with extra commas",
+        "comment": "Object expression with extra commas",
         "expression": "foo.[abc,, def]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Multi-select of a hash using number indices",
+        "comment": "Object expression using number indices",
         "expression": "foo.[0, 1]",
         "result": [0, 1],
-        "was": "syntax"
+        "was": "SyntaxError"
       }
     ]
   },
   {
-    "comment": "Multi-select hash syntax",
+    "comment": "Object expression syntax",
     "given": {"type": "object"},
     "cases": [
       {
         "comment": "No key or value",
         "expression": "a{}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "No closing token",
         "expression": "a{",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Not a key value pair",
         "expression": "a{foo}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Missing value and closing character",
         "expression": "a{foo:",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Missing closing character",
         "expression": "a{foo: 0",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Missing value",
         "expression": "a{foo:}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Trailing comma and no closing character",
         "expression": "a{foo: 0, ",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Missing value with trailing comma",
         "expression": "a{foo: ,}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Accessing Array using an identifier",
         "expression": "a{foo: bar}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "a{foo: 0}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Not a key-value pair",
         "expression": "a.{foo}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
-        "comment": "Valid multi-select hash extraction",
+        "comment": "Valid object expression extraction",
         "expression": "a.{foo: bar}",
         "result": {"foo": null}
       },
       {
-        "comment": "Valid multi-select hash extraction",
+        "comment": "Valid object expression extraction",
         "expression": "a.{foo: bar, baz: bam}",
         "result": {"baz": null, "foo": null}
       },
       {
         "comment": "Trailing comma",
         "expression": "a.{foo: bar, }",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Missing key in second key-value pair",
         "expression": "a.{foo: bar, baz}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Missing value in second key-value pair",
         "expression": "a.{foo: bar, baz:}",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Trailing comma",
         "expression": "a.{foo: bar, baz: bam, }",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Nested multi select",
@@ -463,7 +538,7 @@
       {
         "comment": "Missing closing } after a valid nud",
         "expression": "{a: @",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -477,19 +552,19 @@
       },
       {
         "expression": "foo ||",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo.|| bar",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": " || foo",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo || || foo",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo.[a || b]",
@@ -497,16 +572,16 @@
       },
       {
         "expression": "foo.[a ||]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "\\'foo",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment" : "unterminated string literal",
         "expression": "\"foo",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -524,23 +599,23 @@
       },
       {
         "expression": "foo[ ?bar==`\"baz\"`]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[?bar==]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[?==]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[?==bar]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[?bar==baz?]",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[?a.b.c==d.e.f]",
@@ -557,7 +632,7 @@
       {
         "comment": "Literal char inside quotes",
         "expression": "foo[?bar==`[\"foo`bar\"]`]",
-        "error": null
+        "result": null
       },
       {
         "comment": "Literal char escaped",
@@ -573,18 +648,17 @@
         "comment": "Unknown comparator",
         "expression": "foo[?bar<>baz]",
         "result" : null,
-        "was": "syntax"
+        "was": "SyntaxError"
       },
       {
         "comment": "Unknown comparator",
         "expression": "foo[?bar^baz]",
-        "result": null,
-        "was": "syntax"
+        "error": "SyntaxError",
+        "was": "null"
       },
       {
         "expression": "foo[bar==baz]",
-        "result": null,
-        "was": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Quoted identifier in filter expression no spaces",
@@ -609,56 +683,56 @@
     "cases": [
       {
         "expression": "bar.`\"anything\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "bar.baz.noexists.`\"literal\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Literal wildcard projection",
         "expression": "foo[*].`\"literal\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[*].name.`\"literal\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[].name.`\"literal\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[].name.`\"literal\"`.`\"subliteral\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Projecting a literal onto an empty list",
         "expression": "foo[*].name.noexist.`\"literal\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "foo[].name.noexist.`\"literal\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "expression": "twolen[*].`\"foo\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Two level projection of a literal",
         "expression": "twolen[*].threelen[*].`\"bar\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "Two level flattened projection of a literal",
         "expression": "twolen[].threelen[].`\"bar\"`",
-        "error": "syntax"
+        "error": "SyntaxError"
       },
       {
         "comment": "expects closing ]",
         "expression": "foo[? @ | @",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
@@ -680,7 +754,7 @@
       },
       {
         "expression": "'\\u'",
-        "error": "syntax"
+        "error": "SyntaxError"
       }
     ]
   },
