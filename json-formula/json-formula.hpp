@@ -3325,7 +3325,10 @@ namespace jsonformula {
 
             reference evaluate(reference val, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
             {
-                //std::cout << "(identifier_selector " << identifier_  << " ) " << pretty_print(val) << "\n";
+				if ( false /*debug_*/ ) {
+					std::cout << "(" << to_string()  << "): " << pretty_print(val) << "\n";
+				}
+				
                 if (val.is_object() && val.contains(identifier_))
                 {
                     return val.at(identifier_);
@@ -3763,8 +3766,13 @@ namespace jsonformula {
 
             reference evaluate(reference val, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
+//				bool useEmptyObj = false;
+//				reference emptyObj( resources.create_json(jsoncons::json_object_arg) );
+				
                 if (val.is_null())
                 {
+					// in json-formula, a null in multi-select is coerced to an empty array
+					// useEmptyObj = true;
                     return val;
                 }
                 auto result = resources.create_json(jsoncons::json_array_arg);
@@ -3822,10 +3830,11 @@ namespace jsonformula {
 
             reference evaluate(reference val, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
-                if (val.is_null())
-                {
-                    return val;
-                }
+				// in json-formula, null == empty object!
+//                if (val.is_null())
+//                {
+//                    return val;
+//                }
                 auto resultp = resources.create_json(jsoncons::json_object_arg);
                 resultp->reserve(key_toks_.size());
                 for (auto& item : key_toks_)

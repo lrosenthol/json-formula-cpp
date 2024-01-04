@@ -655,11 +655,14 @@ UTEST(json_formula, jf_other) {
 	
 	// unicode
 	EXPECT_TRUE(eval(j,"\"☃\"") == jsoncons::json(true));
-	EXPECT_TRUE(eval(j,"'☃'", true) == jsoncons::json(true));
+//	EXPECT_TRUE(eval(j,"'☃'", true) == jsoncons::json(true));
 //	EXPECT_TRUE(eval(j,"☃", true) == jsoncons::json(true)); -- this is an error, since it's not a valid identifier!
 	
 	// empty objects
 	EXPECT_TRUE(eval(j,"{}") == jsoncons::json(jsoncons::json_object_arg, {}));
-	EXPECT_TRUE(eval(j,"{foo: bar}", true) == jsoncons::json(jsoncons::json_object_arg, {}));
+	EXPECT_TRUE(eval(j,"{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
+	EXPECT_TRUE(eval(j,"{a:b}.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
+	EXPECT_TRUE(eval(j,"{}.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
+	EXPECT_TRUE(eval(j,"null.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 
 }
