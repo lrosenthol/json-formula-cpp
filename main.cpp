@@ -633,4 +633,9 @@ UTEST(json_formula, jf_other) {
 	EXPECT_TRUE(eval(j,"{ \"b\": c}") == jsoncons::json(jsoncons::json_object_arg, {{"b", 100}}));
 	EXPECT_TRUE(eval(j,"{ 'b': c}") == jsoncons::json(jsoncons::json_object_arg, {{"b", 100}}));
 
+	// negative slicing
+	EXPECT_TRUE(eval(j,"a[::-1]") == jsoncons::json(jsoncons::json_array_arg, {5,4,3,2,1,0}));
+	EXPECT_TRUE(eval(j,"a[10:-20:-1]") == jsoncons::json(jsoncons::json_array_arg, {5,4,3,2,1,0}));
+	EXPECT_TRUE(eval(j,"a[-4:-1]", true) == jsoncons::json(jsoncons::json_array_arg, {2,3,4}));
+	EXPECT_TRUE(eval(j,"a[:-4:-1]", true) == jsoncons::json(jsoncons::json_array_arg, {5,4,3}));
 }

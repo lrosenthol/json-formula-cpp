@@ -4924,10 +4924,14 @@ namespace jsonformula {
 							case '+':
 							{
 								bool digit_follows = false;	// assume the worst
+								auto stack_grandparent = state_stack_[state_stack_.size()-2];
+								
 								if ( buffer[buffer.length()-1]=='e' || buffer[buffer.length()-1]=='E' ) {
 									// JSONFormula also supports exponents, and next is a digit
 									digit_follows = true;
-								} else if ( state_stack_[state_stack_.size()-2] == path_state::index_or_slice_expression ) {
+								} else if ( stack_grandparent == path_state::index_or_slice_expression ||
+										    stack_grandparent == path_state::rhs_slice_expression_step ||
+										    stack_grandparent == path_state::rhs_slice_expression_stop ) {
 									// we are in an index or slice expression
 									digit_follows = true;
 								}
