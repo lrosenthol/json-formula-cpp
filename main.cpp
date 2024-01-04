@@ -628,4 +628,9 @@ UTEST(json_formula, jf_other) {
 	EXPECT_TRUE(eval(j,"value(@.a,`5`)") == jsoncons::json(5));
 	EXPECT_TRUE(eval(j,"value(@.a, 2 + 3)") == jsoncons::json(5));
 	EXPECT_TRUE(eval(j,"value(@.a, 5-4)") == jsoncons::json(1));
+	
+	// single quoted keys
+	EXPECT_TRUE(eval(j,"{ \"b\": c}") == jsoncons::json(jsoncons::json_object_arg, {{"b", 100}}));
+	EXPECT_TRUE(eval(j,"{ 'b': c}") == jsoncons::json(jsoncons::json_object_arg, {{"b", 100}}));
+
 }

@@ -2357,7 +2357,7 @@ namespace jsonformula {
                         return std::string("literal");
                         break;
                     case token_kind::key:
-                        return std::string("key") + key_;
+                        return std::string("key ") + key_;
                         break;
                     case token_kind::begin_multi_select_hash:
                         return std::string("begin_multi_select_hash");
@@ -4845,9 +4845,11 @@ namespace jsonformula {
                         {
                             case '\'':
                             {
-                                push_token(token(literal_arg, Json(buffer)), ec);
-                                if (ec) {return jsonformula_expression();}
-                                buffer.clear();
+								if ( state_stack_[state_stack_.size()-2] != path_state::key_expr ) {
+									push_token(token(literal_arg, Json(buffer)), ec);
+									if (ec) {return jsonformula_expression();}
+									buffer.clear();
+								}
                                 state_stack_.pop_back(); // raw_string
                                 ++p_;
                                 ++column_;
@@ -5267,6 +5269,7 @@ namespace jsonformula {
                                 break;
                             case '\'':
                                 state_stack_.back() = path_state::expect_colon;
+								state_stack_.emplace_back(path_state::key_expr);	// json-formula support these as keys too
                                 state_stack_.emplace_back(path_state::raw_string);
                                 ++p_;
                                 ++column_;
