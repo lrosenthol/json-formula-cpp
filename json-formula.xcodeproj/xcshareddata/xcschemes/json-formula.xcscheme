@@ -52,11 +52,71 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/basic.json"
-            isEnabled = "YES">
+            argument = ""
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/*"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/basic.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/boolean.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/current.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/escape.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/filters.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/functions.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/identifiers.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/indices.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/literal.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/multiselect.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/pipe.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/slice.json"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/syntax.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/unicode.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/jmespath/wildcard.json"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

@@ -59,6 +59,7 @@ void ProcessOneTestFile( jsoncons::json& jt )
 								passed = (expected == result);
 							}
 							catch (const std::exception& e) {
+								std::cout << expression << std::endl;
 								std::cout << "\tException: " << e.what() << std::endl;
 								if (!is_error.is_null()) // looking for an error and found one!
 									passed = true;
