@@ -5092,6 +5092,16 @@ namespace jsonformula {
                             case ':':
                             case '-':case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':
                                 break;
+							// json-formula supports empty objects
+							case '}':
+							{
+								state_stack_.pop_back();
+								push_token(end_multi_select_hash_arg, ec);
+								if (ec) {return jsonformula_expression();}
+								++p_;
+								++column_;
+								break;
+							}
                             default:
                                 state_stack_.back() = path_state::key_val_expr;
                                 break;

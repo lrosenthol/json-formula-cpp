@@ -51,9 +51,16 @@ void ProcessOneTestFile( jsoncons::json& jt )
 
 							std::string expression = oneCase["expression"].as<std::string>();
 							auto expected = oneCase["result"];
-							auto result = eval( given, expression, true );
-							
-							bool passed(expected == result);
+
+							bool passed = false;
+							try {
+								auto result = eval( given, expression, true );
+								passed = (expected == result);
+							}
+							catch (const std::exception& e) {
+								std::cout << "\tException: " << e.what() << std::endl;
+							}
+
 							if ( !passed ) numFails++;
 							
 							std::cout 	<< "\t"
@@ -125,7 +132,10 @@ int main(int argc, const char *const argv[])
 					ProcessOneTestFile( j );
 				}
 				catch (const std::exception& e) {
-					std::cout << e.what() << "";
+					std::cout << e.what() << std::endl;
+				}
+				catch (...) {
+					std::cout << "Unknown Exception" << std::endl;
 				}
 			} else {
 				std::cout << "Current path is " << fs::current_path() <<  std::endl;
@@ -623,7 +633,7 @@ UTEST(json_formula, jf_func_form_params_2) {
 }
 
 UTEST(json_formula, jf_other) {
-	jsoncons::json j = jsoncons::json::parse(R"({"a":[0,1,2,3,4,5], "c":100})");
+	jsoncons::json j = jsoncons::json::parse(R"({"a":[0,1,2,3,4,5], "c":100, "☃": true})");
 	
 	EXPECT_TRUE(eval(j,"value(@.a,`5`)") == jsoncons::json(5));
 	EXPECT_TRUE(eval(j,"value(@.a, 2 + 3)") == jsoncons::json(5));
@@ -636,6 +646,16 @@ UTEST(json_formula, jf_other) {
 	// negative slicing
 	EXPECT_TRUE(eval(j,"a[::-1]") == jsoncons::json(jsoncons::json_array_arg, {5,4,3,2,1,0}));
 	EXPECT_TRUE(eval(j,"a[10:-20:-1]") == jsoncons::json(jsoncons::json_array_arg, {5,4,3,2,1,0}));
-	EXPECT_TRUE(eval(j,"a[-4:-1]", true) == jsoncons::json(jsoncons::json_array_arg, {2,3,4}));
-	EXPECT_TRUE(eval(j,"a[:-4:-1]", true) == jsoncons::json(jsoncons::json_array_arg, {5,4,3}));
+	EXPECT_TRUE(eval(j,"a[-4:-1]") == jsoncons::json(jsoncons::json_array_arg, {2,3,4}));
+	EXPECT_TRUE(eval(j,"a[:-4:-1]") == jsoncons::json(jsoncons::json_array_arg, {5,4,3}));
+	
+	// unicode
+	EXPECT_TRUE(eval(j,"\"☃\"") == jsoncons::json(true));
+	EXPECT_TRUE(eval(j,"'☃'", true) == jsoncons::json(true));
+//	EXPECT_TRUE(eval(j,"☃", true) == jsoncons::json(true)); -- this is an error, since it's not a valid identifier!
+	
+	// empty objects
+	EXPECT_TRUE(eval(j,"{}") == jsoncons::json(jsoncons::json_object_arg, {}));
+	EXPECT_TRUE(eval(j,"{foo: bar}", true) == jsoncons::json(jsoncons::json_object_arg, {}));
+
 }
