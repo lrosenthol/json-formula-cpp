@@ -2626,7 +2626,8 @@ namespace jsonformula {
 				} else if ( lhs.is_string() && rhs.is_number() ) {
 					return lhs < std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
 				} else {
-                    return resources.null_value();
+					// for any other type comparisons, return false
+					return resources.false_value();
                 }
             }
 
@@ -2661,7 +2662,8 @@ namespace jsonformula {
 				} else if ( lhs.is_string() && rhs.is_number() ) {
 					return lhs <= std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
 				} else {
-					return resources.null_value();
+					// for any other type comparisons, return false
+					return resources.false_value();
 				}
             }
 
@@ -2696,7 +2698,8 @@ namespace jsonformula {
 				} else if ( lhs.is_string() && rhs.is_number() ) {
 					return lhs > std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
 				} else {
-					return resources.null_value();
+					// for any other type comparisons, return false
+					return resources.false_value();
 				}
             }
 
@@ -2731,7 +2734,8 @@ namespace jsonformula {
 				} else if ( lhs.is_string() && rhs.is_number() ) {
 					return lhs >= std::to_string(rhs.template as<double>()) ? resources.true_value() : resources.false_value();
 				} else {
-					return resources.null_value();
+					// for any other type comparisons, return false
+					return resources.false_value();
 				}
             }
 
@@ -3239,14 +3243,11 @@ namespace jsonformula {
 
 			reference evaluate(reference lhs, reference rhs, dynamic_resources<Json,JsonReference>& resources, std::error_code&) const override
 			{
-				// lhs must be an array...
-				//	and then we determine what to do based on the type of rhs
-				if ( lhs.type() == jsoncons::json_type::array_value ) {
-					auto result = resources.create_json(lhs);	// copy it since we'll be modifying it
-					switch ( rhs.type() ) {
+				auto addToUnion = [&resources](Json* result, reference r) {
+					switch ( r.type() ) {
 						case jsoncons::json_type::array_value:
 							{
-								for (auto& v : rhs.array_range()) {
+								for (auto& v : r.array_range()) {
 									result->push_back(v);
 								}
 							}
@@ -3254,22 +3255,22 @@ namespace jsonformula {
 						case jsoncons::json_type::uint64_value:
 						case jsoncons::json_type::int64_value:
 							{
-								result->push_back(*resources.create_json(rhs.template as<int64_t>()));
+								result->push_back(*resources.create_json(r.template as<int64_t>()));
 							}
 							break;
 						case jsoncons::json_type::double_value:
 							{
-								result->push_back(*resources.create_json(rhs.template as<double>()));
+								result->push_back(*resources.create_json(r.template as<double>()));
 							}
 							break;
 						case jsoncons::json_type::string_value:
 							{
-								result->push_back(*resources.create_json(rhs.template as<std::string>()));
+								result->push_back(*resources.create_json(r.template as<std::string>()));
 							}
 							break;
 						case jsoncons::json_type::bool_value:
 							{
-								result->push_back(*resources.create_json(rhs.template as<bool>()));
+								result->push_back(*resources.create_json(r.template as<bool>()));
 							}
 							break;
 						case jsoncons::json_type::null_value:
@@ -3281,6 +3282,17 @@ namespace jsonformula {
 							}
 							break;
 					}
+				};
+				
+				// lhs must be an array...
+				//	and then we determine what to do based on the type of rhs
+				if ( lhs.type() == jsoncons::json_type::array_value ) {
+					auto result = resources.create_json(lhs);	// copy it since we'll be modifying it
+					addToUnion(result, rhs);
+					return *result;
+				} else if ( rhs.type() == jsoncons::json_type::array_value ) {
+					auto result = resources.create_json(rhs);	// copy it since we'll be modifying it
+					addToUnion(result, lhs);
 					return *result;
 				}
 				
@@ -5084,9 +5096,17 @@ namespace jsonformula {
                             case ']':
                             case '?':
                             case ':':
+								ec = jsonformula_errc::expected_multi_select_list;
+								return jsonformula_expression();
+							// json-formula allows indices here...
                             case '-':case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':
-                                ec = jsonformula_errc::expected_multi_select_list;
-                                return jsonformula_expression();
+								// need to push the multi-select token on first
+								// then setup the state stack
+								push_token(token(begin_multi_select_list_arg), ec);
+								if (ec) {return jsonformula_expression();}
+								state_stack_.back() = path_state::multi_select_list;
+								state_stack_.emplace_back(path_state::number);
+								break;
                             case '*':
                                 push_token(token(jsoncons::make_unique<list_projection>()), ec);
                                 if (ec) {return jsonformula_expression();}

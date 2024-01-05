@@ -704,3 +704,29 @@ UTEST(json_formula, jf_lists_arrays_nulls) {
 	EXPECT_TRUE(eval(j3,"foo[:2].a.b") == jsoncons::json(jsoncons::json_array_arg, {nullptr,nullptr}));
 }
 
+UTEST(json_formula, jf_wildcard_combos) {
+	jsoncons::json j = jsoncons::json::parse(R"({"a": 3})");
+
+	EXPECT_TRUE(eval(j,"a + *") == jsoncons::json(jsoncons::json_array_arg, {6}));
+	EXPECT_TRUE(eval(j,"a - *") == jsoncons::json(jsoncons::json_array_arg, {0}));
+	EXPECT_TRUE(eval(j,"a / *") == jsoncons::json(jsoncons::json_array_arg, {1}));
+	EXPECT_TRUE(eval(j,"a ~ *") == jsoncons::json(jsoncons::json_array_arg, {3,3}));
+	EXPECT_TRUE(eval(j,"a > *") == jsoncons::json(false));
+	EXPECT_TRUE(eval(j,"a >= *") == jsoncons::json(false));
+	EXPECT_TRUE(eval(j,"a < *") == jsoncons::json(false));
+	EXPECT_TRUE(eval(j,"a <= *") == jsoncons::json(false));
+	EXPECT_TRUE(eval(j,"a == *") == jsoncons::json(false));
+	EXPECT_TRUE(eval(j,"a = *") == jsoncons::json(false));
+	EXPECT_TRUE(eval(j,"a <> *") == jsoncons::json(true));
+	EXPECT_TRUE(eval(j,"a != *") == jsoncons::json(true));
+	EXPECT_TRUE(eval(j,"a & *") == jsoncons::json(jsoncons::json_array_arg, {"33"}));
+}
+
+UTEST(json_formula, jf_other2) {
+	jsoncons::json j = jsoncons::json::parse(R"({"type": "object"})");
+	
+	// chained expression fun
+	EXPECT_TRUE(eval_debug(j,"*.[`0`]") == jsoncons::json(jsoncons::json_array_arg, {{0}}));
+	EXPECT_TRUE(eval_debug(j,"*.[0]") == jsoncons::json(jsoncons::json_array_arg, {{0}}));
+}
+
