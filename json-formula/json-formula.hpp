@@ -3523,10 +3523,13 @@ namespace jsonformula {
                 auto result = resources.create_json(jsoncons::json_array_arg);
                 for (reference item : val.array_range())
                 {
-                    if (!item.is_null())
+					// json-formula allows nulls in list projections
+                    if (true /*!item.is_null()*/)
                     {
                         reference j = this->apply_expressions(item, resources, ec);
-                        if (!j.is_null())
+
+						// json-formula allows nulls in list projections
+						if (true /*!j.is_null()*/)
                         {
                             result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                         }
@@ -5166,6 +5169,30 @@ namespace jsonformula {
                                 ++column_;
                                 break;
                             }
+							case ',':
+							{
+								// json-formula
+								//	if we landed here, then we have found a raw array of numbers
+								//  so reset the stack to what it should be...
+								//		Push on the multi-select token
+								//		Replace the current state (index or slice) with multi-select list
+								push_token(token(begin_multi_select_list_arg), ec);
+								if (ec) {return jsonformula_expression();}
+								state_stack_.back() = path_state::multi_select_list;
+								
+								// check if there is anything in the buffer... (there better be!)
+								// which will push a literal onto the token stack
+								 _checkBuffer(buffer);
+								
+								// now push on the seperator
+								// and push lhs_expression onto the state stack
+								push_token(token(separator_arg), ec);
+								if (ec) {return jsonformula_expression();}
+								state_stack_.emplace_back(path_state::lhs_expression);
+								++p_;
+								++column_;
+								break;
+							}
                             default:
                                 ec = jsonformula_errc::expected_rbracket;
                                 return jsonformula_expression();
@@ -5594,7 +5621,11 @@ namespace jsonformula {
                                 advance_past_space_character(ec, buffer);
                                 break;
                             case ',':
-                                push_token(token(separator_arg), ec);
+								// JSONFormula
+								// check if there is anything in the buffer...(better be)
+								_checkBuffer(buffer);
+
+                               push_token(token(separator_arg), ec);
                                 if (ec) {return jsonformula_expression();}
                                 state_stack_.emplace_back(path_state::lhs_expression);
                                 ++p_;
@@ -5618,6 +5649,11 @@ namespace jsonformula {
                             }
                             case ']':
                             {
+								// JSONFormula
+								// check if there is anything in the buffer...
+								// if so, we need to process it
+								_checkBuffer(buffer);
+
                                 push_token(token(end_multi_select_list_arg), ec);
                                 if (ec) {return jsonformula_expression();}
                                 state_stack_.pop_back();

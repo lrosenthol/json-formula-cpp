@@ -664,5 +664,11 @@ UTEST(json_formula, jf_other) {
 	EXPECT_TRUE(eval(j,"{a:b}.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 	EXPECT_TRUE(eval(j,"{}.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 	EXPECT_TRUE(eval(j,"null.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
+	
+	// null values in projections
+	EXPECT_TRUE(evalJP(j,"[`null`, `1`, `2`, `3`][*]") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
+	EXPECT_TRUE(eval(j,"[`null`, `1`, `2`, `3`][*]") == jsoncons::json(jsoncons::json_array_arg, {nullptr,1,2,3}));
+	EXPECT_TRUE(eval(j,"[1, 2, 3][*]") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
+	EXPECT_TRUE(eval(j,"[null, 1, 2, 3][*]") == jsoncons::json(jsoncons::json_array_arg, {nullptr,1,2,3}));
 
 }
