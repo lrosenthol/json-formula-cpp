@@ -47,7 +47,7 @@ void ProcessOneTestFile( jsoncons::json& jt )
 					for ( auto oneCase : cases.array_range() ) {
 						if ( oneCase.is_object() ) {
 							auto case_comment = oneCase.at_or_null("comment");
-							std::string case_commentStr = case_comment.is_null() ? "" : case_comment.as<std::string>();
+							std::string case_commentStr = case_comment.is_null() ? "" : (": " + case_comment.as<std::string>());
 
 							std::string expression = oneCase["expression"].as<std::string>();
 							auto expected = oneCase.at_or_null("result");
@@ -67,10 +67,21 @@ void ProcessOneTestFile( jsoncons::json& jt )
 
 							if ( !passed ) numFails++;
 							
+							std::string resultMsg;
+							if ( passed ) {
+								resultMsg = "PASSED";
+							} else {
+								std::string expectedStr;
+								expected.dump(expectedStr);
+								
+								resultMsg = "FAILED (Expected:'";
+								resultMsg += expectedStr;
+								resultMsg += "')";
+							}
+							
 							std::cout 	<< "\t"
-										<< (passed ? "PASSED" : "FAILED")
-										<< (case_commentStr.length() ? ": " : "")
-										<< (case_commentStr.length() ? case_commentStr : "")
+										<< resultMsg
+										<< case_commentStr
 										<< std::endl;
 						} else {
 							std::cout << "Not a valid test file: case isn't an object" << std::endl;
@@ -681,5 +692,15 @@ UTEST(json_formula, jf_lists_arrays_nulls) {
 	EXPECT_TRUE(eval(j,"reservations[].instances[].foo") == jsoncons::json(jsoncons::json_array_arg, {1,2}));
 	EXPECT_TRUE(eval(j,"reservations[].instances[].bar") == jsoncons::json(jsoncons::json_array_arg, {nullptr,nullptr}));
 	EXPECT_TRUE(eval(j,"reservations[].notinstances[].foo") == jsoncons::json(jsoncons::json_array_arg, {nullptr}));
+
+	
+	// sliced results
+	jsoncons::json j2 = jsoncons::json::parse(R"([{"a": 1}, {"a": 2}, {"a": 3}])");
+	jsoncons::json j3 = jsoncons::json::parse(R"({"foo": [{"a": 1}, {"a": 2}, {"a": 3}]})");
+
+	EXPECT_TRUE(eval(j2,"[:2].a") == jsoncons::json(jsoncons::json_array_arg, {1,2}));
+	EXPECT_TRUE(eval(j2,"[:2].b") == jsoncons::json(jsoncons::json_array_arg, {nullptr,nullptr}));
+	EXPECT_TRUE(eval(j3,"foo[:2].b") == jsoncons::json(jsoncons::json_array_arg, {nullptr,nullptr}));
+	EXPECT_TRUE(eval(j3,"foo[:2].a.b") == jsoncons::json(jsoncons::json_array_arg, {nullptr,nullptr}));
 }
 

@@ -3596,7 +3596,9 @@ namespace jsonformula {
                     for (int64_t i = start; i < end; i += step)
                     {
                         reference j = this->apply_expressions(val.at(static_cast<std::size_t>(i)), resources, ec);
-                        if (!j.is_null())
+                        
+						// json-formula supports nulls in projections
+						if (true /*!j.is_null()*/)
                         {
                             result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                         }
@@ -3615,7 +3617,9 @@ namespace jsonformula {
                     for (int64_t i = start; i > end; i += step)
                     {
                         reference j = this->apply_expressions(val.at(static_cast<std::size_t>(i)), resources, ec);
-                        if (!j.is_null())
+						
+						// json-formula supports nulls in projections
+						if (true /*!j.is_null()*/)
                         {
                             result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                         }
