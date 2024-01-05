@@ -3715,10 +3715,13 @@ namespace jsonformula {
                     {
                         for (reference elem : current_elem.array_range())
                         {
-                            if (!elem.is_null())
+							// json-formula allows nulls in projections
+                            if (true /*!elem.is_null()*/)
                             {
                                 reference j = this->apply_expressions(elem, resources, ec);
-                                if (!j.is_null())
+
+								// json-formula allows nulls in projections
+								if (true /*!j.is_null()*/)
                                 {
                                     result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                                 }
@@ -3727,10 +3730,13 @@ namespace jsonformula {
                     }
                     else
                     {
-                        if (!current_elem.is_null())
+						// json-formula allows nulls in projections
+                        if (true /*!current_elem.is_null()*/)
                         {
                             reference j = this->apply_expressions(current_elem, resources, ec);
-                            if (!j.is_null())
+							
+							// json-formula allows nulls in projections
+							if (true /*!j.is_null()*/)
                             {
                                 result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(j));
                             }

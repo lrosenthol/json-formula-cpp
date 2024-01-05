@@ -657,6 +657,12 @@ UTEST(json_formula, jf_other) {
 	EXPECT_TRUE(eval(j,"\"☃\"") == jsoncons::json(true));
 //	EXPECT_TRUE(eval(j,"'☃'", true) == jsoncons::json(true));
 //	EXPECT_TRUE(eval(j,"☃", true) == jsoncons::json(true)); -- this is an error, since it's not a valid identifier!
+}
+
+UTEST(json_formula, jf_lists_arrays_nulls) {
+	jsoncons::json j = jsoncons::json::parse(R"({"reservations": [
+	{"instances": [{"foo": 1}, {"foo": 2}]}
+   ]})");
 	
 	// empty objects
 	EXPECT_TRUE(eval(j,"{}") == jsoncons::json(jsoncons::json_object_arg, {}));
@@ -665,10 +671,15 @@ UTEST(json_formula, jf_other) {
 	EXPECT_TRUE(eval(j,"{}.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 	EXPECT_TRUE(eval(j,"null.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 	
-	// null values in projections
+	// null values in list projections
 	EXPECT_TRUE(evalJP(j,"[`null`, `1`, `2`, `3`][*]") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
 	EXPECT_TRUE(eval(j,"[`null`, `1`, `2`, `3`][*]") == jsoncons::json(jsoncons::json_array_arg, {nullptr,1,2,3}));
 	EXPECT_TRUE(eval(j,"[1, 2, 3][*]") == jsoncons::json(jsoncons::json_array_arg, {1,2,3}));
 	EXPECT_TRUE(eval(j,"[null, 1, 2, 3][*]") == jsoncons::json(jsoncons::json_array_arg, {nullptr,1,2,3}));
-
+	
+	// null values as return values
+	EXPECT_TRUE(eval(j,"reservations[].instances[].foo") == jsoncons::json(jsoncons::json_array_arg, {1,2}));
+	EXPECT_TRUE(eval(j,"reservations[].instances[].bar") == jsoncons::json(jsoncons::json_array_arg, {nullptr,nullptr}));
+	EXPECT_TRUE(eval(j,"reservations[].notinstances[].foo") == jsoncons::json(jsoncons::json_array_arg, {nullptr}));
 }
+
