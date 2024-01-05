@@ -3782,13 +3782,8 @@ namespace jsonformula {
 
             reference evaluate(reference val, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
-//				bool useEmptyObj = false;
-//				reference emptyObj( resources.create_json(jsoncons::json_object_arg) );
-				
                 if (val.is_null())
                 {
-					// in json-formula, a null in multi-select is coerced to an empty array
-					// useEmptyObj = true;
                     return val;
                 }
                 auto result = resources.create_json(jsoncons::json_array_arg);
@@ -4279,7 +4274,7 @@ namespace jsonformula {
                             }
 							case ')':
                             {
-								// JSONFormula
+								// json-formula
 								// check if there is anything in the buffer...
 								// if so, we need to process it
 								_checkBuffer(buffer);
@@ -4576,7 +4571,7 @@ namespace jsonformula {
 
                     case path_state::function_expression:
 					{
-						// JSONFormula
+						// json-formula
 						// check if there is anything in the buffer...
 						// if so, we need to process it
 						_checkBuffer(buffer);
@@ -4952,7 +4947,7 @@ namespace jsonformula {
 								auto stack_grandparent = state_stack_[state_stack_.size()-2];
 								
 								if ( buffer[buffer.length()-1]=='e' || buffer[buffer.length()-1]=='E' ) {
-									// JSONFormula also supports exponents, and next is a digit
+									// json-formula also supports exponents, and next is a digit
 									digit_follows = true;
 								} else if ( stack_grandparent == path_state::index_or_slice_expression ||
 										    stack_grandparent == path_state::rhs_slice_expression_step ||
@@ -4978,7 +4973,7 @@ namespace jsonformula {
                                 ++p_;
                                 ++column_;
                                 break;
-							case 'e':	// JSONFormula also supports exponents
+							case 'e':	// json-formula also supports exponents
 							case 'E':
 								buffer.push_back(*p_);
 								state_stack_.back() = path_state::number;	// keep a number since it might be fllowed by +/-
@@ -5358,7 +5353,7 @@ namespace jsonformula {
                     }
                     case path_state::cmp_lt_or_lte:
                     {
-						// JSONFormula
+						// json-formula
 						// check if there is anything in the buffer...
 						// if so, we need to process it
 						_checkBuffer(buffer);
@@ -5393,7 +5388,7 @@ namespace jsonformula {
                     }
                     case path_state::cmp_gt_or_gte:
                     {
-						// JSONFormula
+						// json-formula
 						// check if there is anything in the buffer...
 						// if so, we need to process it
 						_checkBuffer(buffer);
@@ -5419,7 +5414,7 @@ namespace jsonformula {
                     }
                     case path_state::cmp_eq:
                     {
-						// JSONFormula
+						// json-formula
 						// check if there is anything in the buffer...
 						// if so, we need to process it
 						_checkBuffer(buffer);
@@ -5437,7 +5432,7 @@ namespace jsonformula {
                     }
                     case path_state::cmp_ne:
                     {
-						// JSONFormula
+						// json-formula
 						// check if there is anything in the buffer...
 						// if so, we need to process it
 						_checkBuffer(buffer);
@@ -5460,7 +5455,7 @@ namespace jsonformula {
                     }
 					case path_state::jf_expression:
 					{
-						// JSONFormula
+						// json-formula
 						// check if there is anything in the buffer...
 						// if so, we need to process it
 						_checkBuffer(buffer);
@@ -5634,7 +5629,7 @@ namespace jsonformula {
                                 advance_past_space_character(ec, buffer);
                                 break;
                             case ',':
-								// JSONFormula
+								// json-formula
 								// check if there is anything in the buffer...(better be)
 								_checkBuffer(buffer);
 
@@ -5662,7 +5657,7 @@ namespace jsonformula {
                             }
                             case ']':
                             {
-								// JSONFormula
+								// json-formula
 								// check if there is anything in the buffer...
 								// if so, we need to process it
 								_checkBuffer(buffer);
@@ -5705,7 +5700,7 @@ namespace jsonformula {
                     }
                     case path_state::expect_rbrace:
                     {
-						// JSONFormula
+						// json-formula
 						// check if there is anything in the buffer...
 						// if so, we need to process it
 						_checkBuffer(buffer);
@@ -5740,7 +5735,7 @@ namespace jsonformula {
                                 ++column_;
                                 break;
                             }
-							// JSONFormula supports functions
+							// json-formula supports functions
 							case '+':
 							case '-':
 							case '*':
@@ -5861,7 +5856,7 @@ namespace jsonformula {
 
         void advance_past_space_character(std::error_code& ec, string_type& buffer)
         {
-			// JSONFormula
+			// json-formula
 			// check if there is anything in the buffer...
 			// if so, we need to process it
 			if (!buffer.empty()) {
