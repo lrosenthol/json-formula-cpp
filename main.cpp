@@ -570,6 +570,7 @@ UTEST(json_formula, number_keys) {
 	EXPECT_TRUE(evalJP(j,"foo.\"1\"") == jsoncons::json(jsoncons::json_array_arg, {"one", "two", "three"}));
 
 	EXPECT_TRUE(eval(j,"foo.\"1\"") == jsoncons::json(jsoncons::json_array_arg, {"one", "two", "three"}));
+	EXPECT_TRUE(eval(j,"foo.'1'") == jsoncons::json(jsoncons::json_array_arg, {"one", "two", "three"}));
 	EXPECT_TRUE(eval(j,"foo.\"1\"[0]") == jsoncons::json("one"));
 	EXPECT_TRUE(eval(j,"foo.\"-1\"") == jsoncons::json("bar"));
 }
@@ -661,8 +662,8 @@ UTEST(json_formula, jf_other) {
 	EXPECT_TRUE(eval(j,"value(@.a, 5-4)") == jsoncons::json(1));
 	
 	// single quoted keys
-	EXPECT_TRUE(eval(j,"{ 'b': c}") == jsoncons::json(jsoncons::json_object_arg, {{"b", 100}}));
-	EXPECT_TRUE(eval(j,"{ \"b\": c}") == jsoncons::json());	// error
+	EXPECT_TRUE(eval(j,"{'b': c}") == jsoncons::json(jsoncons::json_object_arg, {{"b", 100}}));
+	EXPECT_TRUE(eval(j,"{\"b\": c}") == jsoncons::json());	// error
 
 	// negative slicing
 	EXPECT_TRUE(eval(j,"a[::-1]") == jsoncons::json(jsoncons::json_array_arg, {5,4,3,2,1,0}));
@@ -758,9 +759,23 @@ UTEST(json_formula, jf_strings) {
 	// escaping of single quotes
 	EXPECT_TRUE(eval(j,R"('\\')") == jsoncons::json(nullptr));
 	EXPECT_TRUE(eval(j,R"({'\\\\':{' ':*}})") == jsoncons::json::parse(R"({"\\\\": {" ": ["object"]}})"));
-
+	
 	// unterminated quote
 	EXPECT_TRUE(eval(j,R"(\"foo)") == jsoncons::json());		//error
+	
+	// tests for literals inside of quotes inside of literals
+	// throws an exception since JMESPath requires the `'` to be escaped inside the literal string
+	//	EXPECT_TRUE(evalJP(j,R"(`['foo`bar']`)", true) == jsoncons::json("foo`bar"));
+	
+	EXPECT_TRUE(eval(j,R"("foo`bar")") == jsoncons::json("foo`bar"));
+	EXPECT_TRUE(eval(j,R"(`["foo\`bar"]`)") == jsoncons::json(jsoncons::json_array_arg, {"foo`bar"}));
+	EXPECT_TRUE(eval(j,R"(foo[?bar==`["foo\`bar"]`])") == jsoncons::json(nullptr));
+	
+	// strange names for JSON keys
+	jsoncons::json j2 = jsoncons::json::parse(R"({"foo\nbar": "newline", "!\r": true})");
+	EXPECT_TRUE(eval_debug(j2,R"(keys(@))") == jsoncons::json(jsoncons::json_array_arg, {"!\r","foo\nbar"}));
+//	EXPECT_TRUE(eval_debug(j2,R"('foo\nbar')") == jsoncons::json("newline"));
+//	EXPECT_TRUE(eval_debug(j2,R"('!\r')") == jsoncons::json(true));
 
 }
 

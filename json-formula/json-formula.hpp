@@ -1606,6 +1606,11 @@ namespace jsonformula {
             {
             }
 
+			std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("keys_function\n");
+			}
+
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
                 JSONCONS_ASSERT(args.size() == *this->arity());
@@ -1642,7 +1647,12 @@ namespace jsonformula {
             {
             }
 
-            reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
+			std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("values_function\n");
+			}
+
+			reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
                 JSONCONS_ASSERT(args.size() == *this->arity());
 
@@ -1677,6 +1687,11 @@ namespace jsonformula {
                 : function_base(1)
             {
             }
+
+			std::string to_string(std::size_t = 0) const override
+			{
+				return std::string("reverse_function\n");
+			}
 
             reference evaluate(std::vector<parameter>& args, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
@@ -4480,7 +4495,7 @@ namespace jsonformula {
 							case '\'':
 								// in json-formula, single quoted/raw strings are value expression
 								state_stack_.back() = path_state::val_expr;
-								state_stack_.back() = path_state::raw_string;
+								state_stack_.emplace_back(path_state::raw_string);
 								++p_;
 								++column_;
 								break;
@@ -4658,7 +4673,6 @@ namespace jsonformula {
 								
 								if ( stack_grandparent == path_state::key_expr ||
 									stack_grandparent == path_state::sub_expression ) {
-
 									state_stack_.pop_back(); // quoted_string
 									state_stack_.back() = path_state::val_expr;	// reset this to a val expression...
 								} else {
@@ -4921,7 +4935,17 @@ namespace jsonformula {
                         {
                             case '\'':
                             {
-                                state_stack_.pop_back(); // raw_string
+								// in json-formula, these should be treated as literal strings
+								// except when they actually mean identifiers
+								auto stack_grandparent = state_stack_[state_stack_.size()-2];
+								
+								if ( stack_grandparent == path_state::sub_expression ) {
+									state_stack_.pop_back(); // raw_string
+									state_stack_.back() = path_state::val_expr;	// reset this to a val expression...
+								} else {
+									state_stack_.pop_back(); // raw_string
+								}
+
                                 ++p_;
                                 ++column_;
                                 break;

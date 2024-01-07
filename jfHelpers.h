@@ -36,7 +36,7 @@ static jsoncons::json eval_no_catch(const jsoncons::json& j, const std::string& 
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
 	try {
-		eval_no_catch(j, e, print);
+		return eval_no_catch(j, e, print);
 	}
 	catch (const std::exception& e)
 	{
@@ -80,6 +80,7 @@ static std::string evalToString(const jsoncons::json& j, const std::string& e)
 	return static_cast<std::string>(r.as<std::string_view>());
 }
 
+//--------------
 static jsoncons::json evalJP(const jsoncons::json& j, const std::string& e, bool print=false)
 {
 	jsoncons::json r = jsoncons::jmespath::search(j,e);
@@ -88,3 +89,17 @@ static jsoncons::json evalJP(const jsoncons::json& j, const std::string& e, bool
 	
 	return r;
 }
+
+//-----------
+static std::string to_string(const jsoncons::json& j)
+{
+	std::string r;
+	j.dump(r);
+	return r;
+}
+
+static void print_json(const jsoncons::json& j)
+{
+	std::cout << jsoncons::print(j) << " (" << GetType(j) << ")" << std::endl;
+}
+
