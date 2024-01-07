@@ -105,11 +105,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/lrosenth/Development/json-formula-cpp/tests/slice.json"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/lrosenth/Development/json-formula-cpp/tests/syntax.json"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/lrosenth/Development/json-formula-cpp/tests/unicode.json"
