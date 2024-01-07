@@ -4734,11 +4734,59 @@ namespace jsonformula {
                                 ++column_;
                                 break;
 							// json-formula also supports escaping the escape character!
+							// it also supports the same set of escapes as double strings.
+							case '\"':
+								buffer.push_back('\"');
+								++p_;
+								++column_;
+								state_stack_.pop_back();
+								break;
 							case '\\':
 								buffer.push_back('\\');	
 								state_stack_.pop_back();
 								++p_;
 								++column_;
+								break;
+							case '/':
+								buffer.push_back('/');
+								++p_;
+								++column_;
+								state_stack_.pop_back();
+								break;
+							case 'b':
+								buffer.push_back('\b');
+								++p_;
+								++column_;
+								state_stack_.pop_back();
+								break;
+							case 'f':
+								buffer.push_back('\f');
+								++p_;
+								++column_;
+								state_stack_.pop_back();
+								break;
+							case 'n':
+								buffer.push_back('\n');
+								++p_;
+								++column_;
+								state_stack_.pop_back();
+								break;
+							case 'r':
+								buffer.push_back('\r');
+								++p_;
+								++column_;
+								state_stack_.pop_back();
+								break;
+							case 't':
+								buffer.push_back('\t');
+								++p_;
+								++column_;
+								state_stack_.pop_back();
+								break;
+							case 'u':
+								++p_;
+								++column_;
+								state_stack_.back() = path_state::escape_u1;
 								break;
                             default:
                                 buffer.push_back('\\');
