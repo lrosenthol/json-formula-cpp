@@ -18,17 +18,31 @@ static std::string GetType(const jsoncons::json& j)
 		return "other";
 }
 
+static jsoncons::json eval_no_catch(const jsoncons::json& j, const std::string& e, bool print=false)
+{
+	// BIG NOTE
+	//	this method DOES NOT CATCH EXCEPTIONS
+	//	as we need them to go through to the calling function
+	//	so that it can be used in testing results
+	
+	
+	jsoncons::json r = jsonformula::search(j,e);
+	if ( print )
+		std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
+	
+	return r;
+}
+
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
 	try {
-		jsoncons::json r = jsonformula::search(j,e);
-		if ( print )
-			std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
-		
-		return r;
+		eval_no_catch(j, e, print);
 	}
 	catch (const std::exception& e)
 	{
+		std::cout << e.what() << std::endl;
+	}
+	catch (const jsoncons::json_exception& e) {
 		std::cout << e.what() << std::endl;
 	}
 	
@@ -52,7 +66,10 @@ static jsoncons::json eval_debug(const jsoncons::json& j, const std::string& e)
 	{
 		std::cout << e.what() << std::endl;
 	}
-	
+	catch (const jsoncons::json_exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+
 	return jsoncons::json();
 }
 

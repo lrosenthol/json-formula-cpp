@@ -55,10 +55,18 @@ void ProcessOneTestFile( jsoncons::json& jt )
 
 							bool passed = false;
 							try {
-								auto result = eval( given, expression, true );
+								// call the no-catch version of the method
+								// since we want our own handling of the exception!
+								auto result = eval_no_catch( given, expression, true );
 								passed = (expected == result);
 							}
 							catch (const std::exception& e) {
+								std::cout << expression << std::endl;
+								std::cout << "\tException: " << e.what() << std::endl;
+								if (!is_error.is_null()) // looking for an error and found one!
+									passed = true;
+							}
+							catch (const jsoncons::json_exception& e) {
 								std::cout << expression << std::endl;
 								std::cout << "\tException: " << e.what() << std::endl;
 								if (!is_error.is_null()) // looking for an error and found one!
@@ -742,8 +750,17 @@ UTEST(json_formula, jf_other2) {
 UTEST(json_formula, jf_strings) {
 	jsoncons::json j = jsoncons::json::parse(R"({"type": "object"})");
 	
+	// three types of strings
 	EXPECT_TRUE(eval(j,"`\"test\"`") == jsoncons::json("test"));
 	EXPECT_TRUE(eval(j,"\"test\"") == jsoncons::json("test"));
 	EXPECT_TRUE(eval(j,"'test'") == jsoncons::json(nullptr));
+	
+	// escaping of single quotes
+	EXPECT_TRUE(eval(j,R"('\\')") == jsoncons::json(nullptr));
+	EXPECT_TRUE(eval(j,R"({'\\\\':{' ':*}})") == jsoncons::json::parse(R"({"\\\\": {" ": ["object"]}})"));
+
+	// unterminated quote
+	EXPECT_TRUE(eval(j,R"(\"foo)") == jsoncons::json());		//error
+
 }
 

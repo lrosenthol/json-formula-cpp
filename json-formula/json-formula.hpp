@@ -4719,6 +4719,13 @@ namespace jsonformula {
                                 ++p_;
                                 ++column_;
                                 break;
+							// json-formula also supports escaping the escape character!
+							case '\\':
+								buffer.push_back('\\');	
+								state_stack_.pop_back();
+								++p_;
+								++column_;
+								break;
                             default:
                                 buffer.push_back('\\');
                                 buffer.push_back(*p_);
