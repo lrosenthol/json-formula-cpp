@@ -3532,7 +3532,14 @@ namespace jsonformula {
             {
                 if (!val.is_array())
                 {
-                    return resources.null_value();
+					// json-formula allows nulls in list projections
+					// but we need to special case them to return an array of null (since it's a projection!)
+					if (val.is_null()) {
+						auto result = resources.create_json(jsoncons::json_array_arg);
+						result->emplace_back(resources.null_value());
+						return *result;
+					} else
+						return resources.null_value();
                 }
 
                 auto result = resources.create_json(jsoncons::json_array_arg);
@@ -3794,10 +3801,11 @@ namespace jsonformula {
 
             reference evaluate(reference val, dynamic_resources<Json,JsonReference>& resources, std::error_code& ec) const override
             {
-                if (val.is_null())
-                {
-                    return val;
-                }
+//				 json-formula allows nulls in projections & lists
+//                if (val.is_null())
+//                {
+//                    return val;
+//                }
                 auto result = resources.create_json(jsoncons::json_array_arg);
                 result->reserve(token_lists_.size());
 
@@ -5200,13 +5208,20 @@ namespace jsonformula {
 							case ',':
 							{
 								// json-formula
-								//	if we landed here, then we have found a raw array of numbers
-								//  so reset the stack to what it should be...
+								//	if we landed here, then we MAY have found a raw array of numbers
+								//	it is also possible that it is a bogus array index...
+								//	we check which, based on the output_stack
+								//	if it's a raw array, reset the stack to what it should be...
 								//		Push on the multi-select token
 								//		Replace the current state (index or slice) with multi-select list
-								push_token(token(begin_multi_select_list_arg), ec);
-								if (ec) {return jsonformula_expression();}
-								state_stack_.back() = path_state::multi_select_list;
+								//  otherwise, leave it alone!
+								if ( output_stack_[output_stack_.size()-1].type() == token_kind::expression ) {
+									// nothing to do...
+								} else {
+									push_token(token(begin_multi_select_list_arg), ec);
+									if (ec) {return jsonformula_expression();}
+									state_stack_.back() = path_state::multi_select_list;
+								}
 								
 								// check if there is anything in the buffer... (there better be!)
 								// which will push a literal onto the token stack

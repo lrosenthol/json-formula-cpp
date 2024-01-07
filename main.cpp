@@ -726,7 +726,18 @@ UTEST(json_formula, jf_other2) {
 	jsoncons::json j = jsoncons::json::parse(R"({"type": "object"})");
 	
 	// chained expression fun
-	EXPECT_TRUE(eval_debug(j,"*.[`0`]") == jsoncons::json(jsoncons::json_array_arg, {{0}}));
-	EXPECT_TRUE(eval_debug(j,"*.[0]") == jsoncons::json(jsoncons::json_array_arg, {{0}}));
+	EXPECT_TRUE(eval(j,"*.[`0`]") == jsoncons::json::parse(R"([[0]])"));
+	EXPECT_TRUE(eval(j,"*.[0]") == jsoncons::json::parse(R"([[0]])"));
+	
+	EXPECT_TRUE(eval(j,"foo.[`0`]") == jsoncons::json(jsoncons::json_array_arg, {0}));
+	EXPECT_TRUE(eval(j,"foo.[0]") == jsoncons::json(jsoncons::json_array_arg, {0}));
+
+	EXPECT_TRUE(eval(j,"foo.[*]") == jsoncons::json(jsoncons::json_array_arg, {nullptr}));
+
+	jsoncons::json j2 = jsoncons::json::parse(R"({"a":[1,2.3,4,5]})");
+
+	EXPECT_TRUE(eval_debug(j2,"a[1]") == jsoncons::json(2.3));
+	EXPECT_TRUE(eval_debug(j2,"a[0, 1]") == jsoncons::json(nullptr));
+	EXPECT_TRUE(eval_debug(j2,"foo[0, 1]") == jsoncons::json(nullptr));
 }
 
