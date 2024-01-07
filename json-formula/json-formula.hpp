@@ -1989,7 +1989,7 @@ namespace jsonformula {
 							 a1t == jsoncons::json_type::double_value ) {
 							idx = arg1.template as<int64_t>();
 						} else if ( a1t == jsoncons::json_type::string_value ) {
-							auto sv = arg0.as_string_view();
+							auto sv = arg1.as_string_view();
 							jsoncons::detail::to_integer(sv.data(), sv.length(), idx);
 						}
 						if ( idx >=0 )
@@ -4375,13 +4375,16 @@ namespace jsonformula {
                                 advance_past_space_character(ec, buffer);
                                 break;
                             case '\"':
-                                state_stack_.back() = path_state::val_expr;
-                                state_stack_.emplace_back(path_state::quoted_string);
+								// in json-formula, quoted strings are strings
+//                                state_stack_.back() = path_state::val_expr;
+                                state_stack_.back() = path_state::quoted_string;
                                 ++p_;
                                 ++column_;
                                 break;
                             case '\'':
-                                state_stack_.back() = path_state::raw_string;
+								// in json-formula, single quoted/raw strings are value expression
+								state_stack_.back() = path_state::val_expr;
+                                state_stack_.emplace_back(path_state::raw_string);
                                 ++p_;
                                 ++column_;
                                 break;
@@ -4467,12 +4470,20 @@ namespace jsonformula {
                             case ' ':case '\t':case '\r':case '\n':
                                 advance_past_space_character(ec, buffer);
                                 break;
-                            case '\"':
-                                state_stack_.back() = path_state::val_expr;
-                                state_stack_.emplace_back(path_state::quoted_string);
-                                ++p_;
-                                ++column_;
-                                break;
+							case '\"':
+								// in json-formula, quoted strings are strings
+//                                state_stack_.back() = path_state::val_expr;
+								state_stack_.emplace_back(path_state::quoted_string);
+								++p_;
+								++column_;
+								break;
+							case '\'':
+								// in json-formula, single quoted/raw strings are value expression
+								state_stack_.back() = path_state::val_expr;
+								state_stack_.back() = path_state::raw_string;
+								++p_;
+								++column_;
+								break;
                             case '{':
                                 push_token(begin_multi_select_hash_arg, ec);
                                 if (ec) {return jsonformula_expression();}
@@ -4640,9 +4651,27 @@ namespace jsonformula {
                         switch (*p_)
                         {
                             case '\"':
-                                state_stack_.pop_back(); // quoted_string
-                                ++p_;
-                                ++column_;
+							{
+								// in json-formula, these should be treated as literal strings
+								// except when they actually mean identifiers
+								auto stack_grandparent = state_stack_[state_stack_.size()-2];
+								
+								if ( stack_grandparent == path_state::key_expr ||
+									stack_grandparent == path_state::sub_expression ) {
+
+									state_stack_.pop_back(); // quoted_string
+									state_stack_.back() = path_state::val_expr;	// reset this to a val expression...
+								} else {
+									push_token(token(literal_arg, Json(buffer)), ec);
+									if (ec) {return jsonformula_expression();}
+									buffer.clear();
+
+									state_stack_.pop_back(); // quoted_string
+								}
+
+								++p_;
+								++column_;
+							}
                                 break;
                             case '\\':
                                 state_stack_.emplace_back(path_state::quoted_string_escape_char);
@@ -4885,11 +4914,6 @@ namespace jsonformula {
                         {
                             case '\'':
                             {
-								if ( state_stack_[state_stack_.size()-2] != path_state::key_expr ) {
-									push_token(token(literal_arg, Json(buffer)), ec);
-									if (ec) {return jsonformula_expression();}
-									buffer.clear();
-								}
                                 state_stack_.pop_back(); // raw_string
                                 ++p_;
                                 ++column_;
@@ -5857,8 +5881,9 @@ namespace jsonformula {
                         if (ec) {return jsonformula_expression();}
                         state_stack_.pop_back(); 
                         break;
-                    case path_state::unquoted_string: 
-                        state_stack_.pop_back(); 
+                    case path_state::quoted_string: 	// also true for json-formula
+					case path_state::unquoted_string:
+                        state_stack_.pop_back();
                         break;
                     default:
                         ec = jsonformula_errc::syntax_error;

@@ -20,11 +20,19 @@ static std::string GetType(const jsoncons::json& j)
 
 static jsoncons::json eval(const jsoncons::json& j, const std::string& e, bool print=false)
 {
-	jsoncons::json r = jsonformula::search(j,e);
-	if ( print )
-		std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
+	try {
+		jsoncons::json r = jsonformula::search(j,e);
+		if ( print )
+			std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
+		
+		return r;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 	
-	return r;
+	return jsoncons::json();
 }
 
 static jsoncons::json eval_debug(const jsoncons::json& j, const std::string& e)
@@ -42,7 +50,7 @@ static jsoncons::json eval_debug(const jsoncons::json& j, const std::string& e)
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << e.what() << "";
+		std::cout << e.what() << std::endl;
 	}
 	
 	return jsoncons::json();
