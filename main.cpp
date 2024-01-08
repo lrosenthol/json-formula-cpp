@@ -53,26 +53,29 @@ void ProcessOneTestFile( jsoncons::json& jt )
 							auto expected = oneCase.at_or_null("result");
 							auto is_error = oneCase.at_or_null("error");
 
-							bool passed = false;
+							bool passed = false, exp_thrown = false;
 							try {
 								// call the no-catch version of the method
 								// since we want our own handling of the exception!
 								auto result = eval_no_catch( given, expression, true );
-								passed = (expected == result);
+								if ( is_error.is_null() )	// if we aren't looking for an error!
+									passed = (expected == result);
 							}
 							catch (const std::exception& e) {
+								exp_thrown = true;
 								std::cout << expression << std::endl;
 								std::cout << "\tException: " << e.what() << std::endl;
-								if (!is_error.is_null()) // looking for an error and found one!
-									passed = true;
 							}
 							catch (const jsoncons::json_exception& e) {
+								exp_thrown = true;
 								std::cout << expression << std::endl;
 								std::cout << "\tException: " << e.what() << std::endl;
-								if (!is_error.is_null()) // looking for an error and found one!
-									passed = true;
 							}
 
+							// looking for an error and found one!
+							if ( expected.is_null() && !is_error.is_null() && exp_thrown )
+								passed = true;
+							
 							if ( !passed ) numFails++;
 							
 							std::string resultMsg;
@@ -683,10 +686,12 @@ UTEST(json_formula, jf_lists_arrays_nulls) {
    ]})");
 	
 	// empty objects
-	EXPECT_TRUE(eval(j,"{}") == jsoncons::json(jsoncons::json_object_arg, {}));
+	EXPECT_TRUE(eval(j,"{}") == jsoncons::json());	// this is an error in json-formula (but valid in JMESPath)
+	EXPECT_TRUE(eval(j,"{}.{foo: bar}") == jsoncons::json()); // this is an error in json-formula (but valid in JMESPath)
+
+	// ???
 	EXPECT_TRUE(eval(j,"{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 	EXPECT_TRUE(eval(j,"{a:b}.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
-	EXPECT_TRUE(eval(j,"{}.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 	EXPECT_TRUE(eval(j,"null.{foo: bar}") == jsoncons::json(jsoncons::json_object_arg, {{"foo", nullptr}}));
 	
 	// null values in list projections
@@ -779,6 +784,7 @@ UTEST(json_formula, jf_strings) {
 }
 
 UTEST(json_formula, jf_other3) {
+	// nulls in filter expressions
 	jsoncons::json j = jsoncons::json::parse(R"({
 		  "baz": "other",
 		  "foo": [
@@ -786,6 +792,10 @@ UTEST(json_formula, jf_other3) {
 		  ]
 		})");
 	
-	EXPECT_TRUE(eval_debug(j,R"(foo[?bar==`1`].bar[0])") == jsoncons::json(jsoncons::json_array_arg, {nullptr, nullptr}));
+	EXPECT_TRUE(eval(j,R"(foo[?bar==`1`].bar[0])") == jsoncons::json(jsoncons::json_array_arg, {nullptr, nullptr}));
+	
+	// empty objects
+	jsoncons::json j2 = jsoncons::json::parse("{}");
+	EXPECT_TRUE(eval(j2,"{}") == jsoncons::json());	// error
 }
 

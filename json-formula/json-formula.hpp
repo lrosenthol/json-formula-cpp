@@ -3823,7 +3823,14 @@ namespace jsonformula {
 //                {
 //                    return val;
 //                }
-                auto result = resources.create_json(jsoncons::json_array_arg);
+
+				// in json-formula, empty objects aren't allowed
+				if ( token_lists_.size()==0 ) {
+					ec = jsonformula_errc::invalid_object;
+					return resources.null_value();
+				}
+				
+				auto result = resources.create_json(jsoncons::json_array_arg);
                 result->reserve(token_lists_.size());
 
                 for (auto& list : token_lists_)
@@ -3883,6 +3890,13 @@ namespace jsonformula {
 //                {
 //                    return val;
 //                }
+				
+				// in json-formula, empty objects aren't allowed
+				if ( key_toks_.size()==0 ) {
+					ec = jsonformula_errc::invalid_object;
+					return resources.null_value();
+				}
+				
                 auto resultp = resources.create_json(jsoncons::json_object_arg);
                 resultp->reserve(key_toks_.size());
                 for (auto& item : key_toks_)
