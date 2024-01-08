@@ -115,7 +115,8 @@ enum class jsonformula_errc
     identifier_not_found,
     expected_index_expression,
 	invalid_object,
-    unknown_error 
+	unbalanced_quotes,
+    unknown_error
 };
 
 class jsonformula_error_category_impl
@@ -188,6 +189,8 @@ public:
                 return "Expected index expression";
 			case jsonformula_errc::invalid_object:
 				return "Empty objects not permitted";
+			case jsonformula_errc::unbalanced_quotes:
+				return "Unbalanced quotes";
             case jsonformula_errc::unknown_error:
             default:
                 return "Unknown json-formula parser error";

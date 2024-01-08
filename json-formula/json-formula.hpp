@@ -5976,7 +5976,11 @@ namespace jsonformula {
                         if (ec) {return jsonformula_expression();}
                         state_stack_.pop_back(); 
                         break;
-                    case path_state::quoted_string: 	// also true for json-formula
+                    case path_state::quoted_string: 	// specific error for unbalanced quotes in json-formula
+					case path_state::raw_string:
+						ec = jsonformula_errc::unbalanced_quotes;
+						return jsonformula_expression();
+						break;
 					case path_state::unquoted_string:
                         state_stack_.pop_back();
                         break;

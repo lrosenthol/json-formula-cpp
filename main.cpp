@@ -766,7 +766,7 @@ UTEST(json_formula, jf_strings) {
 	EXPECT_TRUE(eval(j,R"({'\\\\':{' ':*}})") == jsoncons::json::parse(R"({"\\\\": {" ": ["object"]}})"));
 	
 	// unterminated quote
-	EXPECT_TRUE(eval(j,R"(\"foo)") == jsoncons::json());		//error
+	EXPECT_TRUE(eval(j,R"("foo)") == jsoncons::json());		//error
 	
 	// tests for literals inside of quotes inside of literals
 	// throws an exception since JMESPath requires the `'` to be escaped inside the literal string

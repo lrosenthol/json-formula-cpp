@@ -57,10 +57,11 @@ static jsoncons::json eval_debug(const jsoncons::json& j, const std::string& e)
 		jsoncons::json r = jsonformula::debug_search(j,e,ec);
 		if (ec) {
 			std::cout << "Error #" << ec.value() << ": " << ec.message() << std::endl;
+			return jsoncons::json();	// return empty JSON for an error
 		} else {	// it's debug, we always print!
 			std::cout << e << " = " << jsoncons::print(r) << " (" << GetType(r) << ")" << std::endl;
+			return r;	// return whatever came back
 		}
-		return r;
 	}
 	catch (const std::exception& e)
 	{
