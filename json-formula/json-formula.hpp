@@ -3707,7 +3707,9 @@ namespace jsonformula {
                     if (is_true(j))
                     {
                         reference jj = this->apply_expressions(item, resources, ec);
-                        if (!jj.is_null())
+						
+						// json-formula supports nulls in filter expressions
+                        if (true /*!jj.is_null()*/)
                         {
                             result->emplace_back(jsoncons::json_const_pointer_arg, std::addressof(jj));
                         }

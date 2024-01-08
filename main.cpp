@@ -773,9 +773,19 @@ UTEST(json_formula, jf_strings) {
 	
 	// strange names for JSON keys
 	jsoncons::json j2 = jsoncons::json::parse(R"({"foo\nbar": "newline", "!\r": true})");
-	EXPECT_TRUE(eval_debug(j2,R"(keys(@))") == jsoncons::json(jsoncons::json_array_arg, {"!\r","foo\nbar"}));
-//	EXPECT_TRUE(eval_debug(j2,R"('foo\nbar')") == jsoncons::json("newline"));
-//	EXPECT_TRUE(eval_debug(j2,R"('!\r')") == jsoncons::json(true));
+	EXPECT_TRUE(eval(j2,R"(keys(@))") == jsoncons::json(jsoncons::json_array_arg, {"!\r","foo\nbar"}));
+	EXPECT_TRUE(eval(j2,R"('foo\nbar')") == jsoncons::json("newline"));
+	EXPECT_TRUE(eval(j2,R"('!\r')") == jsoncons::json(true));
+}
 
+UTEST(json_formula, jf_other3) {
+	jsoncons::json j = jsoncons::json::parse(R"({
+		  "baz": "other",
+		  "foo": [
+			{"bar": 1}, {"bar": 2}, {"bar": 3}, {"bar": 4}, {"bar": 1, "baz": 2}
+		  ]
+		})");
+	
+	EXPECT_TRUE(eval_debug(j,R"(foo[?bar==`1`].bar[0])") == jsoncons::json(jsoncons::json_array_arg, {nullptr, nullptr}));
 }
 
