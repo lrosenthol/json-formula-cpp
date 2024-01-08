@@ -9,6 +9,7 @@
                 "-fansi-escape-codes",
                 "--include-directory=jsoncons/include",
                 "--include-directory=utest.h",
+                "--include-directory=popl/include",
                 "-g",
                 "-std=c++17",
                 "${file}",

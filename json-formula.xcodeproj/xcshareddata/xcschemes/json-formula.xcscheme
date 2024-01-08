@@ -50,6 +50,96 @@
             ReferencedContainer = "container:json-formula.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = ""
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/*"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/basic.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/boolean.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/current.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/escape.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/filters.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/functions.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/identifiers.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/indices.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/literal.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/multiselect.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/pipe.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/slice.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/syntax.json"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/unicode.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/wildcard.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/docSamples.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/precedence.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/sampleData.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/specSamples.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/lrosenth/Development/json-formula-cpp/tests/tests.json"
+            isEnabled = "NO">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

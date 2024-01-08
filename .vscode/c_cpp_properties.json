@@ -4,6 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/jsoncons/include",
+                "${workspaceFolder}/popl/include",
                 "${workspaceFolder}/utest.h",
                 "${default}"
             ],
