@@ -28,8 +28,7 @@
 		BE2D2C6F2AE2FB3300D04840 /* utest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utest.h; path = utest.h/utest.h; sourceTree = "<group>"; };
 		BE653A1C2AE16D9C00EDDA36 /* json-formula */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "json-formula"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE7B01812B47563C0070674C /* jfHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jfHelpers.h; sourceTree = "<group>"; };
-		BE9C1D632B0C3A0A00B6AD6A /* json-formula.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "json-formula.hpp"; path = "json-formula/json-formula.hpp"; sourceTree = "<group>"; };
-		BE9C1D642B0C3A0A00B6AD6A /* json-formula_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "json-formula_error.hpp"; path = "json-formula/json-formula_error.hpp"; sourceTree = "<group>"; };
+		BE97DD2A2B5A0103001D25AE /* json-formula */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "json-formula"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,10 +47,9 @@
 			children = (
 				BE2D2C512AE17A9900D04840 /* main.cpp */,
 				BE7B01812B47563C0070674C /* jfHelpers.h */,
-				BE9C1D642B0C3A0A00B6AD6A /* json-formula_error.hpp */,
-				BE9C1D632B0C3A0A00B6AD6A /* json-formula.hpp */,
 				BE2D2C552AE17AC700D04840 /* json.hpp */,
 				BE2D2C6F2AE2FB3300D04840 /* utest.h */,
+				BE97DD2A2B5A0103001D25AE /* json-formula */,
 				BE653A1D2AE16D9C00EDDA36 /* Products */,
 			);
 			sourceTree = "<group>";
