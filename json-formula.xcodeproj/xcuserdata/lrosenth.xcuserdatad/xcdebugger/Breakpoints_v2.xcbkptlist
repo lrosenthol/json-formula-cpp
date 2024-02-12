@@ -406,9 +406,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "6385"
-            endingLineNumber = "6385"
-            landmarkName = "push_token(tok, ec)"
-            landmarkType = "7">
+            endingLineNumber = "6385">
             <Locations>
                <Location
                   uuid = "DC3FC74A-DF24-47D6-8ECF-A83E019A55DA - 3594956ab9458c8c"
@@ -454,9 +452,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1987"
-            endingLineNumber = "1987"
-            landmarkName = "evaluate(args, resources, ec)"
-            landmarkType = "7">
+            endingLineNumber = "1987">
             <Locations>
                <Location
                   uuid = "38236B9B-96C0-4482-A3DA-F1B7247BC9BE - e2e21b191be40c8f"
@@ -502,9 +498,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1992"
-            endingLineNumber = "1992"
-            landmarkName = "evaluate(args, resources, ec)"
-            landmarkType = "7">
+            endingLineNumber = "1992">
             <Locations>
                <Location
                   uuid = "D2C7B49A-358C-4513-9DDF-12BCC19DBB96 - e2e21b191be40c22"
@@ -550,9 +544,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2002"
-            endingLineNumber = "2002"
-            landmarkName = "evaluate(args, resources, ec)"
-            landmarkType = "7">
+            endingLineNumber = "2002">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -566,9 +558,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4556"
-            endingLineNumber = "4556"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
+            endingLineNumber = "4556">
             <Locations>
                <Location
                   uuid = "E9D0A8AF-8863-4EE5-92BB-DCB15B598A85 - bdb1a0b0b568cd37"
@@ -644,25 +634,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4608"
-            endingLineNumber = "4608"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "45294BBA-4466-47E8-B45C-9E1450B15B60"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "json-formula/json-formula.hpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "757"
-            endingLineNumber = "757"
-            landmarkName = "evaluate(args, resources, ec)"
-            landmarkType = "7">
+            endingLineNumber = "4608">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -676,9 +648,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "6147"
-            endingLineNumber = "6147"
-            landmarkName = "push_token(tok, ec)"
-            landmarkType = "7">
+            endingLineNumber = "6147">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -692,9 +662,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "6185"
-            endingLineNumber = "6185"
-            landmarkName = "push_token(tok, ec)"
-            landmarkType = "7">
+            endingLineNumber = "6185">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -708,9 +676,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5772"
-            endingLineNumber = "5772"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
+            endingLineNumber = "5772">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -724,9 +690,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4306"
-            endingLineNumber = "4306"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
+            endingLineNumber = "4306">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -740,9 +704,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4924"
-            endingLineNumber = "4924"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
+            endingLineNumber = "4924">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -756,9 +718,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "5729"
-            endingLineNumber = "5729"
-            landmarkName = "compile(path, length, ec)"
-            landmarkType = "7">
+            endingLineNumber = "5729">
             <Locations>
                <Location
                   uuid = "49338120-E2ED-4E5C-9887-62D74E7C86F9 - bdb1a0b0b5695194"
@@ -804,9 +764,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3157"
-            endingLineNumber = "3157"
-            landmarkName = "to_string()"
-            landmarkType = "7">
+            endingLineNumber = "3157">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -820,9 +778,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3809"
-            endingLineNumber = "3809"
-            landmarkName = "jsonformula_evaluator"
-            landmarkType = "3">
+            endingLineNumber = "3809">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -836,9 +792,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3538"
-            endingLineNumber = "3538"
-            landmarkName = "list_projection"
-            landmarkType = "3">
+            endingLineNumber = "3538">
             <Locations>
                <Location
                   uuid = "6200F683-BFD2-4E5A-939F-47D02AFE8B62 - c116dcf8a2da1cf5"
@@ -908,54 +862,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5A189FD8-8A55-4A22-BDE7-C0B012EF9E96"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "main.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "769"
-            endingLineNumber = "769"
-            landmarkName = "UTEST()"
-            landmarkType = "9">
-            <Locations>
-               <Location
-                  uuid = "5A189FD8-8A55-4A22-BDE7-C0B012EF9E96 - e6e8180c5426e752"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "utest_run_json_formula_jf_strings(int*)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "769"
-                  endingLineNumber = "769"
-                  offsetFromSymbolStart = "2954">
-               </Location>
-               <Location
-                  uuid = "5A189FD8-8A55-4A22-BDE7-C0B012EF9E96 - e6e8180c5426e752"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "utest_run_json_formula_jf_strings(int*)"
-                  moduleName = "json-formula"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lrosenth/Development/json-formula-cpp/main.cpp"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "769"
-                  endingLineNumber = "769"
-                  offsetFromSymbolStart = "2959">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "19A43F5C-BE1B-482E-B28F-E87E32A7E38F"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -964,9 +870,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "6503"
-            endingLineNumber = "6503"
-            landmarkName = "debug_search(doc, path, ec)"
-            landmarkType = "9">
+            endingLineNumber = "6503">
             <Locations>
                <Location
                   uuid = "19A43F5C-BE1B-482E-B28F-E87E32A7E38F - aff8f5c7180cb954"
